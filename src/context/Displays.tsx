@@ -35,7 +35,7 @@ function Displays() {
         isFreeTier: true,
         isUniswap: true,
         isStrict: false,
-        supply: 10000000,
+        supply: BigInt(1000000000000000000000000),
         initTaxType: 0,
         initInterval: 60,
         countInterval: 0,
@@ -45,8 +45,9 @@ function Displays() {
         minSellTax: 0,
         lpTax: 20,
         maxWallet: 1,
-        name: "DAADVB",
-        symbol: "DVB",
+        maxTx: 1,
+        name: "DWAB",
+        symbol: "DWB",
       },
     ],
   });
@@ -54,7 +55,7 @@ function Displays() {
   const { data } = useContractRead({
     address: "0xbC9201678945bE971c7E30aD80dEFdFdab66B3E0",
     abi: ManagerAbi.abi,
-    functionName: "getLaunchCost",
+    functionName: "getMyLaunches",
   });
   console.log(data);
   return (
