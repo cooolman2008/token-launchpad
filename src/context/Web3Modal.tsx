@@ -10,8 +10,8 @@ const projectId = "1b68748d8eb8fb69865da49234fd799d";
 
 // 2. Create wagmiConfig
 const metadata = {
-  name: "Web3Modal",
-  description: "Web3Modal Example",
+  name: "SAFU Launcher",
+  description: "SAFU Launcher connect",
   url: "https://web3modal.com",
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };

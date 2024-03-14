@@ -1,11 +1,5 @@
-import Displays from "@/context/Displays";
-import Image from "next/image";
+import Launches from "@/context/Launches";
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Displays />
-      <w3m-button />
-    </main>
-  );
+  return <Launches />;
 }
