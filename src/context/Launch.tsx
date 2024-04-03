@@ -1,9 +1,15 @@
 "use client";
 
-import { useAccount, useContractWrite, useWalletClient } from "wagmi";
+import {
+  useAccount,
+  useContractWrite,
+  useWalletClient,
+  useWaitForTransaction,
+} from "wagmi";
 import ManagerAbi from "../../managerabi.json";
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 interface IFormInput {
   coin_name: string;
@@ -18,22 +24,57 @@ interface IFormInput {
   lptax: number;
 }
 
-type Inputs = {
-  example: string;
-  exampleRequired: string;
-};
-
 function Launch() {
   const { data: walletClient } = useWalletClient();
   const [isClient, setIsClient] = useState(false);
   const { address } = useAccount();
+  const router = useRouter();
 
-  const { data: result, write } = useContractWrite({
-    address: "0xbC9201678945bE971c7E30aD80dEFdFdab66B3E0",
+  // contract call for token launch.
+  const {
+    data: response,
+    write,
+    error,
+  } = useContractWrite({
+    address: "0xC3Ac34068AB853697df0391550f387034E89Cd57",
     abi: ManagerAbi.abi,
     functionName: "launchTokenFree",
+    onSuccess(res) {
+      console.log(res);
+    },
+    onError(error) {
+      console.log(error);
+    },
   });
 
+  // get the transaction details by waiting for the transaction.
+  const {
+    data: transaction,
+    isError,
+    isLoading,
+  } = useWaitForTransaction({
+    hash: response?.hash,
+    onSuccess(res) {
+      console.log(res);
+    },
+    onError(error) {
+      console.log(error);
+    },
+  });
+
+  // redirect to the token page once the address is aquired from the waitForTransaction hook.
+  useEffect(() => {
+    if (transaction?.logs[0]?.address) {
+      console.log(transaction?.logs[0]?.address);
+      router.push("/" + transaction?.logs[0]?.address);
+    }
+  }, [transaction]);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // handle form & fire launch token with the form details
   const {
     register,
     handleSubmit,
@@ -47,8 +88,7 @@ function Launch() {
           owner: address,
           taxWallet: address,
           isFreeTier: true,
-          isUniswap: true,
-          isStrict: false,
+          minLiq: 0,
           supply: BigInt(datas.supply),
           initTaxType: 0,
           initInterval: datas.initinterval,
@@ -60,6 +100,21 @@ function Launch() {
           lpTax: datas.lptax,
           maxWallet: 1,
           maxTx: 1,
+          preventSwap: 10,
+          maxSwap: BigInt(10000),
+          taxSwapThreshold: BigInt(1000),
+          cliffPeriod: 30,
+          vestingPeriod: 30,
+          team1p: 0,
+          team2p: 0,
+          team3p: 0,
+          team4p: 0,
+          team5p: 0,
+          team1: address,
+          team2: address,
+          team3: address,
+          team4: address,
+          team5: address,
           name: datas.coin_name,
           symbol: datas.symbol,
         },
@@ -67,9 +122,8 @@ function Launch() {
     });
   };
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  // TODO: Loading animation while waiting for the launch & redirect.
+  // Error messages in case of redirection failure & display instructions to manually check the token from launches.
 
   return (
     <>
@@ -131,12 +185,12 @@ function Launch() {
                 <input
                   type="number"
                   id="supply"
-                  defaultValue="1000000000000000000000000"
+                  defaultValue="1000000"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="1000000000000000000000000"
+                  placeholder="1000000"
                   {...register("supply", {
                     required: true,
-                    min: 1000000000000000000000000,
+                    min: 1000000,
                   })}
                 />
                 {errors.supply && <span>Supply should be min 25 digits</span>}
@@ -292,6 +346,9 @@ function Launch() {
                   <span>Count should be between 0-60</span>
                 )}
               </div>
+            </div>
+            <div className="px-5 py-2.5">
+              {error && <span>There has been an error in the launch</span>}
             </div>
             <input
               type="submit"

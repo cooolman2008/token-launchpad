@@ -1,6 +1,6 @@
 "use client";
 
-import { useWalletClient, useContractReads, useContractWrite } from "wagmi";
+import { useWalletClient, useContractRead, useContractWrite } from "wagmi";
 import Tokenabi from "../../newtokenabi.json";
 import { useEffect, useState } from "react";
 import { parseEther } from "viem";
@@ -8,53 +8,44 @@ import { parseEther } from "viem";
 function TokenView({ params }: { params: { slug: `0x${string}` } }) {
   const { data: walletClient } = useWalletClient();
   const [isClient, setIsClient] = useState(false);
-  console.log(params.slug);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const theContract = {
+  // get token details from the ERC20 token abi.
+  const { data: token } = useContractRead({
     address: params.slug,
     abi: Tokenabi.abi,
-  };
-
-  const {
-    data: token,
-    isError,
-    isLoading,
-  } = useContractReads({
-    contracts: [
-      {
-        ...theContract,
-        functionName: "name",
-      },
-      {
-        ...theContract,
-        functionName: "symbol",
-      },
-      {
-        ...theContract,
-        functionName: "totalSupply",
-      },
-    ],
+    functionName: "name",
   });
-  console.log(token);
 
+  const { data: symbol } = useContractRead({
+    address: params.slug,
+    abi: Tokenabi.abi,
+    functionName: "symbol",
+  });
+
+  // contract call to start trading of the launched token.
   const { data, isSuccess, write } = useContractWrite({
     address: params.slug,
     abi: Tokenabi.abi,
     functionName: "startTrading",
+    onSuccess(res) {
+      console.log(res);
+    },
+    onError(error) {
+      console.log(error);
+    },
   });
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <>
       {isClient && walletClient && (
         <>
           <span>Address: {params.slug}</span>
-          <span>Name: {token[0].result}</span>
-          <span>Symbol: {token[1].result}</span>
-          {/* <span>Supply: {BigInt(token[2].result).toString()}</span> */}
+          {typeof token === "string" && <span>Name: {token}</span>}
+          {typeof symbol === "string" && <span>Symbol: {symbol}</span>}
 
           <button
             onClick={() =>

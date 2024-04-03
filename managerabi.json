@@ -1,443 +1,799 @@
 {
-	"abi":[
-	   {
-		  "anonymous":false,
-		  "inputs":[
-			 {
-				"indexed":false,
-				"internalType":"uint256",
-				"name":"ethCost",
-				"type":"uint256"
-			 },
-			 {
-				"indexed":false,
-				"internalType":"uint256",
-				"name":"safuCost",
-				"type":"uint256"
-			 }
+    "abi":[
+		{
+		  "anonymous": false,
+		  "inputs": [
+			{
+			  "components": [
+				{
+				  "internalType": "address",
+				  "name": "owner",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "token",
+				  "type": "address"
+				},
+				{
+				  "internalType": "bool",
+				  "name": "isFree",
+				  "type": "bool"
+				},
+				{
+				  "internalType": "bool",
+				  "name": "isEthPaid",
+				  "type": "bool"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "cost",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "string",
+				  "name": "name",
+				  "type": "string"
+				},
+				{
+				  "internalType": "string",
+				  "name": "symbol",
+				  "type": "string"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "supply",
+				  "type": "uint256"
+				}
+			  ],
+			  "indexed": false,
+			  "internalType": "struct ManagerFacet.TokParams",
+			  "name": "params",
+			  "type": "tuple"
+			}
 		  ],
-		  "name":"LaunchCostChanged",
-		  "type":"event"
-	   },
-	   {
-		  "anonymous":false,
-		  "inputs":[
-			 {
-				"indexed":false,
-				"internalType":"address",
-				"name":"owner",
-				"type":"address"
-			 },
-			 {
-				"indexed":false,
-				"internalType":"address",
-				"name":"token",
-				"type":"address"
-			 }
+		  "name": "TokenLaunched",
+		  "type": "event"
+		},
+		{
+		  "anonymous": false,
+		  "inputs": [
+			{
+			  "indexed": true,
+			  "internalType": "address",
+			  "name": "from",
+			  "type": "address"
+			},
+			{
+			  "indexed": true,
+			  "internalType": "address",
+			  "name": "to",
+			  "type": "address"
+			},
+			{
+			  "indexed": false,
+			  "internalType": "uint256",
+			  "name": "value",
+			  "type": "uint256"
+			}
 		  ],
-		  "name":"TokenLaunched",
-		  "type":"event"
-	   },
-	   {
-		  "anonymous":false,
-		  "inputs":[
-			 {
-				"indexed":true,
-				"internalType":"address",
-				"name":"from",
-				"type":"address"
-			 },
-			 {
-				"indexed":true,
-				"internalType":"address",
-				"name":"to",
-				"type":"address"
-			 },
-			 {
-				"indexed":false,
-				"internalType":"uint256",
-				"name":"value",
-				"type":"uint256"
-			 }
+		  "name": "Transfer",
+		  "type": "event"
+		},
+		{
+		  "inputs": [
+			{
+			  "components": [
+				{
+				  "internalType": "address",
+				  "name": "owner",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "taxWallet",
+				  "type": "address"
+				},
+				{
+				  "internalType": "bool",
+				  "name": "isFreeTier",
+				  "type": "bool"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "minLiq",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "supply",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "initTaxType",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "initInterval",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "countInterval",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxBuyTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "minBuyTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxSellTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "minSellTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "lpTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxWallet",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxTx",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "preventSwap",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxSwap",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "taxSwapThreshold",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "cliffPeriod",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "vestingPeriod",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team1p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team2p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team3p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team4p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team5p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team1",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team2",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team3",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team4",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team5",
+				  "type": "address"
+				},
+				{
+				  "internalType": "string",
+				  "name": "name",
+				  "type": "string"
+				},
+				{
+				  "internalType": "string",
+				  "name": "symbol",
+				  "type": "string"
+				}
+			  ],
+			  "internalType": "struct INewToken.InitParams",
+			  "name": "params",
+			  "type": "tuple"
+			}
 		  ],
-		  "name":"Transfer",
-		  "type":"event"
-	   },
-	   {
-		  "inputs":[
-			 {
-				"internalType":"uint256",
-				"name":"ethCost",
-				"type":"uint256"
-			 },
-			 {
-				"internalType":"uint256",
-				"name":"safuCost",
-				"type":"uint256"
-			 }
+		  "name": "launchTokenBridge",
+		  "outputs": [],
+		  "stateMutability": "nonpayable",
+		  "type": "function"
+		},
+		{
+		  "inputs": [
+			{
+			  "components": [
+				{
+				  "internalType": "address",
+				  "name": "owner",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "taxWallet",
+				  "type": "address"
+				},
+				{
+				  "internalType": "bool",
+				  "name": "isFreeTier",
+				  "type": "bool"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "minLiq",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "supply",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "initTaxType",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "initInterval",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "countInterval",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxBuyTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "minBuyTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxSellTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "minSellTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "lpTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxWallet",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxTx",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "preventSwap",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxSwap",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "taxSwapThreshold",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "cliffPeriod",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "vestingPeriod",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team1p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team2p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team3p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team4p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team5p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team1",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team2",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team3",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team4",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team5",
+				  "type": "address"
+				},
+				{
+				  "internalType": "string",
+				  "name": "name",
+				  "type": "string"
+				},
+				{
+				  "internalType": "string",
+				  "name": "symbol",
+				  "type": "string"
+				}
+			  ],
+			  "internalType": "struct INewToken.InitParams",
+			  "name": "params",
+			  "type": "tuple"
+			}
 		  ],
-		  "name":"changeLaunchCost",
-		  "outputs":[
-			 
+		  "name": "launchTokenEth",
+		  "outputs": [],
+		  "stateMutability": "payable",
+		  "type": "function"
+		},
+		{
+		  "inputs": [
+			{
+			  "components": [
+				{
+				  "internalType": "address",
+				  "name": "owner",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "taxWallet",
+				  "type": "address"
+				},
+				{
+				  "internalType": "bool",
+				  "name": "isFreeTier",
+				  "type": "bool"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "minLiq",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "supply",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "initTaxType",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "initInterval",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "countInterval",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxBuyTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "minBuyTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxSellTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "minSellTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "lpTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxWallet",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxTx",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "preventSwap",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxSwap",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "taxSwapThreshold",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "cliffPeriod",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "vestingPeriod",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team1p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team2p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team3p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team4p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team5p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team1",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team2",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team3",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team4",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team5",
+				  "type": "address"
+				},
+				{
+				  "internalType": "string",
+				  "name": "name",
+				  "type": "string"
+				},
+				{
+				  "internalType": "string",
+				  "name": "symbol",
+				  "type": "string"
+				}
+			  ],
+			  "internalType": "struct INewToken.InitParams",
+			  "name": "params",
+			  "type": "tuple"
+			}
 		  ],
-		  "stateMutability":"nonpayable",
-		  "type":"function"
-	   },
-	   {
-		  "inputs":[
-			 
+		  "name": "launchTokenFree",
+		  "outputs": [],
+		  "stateMutability": "nonpayable",
+		  "type": "function"
+		},
+        {
+            "inputs":[
+                
+            ],
+            "name":"getMyLaunches",
+            "outputs":[
+                {
+                    "internalType":"address[]",
+                    "name":"",
+                    "type":"address[]"
+                }
+            ],
+            "stateMutability":"view",
+            "type":"function"
+        },
+		{
+		  "inputs": [
+			{
+			  "components": [
+				{
+				  "internalType": "address",
+				  "name": "owner",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "taxWallet",
+				  "type": "address"
+				},
+				{
+				  "internalType": "bool",
+				  "name": "isFreeTier",
+				  "type": "bool"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "minLiq",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "supply",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "initTaxType",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "initInterval",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "countInterval",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxBuyTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "minBuyTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxSellTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "minSellTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "lpTax",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxWallet",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxTx",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "preventSwap",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "maxSwap",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "taxSwapThreshold",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "cliffPeriod",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "vestingPeriod",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team1p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team2p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team3p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team4p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "uint256",
+				  "name": "team5p",
+				  "type": "uint256"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team1",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team2",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team3",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team4",
+				  "type": "address"
+				},
+				{
+				  "internalType": "address",
+				  "name": "team5",
+				  "type": "address"
+				},
+				{
+				  "internalType": "string",
+				  "name": "name",
+				  "type": "string"
+				},
+				{
+				  "internalType": "string",
+				  "name": "symbol",
+				  "type": "string"
+				}
+			  ],
+			  "internalType": "struct INewToken.InitParams",
+			  "name": "params",
+			  "type": "tuple"
+			}
 		  ],
-		  "name":"getLaunchCost",
-		  "outputs":[
-			 {
-				"internalType":"uint256",
-				"name":"",
-				"type":"uint256"
-			 },
-			 {
-				"internalType":"uint256",
-				"name":"",
-				"type":"uint256"
-			 }
-		  ],
-		  "stateMutability":"view",
-		  "type":"function"
-	   },
-	   {
-		  "inputs":[
-			 
-		  ],
-		  "name":"getMyLaunches",
-		  "outputs":[
-			 {
-				"internalType":"address[]",
-				"name":"",
-				"type":"address[]"
-			 }
-		  ],
-		  "stateMutability":"view",
-		  "type":"function"
-	   },
-	   {
-		  "inputs":[
-			 {
-				"components":[
-				   {
-					  "internalType":"address",
-					  "name":"owner",
-					  "type":"address"
-				   },
-				   {
-					  "internalType":"address",
-					  "name":"taxWallet",
-					  "type":"address"
-				   },
-				   {
-					  "internalType":"bool",
-					  "name":"isFreeTier",
-					  "type":"bool"
-				   },
-				   {
-					  "internalType":"bool",
-					  "name":"isUniswap",
-					  "type":"bool"
-				   },
-				   {
-					  "internalType":"bool",
-					  "name":"isStrict",
-					  "type":"bool"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"supply",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"initTaxType",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"initInterval",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"countInterval",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"maxBuyTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"minBuyTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"maxSellTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"minSellTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"lpTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"maxWallet",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"maxTx",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"string",
-					  "name":"name",
-					  "type":"string"
-				   },
-				   {
-					  "internalType":"string",
-					  "name":"symbol",
-					  "type":"string"
-				   }
-				],
-				"internalType":"structINewToken.InitParams",
-				"name":"params",
-				"type":"tuple"
-			 }
-		  ],
-		  "name":"launchTokenEth",
-		  "outputs":[
-			 
-		  ],
-		  "stateMutability":"payable",
-		  "type":"function"
-	   },
-	   {
-		  "inputs":[
-			 {
-				"components":[
-				   {
-					  "internalType":"address",
-					  "name":"owner",
-					  "type":"address"
-				   },
-				   {
-					  "internalType":"address",
-					  "name":"taxWallet",
-					  "type":"address"
-				   },
-				   {
-					  "internalType":"bool",
-					  "name":"isFreeTier",
-					  "type":"bool"
-				   },
-				   {
-					  "internalType":"bool",
-					  "name":"isUniswap",
-					  "type":"bool"
-				   },
-				   {
-					  "internalType":"bool",
-					  "name":"isStrict",
-					  "type":"bool"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"supply",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"initTaxType",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"initInterval",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"countInterval",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"maxBuyTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"minBuyTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"maxSellTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"minSellTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"lpTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"maxWallet",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"maxTx",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"string",
-					  "name":"name",
-					  "type":"string"
-				   },
-				   {
-					  "internalType":"string",
-					  "name":"symbol",
-					  "type":"string"
-				   }
-				],
-				"internalType":"structINewToken.InitParams",
-				"name":"params",
-				"type":"tuple"
-			 }
-		  ],
-		  "name":"launchTokenFree",
-		  "outputs":[
-			 
-		  ],
-		  "stateMutability":"nonpayable",
-		  "type":"function"
-	   },
-	   {
-		  "inputs":[
-			 {
-				"components":[
-				   {
-					  "internalType":"address",
-					  "name":"owner",
-					  "type":"address"
-				   },
-				   {
-					  "internalType":"address",
-					  "name":"taxWallet",
-					  "type":"address"
-				   },
-				   {
-					  "internalType":"bool",
-					  "name":"isFreeTier",
-					  "type":"bool"
-				   },
-				   {
-					  "internalType":"bool",
-					  "name":"isUniswap",
-					  "type":"bool"
-				   },
-				   {
-					  "internalType":"bool",
-					  "name":"isStrict",
-					  "type":"bool"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"supply",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"initTaxType",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"initInterval",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"countInterval",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"maxBuyTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"minBuyTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"maxSellTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"minSellTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"lpTax",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"maxWallet",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"uint256",
-					  "name":"maxTx",
-					  "type":"uint256"
-				   },
-				   {
-					  "internalType":"string",
-					  "name":"name",
-					  "type":"string"
-				   },
-				   {
-					  "internalType":"string",
-					  "name":"symbol",
-					  "type":"string"
-				   }
-				],
-				"internalType":"structINewToken.InitParams",
-				"name":"params",
-				"type":"tuple"
-			 }
-		  ],
-		  "name":"launchTokenSafu",
-		  "outputs":[
-			 
-		  ],
-		  "stateMutability":"nonpayable",
-		  "type":"function"
-	   }
-	]
- }
+		  "name": "launchTokenSafu",
+		  "outputs": [],
+		  "stateMutability": "nonpayable",
+		  "type": "function"
+		}
+	  ]
+}

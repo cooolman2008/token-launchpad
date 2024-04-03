@@ -8,18 +8,18 @@ import Link from "next/link";
 function Launches() {
   const { data: walletClient } = useWalletClient();
   const [isClient, setIsClient] = useState(false);
-  const { address, isConnecting, isDisconnected } = useAccount();
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  // get all launches by the wallet owner.
   const { data: tokens } = useContractRead({
-    address: "0xbC9201678945bE971c7E30aD80dEFdFdab66B3E0",
+    address: "0xC3Ac34068AB853697df0391550f387034E89Cd57",
     abi: ManagerAbi.abi,
     functionName: "getMyLaunches",
     account: walletClient?.account,
   });
-  console.log(tokens);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <>
@@ -29,7 +29,7 @@ function Launches() {
             <>
               <h2>My Launches</h2>
               <ul role="list" className="divide-y divide-gray-100">
-                {tokens.map((token) => (
+                {Object.values(tokens).map((token) => (
                   <li key={token} className="flex justify-between gap-x-6 py-5">
                     <div className="flex min-w-0 gap-x-4">
                       <div className="min-w-0 flex-auto">
