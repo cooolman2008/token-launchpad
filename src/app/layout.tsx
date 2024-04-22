@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Web3Modal from "../context/Web3Modal";
+import Link from "next/link";
 import "./globals.css";
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -18,10 +18,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        <nav
+          className="flex justify-between px-24 py-4"
+          style={{ height: "100px" }}
+        >
+          <Link href={"/"}>
+            <img
+              id="box"
+              src="/safu.svg"
+              style={{ width: "auto", height: "100%" }}
+            />
+          </Link>
           <div className="wallet-details">
             <w3m-button />
           </div>
+        </nav>
+        <main className="flex min-h-screen flex-col items-center p-24">
           <Web3Modal>{children}</Web3Modal>
         </main>
       </body>

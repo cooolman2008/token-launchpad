@@ -4,6 +4,29 @@ import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
 
 import { WagmiConfig } from "wagmi";
 import { arbitrum, mainnet, sepolia } from "viem/chains";
+import { defineChain } from "viem";
+
+export const local = defineChain({
+  id: 31337,
+  name: "Local",
+  network: "Local",
+  nativeCurrency: {
+    decimals: 18,
+    name: "Ether",
+    symbol: "ETH",
+  },
+  rpcUrls: {
+    default: {
+      http: ["http://0.0.0.0:8545"],
+    },
+    public: {
+      http: ["http://0.0.0.0:8545"],
+    },
+  },
+  blockExplorers: {
+    default: { name: "Etherscan", url: "https://etherscan.io" },
+  },
+});
 
 // 1. Get projectId at https://cloud.walletconnect.com
 const projectId = "1b68748d8eb8fb69865da49234fd799d";
@@ -16,7 +39,7 @@ const metadata = {
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 
-const chains = [mainnet, arbitrum, sepolia];
+const chains = [mainnet, arbitrum, sepolia, local];
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 
 // 3. Create modal

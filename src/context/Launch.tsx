@@ -36,7 +36,7 @@ function Launch() {
     write,
     error,
   } = useContractWrite({
-    address: "0xC3Ac34068AB853697df0391550f387034E89Cd57",
+    address: "0x7A5EC257391817ef241ef8451642cC6b222d4f8C",
     abi: ManagerAbi.abi,
     functionName: "launchTokenFree",
     onSuccess(res) {
@@ -353,7 +353,7 @@ function Launch() {
             <input
               type="submit"
               value="Launch"
-              className="text-white bg-[#050708] hover:bg-[#050708]/80 focus:ring-4 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#050708]/40 dark:focus:ring-gray-600 me-2 mb-2"
+              className="px-6 py-2 select-none rounded-md text-white bg-indigo-500 hover:bg-indigo-600 me-2 mb-2 cursor-pointer"
             />
           </form>
         </div>
