@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <nav
-          className="flex justify-between px-24 py-4"
+          className="flex justify-between px-24 py-4 mt-4"
           style={{ height: "100px" }}
         >
           <Link href={"/"}>
@@ -33,7 +33,7 @@ export default function RootLayout({
             <w3m-button />
           </div>
         </nav>
-        <main className="flex min-h-screen flex-col items-center p-24">
+        <main className="container mx-auto flex min-h-screen flex-col items-center px-24">
           <Web3Modal>{children}</Web3Modal>
         </main>
       </body>
