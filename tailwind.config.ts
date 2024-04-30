@@ -5,6 +5,7 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/[slug]/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/launch/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/context/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {

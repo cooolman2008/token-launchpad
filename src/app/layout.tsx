@@ -17,9 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={inter.className + " pt-4"}>
         <nav
-          className="flex justify-between px-24 py-4 mt-4"
+          className="flex justify-between px-24 py-4"
           style={{ height: "100px" }}
         >
           <Link href={"/"}>

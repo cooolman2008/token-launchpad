@@ -11,9 +11,12 @@ import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import TextField from "@/components/elements/TextField/TextField";
+
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 
 interface IFormInput {
-  coin_name: string;
+  name: string;
   symbol: string;
   supply: bigint;
   initinterval: number;
@@ -23,7 +26,7 @@ interface IFormInput {
   maxstax: number;
   minstax: number;
   lptax: number;
-  tax_wallet: string;
+  taxWallet: string;
   team1p: number;
   team2p: number;
   team3p: number;
@@ -36,6 +39,11 @@ interface IFormInput {
   team5: string;
   cliffPeriod: number;
   vestingPeriod: number;
+  maxWallet: number;
+  maxTx: number;
+  preventSwap: number;
+  maxSwap: number;
+  taxSwapThreshold: number;
 }
 
 function Launch() {
@@ -50,7 +58,7 @@ function Launch() {
     write,
     error,
   } = useContractWrite({
-    address: "0x7A5EC257391817ef241ef8451642cC6b222d4f8C",
+    address: CONTRACT_ADDRESS,
     abi: ManagerAbi.abi,
     functionName: "launchTokenFree",
     onSuccess(res) {
@@ -95,42 +103,44 @@ function Launch() {
     watch,
     formState: { errors },
   } = useForm<IFormInput>();
-  const onSubmit: SubmitHandler<IFormInput> = (datas) => {
+  const onSubmit: SubmitHandler<IFormInput> = (formData) => {
     write({
       args: [
         {
           owner: address,
-          taxWallet: address,
+          taxWallet: formData.taxWallet,
           isFreeTier: true,
           minLiq: 0,
-          supply: BigInt(datas.supply),
+          supply: BigInt(formData.supply),
           initTaxType: 0,
-          initInterval: datas.initinterval,
-          countInterval: datas.countinterval,
-          maxBuyTax: datas.maxbtax,
-          minBuyTax: datas.minbtax,
-          maxSellTax: datas.maxstax,
-          minSellTax: datas.minstax,
-          lpTax: datas.lptax,
-          maxWallet: 1,
-          maxTx: 1,
-          preventSwap: 10,
-          maxSwap: BigInt(10000),
-          taxSwapThreshold: BigInt(1000),
-          cliffPeriod: 30,
-          vestingPeriod: 30,
-          team1p: 0,
-          team2p: 0,
-          team3p: 0,
-          team4p: 0,
-          team5p: 0,
-          team1: address,
-          team2: address,
-          team3: address,
-          team4: address,
-          team5: address,
-          name: datas.coin_name,
-          symbol: datas.symbol,
+          initInterval: formData.initinterval ? formData.initinterval : 0,
+          countInterval: formData.countinterval ? formData.countinterval : 0,
+          maxBuyTax: formData.maxbtax,
+          minBuyTax: formData.minbtax,
+          maxSellTax: formData.maxstax,
+          minSellTax: formData.minstax,
+          lpTax: formData.lptax,
+          maxWallet: formData.maxWallet ? formData.maxWallet : 1,
+          maxTx: formData.maxTx ? formData.maxTx : 1,
+          preventSwap: formData.preventSwap ? formData.preventSwap : 10,
+          maxSwap: formData.maxSwap ? BigInt(formData.maxSwap) : BigInt(10000),
+          taxSwapThreshold: formData.taxSwapThreshold
+            ? BigInt(formData.taxSwapThreshold)
+            : BigInt(1000),
+          cliffPeriod: formData.cliffPeriod ? formData.cliffPeriod : 30,
+          vestingPeriod: formData.vestingPeriod ? formData.vestingPeriod : 30,
+          team1p: formData.team1p ? formData.team1p : 0,
+          team2p: formData.team2p ? formData.team2p : 0,
+          team3p: formData.team3p ? formData.team3p : 0,
+          team4p: formData.team4p ? formData.team4p : 0,
+          team5p: formData.team5p ? formData.team5p : 0,
+          team1: formData.team1 ? formData.team1 : address,
+          team2: formData.team2 ? formData.team2 : address,
+          team3: formData.team3 ? formData.team3 : address,
+          team4: formData.team4 ? formData.team4 : address,
+          team5: formData.team5 ? formData.team5 : address,
+          name: formData.name,
+          symbol: formData.symbol,
         },
       ],
     });
@@ -138,7 +148,6 @@ function Launch() {
 
   // TODO: Loading animation while waiting for the launch & redirect.
   // Error messages in case of redirection failure & display instructions to manually check the token from launches.
-  // Create reusable components once the design comes in.
   // Handle redirection & async functions.
 
   return (
@@ -168,51 +177,6 @@ function Launch() {
                     </select>
                   </div>
                 </div>
-
-                {/* <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                  <div className="col-span-full">
-                    <label
-                      htmlFor="cover-photo"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Token Logo
-                    </label>
-                    <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-600 px-6 py-10">
-                      <div className="text-center">
-                        <svg
-                          className="mx-auto h-12 w-12 text-gray-300"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          aria-hidden="true"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                          <label
-                            htmlFor="file-upload"
-                            className="relative cursor-pointer rounded-md font-semibold text-blue-500 outline-none border-0"
-                          >
-                            <span>Upload a file</span>
-                            <input
-                              id="file-upload"
-                              name="file-upload"
-                              type="file"
-                              className="sr-only outline-0"
-                            />
-                          </label>
-                          <p className="pl-1">or drag and drop</p>
-                        </div>
-                        <p className="text-xs leading-5 text-gray-600">
-                          PNG, JPG, GIF up to 40KB
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
               </div>
               <div className="border-b border-gray-600 pb-12">
                 <h2 className="text-base font-semibold leading-7 text-white">
@@ -227,199 +191,63 @@ function Launch() {
 
                 <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="coin_name"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Coin name
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="coin_name"
-                        defaultValue="USDCoin"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.coin_name
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="Safu Launcher"
-                        {...register("coin_name", {
-                          required: true,
-                          maxLength: 20,
-                          pattern: /^[A-Za-z]+$/i,
-                        })}
-                      />
-                      {errors.coin_name && (
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                            className="h-5 w-5 text-pink-600"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-                              clip-rule="evenodd"
-                            ></path>
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                    {errors.coin_name && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        We need a alphabets only name to deploy the token.
-                      </p>
-                    )}
+                    <TextField
+                      label="Coin name"
+                      id="name"
+                      defaultValue="SAFUCoin"
+                      placeholder="Safu Launcher"
+                      {...register("name", {
+                        required: true,
+                        maxLength: 20,
+                        pattern: /^[A-Za-z]+$/i,
+                      })}
+                      isError={errors.name ? true : false}
+                      error="We need an alphabets only name to deploy the token."
+                    />
                   </div>
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="symbol"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Symbol
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="symbol"
-                        defaultValue="USDC"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.symbol
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="SAFU"
-                        {...register("symbol", {
-                          required: true,
-                          maxLength: 4,
-                          pattern: /^[A-Za-z]+$/i,
-                        })}
-                      />
-                      {errors.symbol && (
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                            className="h-5 w-5 text-pink-600"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-                              clip-rule="evenodd"
-                            ></path>
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                    {errors.symbol && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        We need a 4 letter alphabets only symbol.
-                      </p>
-                    )}
+                    <TextField
+                      label="Symbol"
+                      id="symbol"
+                      defaultValue="SAFC"
+                      placeholder="USDC"
+                      {...register("symbol", {
+                        required: true,
+                        maxLength: 4,
+                        pattern: /^[A-Za-z]+$/i,
+                      })}
+                      isError={errors.symbol ? true : false}
+                      error="We need a 4 letter alphabets only symbol."
+                    />
                   </div>
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="supply"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Supply
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="supply"
-                        defaultValue="1000000"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.coin_name
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="1000000"
-                        {...register("supply", {
-                          required: true,
-                          min: 1000000,
-                        })}
-                      />
-                      {errors.supply && (
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                            className="h-5 w-5 text-pink-600"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-                              clip-rule="evenodd"
-                            ></path>
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                    {errors.supply && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Supply should be minimum 1Million.
-                      </p>
-                    )}
+                    <TextField
+                      label="Supply"
+                      id="supply"
+                      defaultValue="1000000"
+                      placeholder="1000000"
+                      {...register("supply", {
+                        required: true,
+                        min: 1000000,
+                      })}
+                      isError={errors.supply ? true : false}
+                      error="Supply should be minimum 1Million."
+                    />
                   </div>
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="tax_wallet"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Tax wallet
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="tax_wallet"
-                        defaultValue={address}
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.tax_wallet
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="0xXXXXXXXXXXXXXXXXXXXXXXXXX"
-                        {...register("tax_wallet", {
-                          required: true,
-                          minLength: 42,
-                          pattern: /^[A-Za-z0-9]+$/i,
-                        })}
-                      />
-                      {errors.tax_wallet && (
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                            className="h-5 w-5 text-pink-600"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-                              clip-rule="evenodd"
-                            ></path>
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                    {errors.tax_wallet && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Tax wallet should be a valid wallet.
-                      </p>
-                    )}
+                    <TextField
+                      label="Tax wallet"
+                      id="taxWallet"
+                      defaultValue={address}
+                      placeholder="0xXXXXXXXXXXXXXXXXXXXXXXXXX"
+                      {...register("taxWallet", {
+                        required: true,
+                        minLength: 42,
+                        pattern: /^[A-Za-z0-9]+$/i,
+                      })}
+                      isError={errors.taxWallet ? true : false}
+                      error="Tax wallet should be a valid wallet."
+                    />
                   </div>
                 </div>
               </div>
@@ -436,147 +264,71 @@ function Launch() {
 
                 <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="maxbtax"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Max buy tax
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="maxbtax"
-                        defaultValue="40"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.maxbtax
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="40"
-                        {...register("maxbtax", {
-                          required: true,
-                          max: 20,
-                          min: 0,
-                        })}
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <span>%</span>
-                      </div>
-                    </div>
-                    {errors.maxbtax && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Tax should be between 0 to 20.
-                      </p>
-                    )}
+                    <TextField
+                      label="Max buy tax"
+                      id="maxbtax"
+                      defaultValue="40"
+                      placeholder="40"
+                      {...register("maxbtax", {
+                        required: true,
+                        max: 40,
+                        min: 0,
+                      })}
+                      isPercent={true}
+                      isError={errors.maxbtax ? true : false}
+                      error="Tax can only be between 0 to 40."
+                    />
                   </div>
 
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="maxstax"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Max sell tax
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="maxstax"
-                        defaultValue="40"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.maxstax
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="40"
-                        {...register("maxstax", {
-                          required: true,
-                          max: 20,
-                          min: 0,
-                        })}
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <span>%</span>
-                      </div>
-                    </div>
-                    {errors.maxstax && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Tax should be between 0 to 20.
-                      </p>
-                    )}
+                    <TextField
+                      label="Max sell tax"
+                      id="maxstax"
+                      defaultValue="40"
+                      placeholder="40"
+                      {...register("maxstax", {
+                        required: true,
+                        max: 40,
+                        min: 0,
+                      })}
+                      isPercent={true}
+                      isError={errors.maxstax ? true : false}
+                      error="Tax can only be between 0 to 40."
+                    />
                   </div>
 
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="minbtax"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Final buy tax
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="minbtax"
-                        defaultValue="0"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.minbtax
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="0"
-                        {...register("minbtax", {
-                          required: true,
-                          max: 20,
-                          min: 0,
-                        })}
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <span>%</span>
-                      </div>
-                    </div>
-                    {errors.minbtax && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Tax should be between 0 to 20.
-                      </p>
-                    )}
+                    <TextField
+                      label="Final buy tax"
+                      id="minbtax"
+                      defaultValue="0"
+                      placeholder="0"
+                      {...register("minbtax", {
+                        required: true,
+                        max: 40,
+                        min: 0,
+                      })}
+                      isPercent={true}
+                      isError={errors.minbtax ? true : false}
+                      error="Tax can only be between 0 to 40."
+                    />
                   </div>
 
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="minstax"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Final sell tax
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="minstax"
-                        defaultValue="0"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.minstax
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="0"
-                        {...register("minstax", {
-                          required: true,
-                          max: 20,
-                          min: 0,
-                        })}
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <span>%</span>
-                      </div>
-                    </div>
-                    {errors.minstax && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Tax should be between 0 to 20.
-                      </p>
-                    )}
+                    <TextField
+                      label="Final sell tax"
+                      id="minstax"
+                      defaultValue="0"
+                      placeholder="0"
+                      {...register("minstax", {
+                        required: true,
+                        max: 40,
+                        min: 0,
+                      })}
+                      isPercent={true}
+                      isError={errors.minstax ? true : false}
+                      error="Tax can only be between 0 to 40."
+                    />
                   </div>
                   <div className="sm:col-span-2 sm:col-start-1">
                     <label
@@ -600,143 +352,52 @@ function Launch() {
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label
-                      htmlFor="initinterval"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Interval in Seconds
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="initinterval"
-                        defaultValue="60"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.initinterval
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="60"
-                        {...register("initinterval", {
-                          required: true,
-                          max: 60,
-                          min: 0,
-                        })}
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        {errors.initinterval && (
-                          <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                              aria-hidden="true"
-                              className="h-5 w-5 text-pink-600"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-                                clip-rule="evenodd"
-                              ></path>
-                            </svg>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    {errors.initinterval && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Interval should be between 0-60.
-                      </p>
-                    )}
+                    <TextField
+                      label="Interval in Seconds"
+                      id="initinterval"
+                      defaultValue="60"
+                      placeholder="60"
+                      {...register("initinterval", {
+                        required: true,
+                        max: 60,
+                        min: 0,
+                      })}
+                      isError={errors.initinterval ? true : false}
+                      error="Interval should be between 0-60."
+                    />
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label
-                      htmlFor="countinterval"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Count Interval
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="countinterval"
-                        defaultValue="0"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.countinterval
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="0"
-                        {...register("countinterval", {
-                          required: true,
-                          max: 60,
-                          min: 0,
-                        })}
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        {errors.countinterval && (
-                          <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                              aria-hidden="true"
-                              className="h-5 w-5 text-pink-600"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-                                clip-rule="evenodd"
-                              ></path>
-                            </svg>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    {errors.countinterval && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Tax should be between 0 to 20.
-                      </p>
-                    )}
+                    <TextField
+                      label="Count Interval"
+                      id="countinterval"
+                      defaultValue="60"
+                      placeholder="60"
+                      {...register("countinterval", {
+                        required: true,
+                        max: 60,
+                        min: 0,
+                      })}
+                      isError={errors.countinterval ? true : false}
+                      error="Interval should be between 0-60."
+                    />
                   </div>
 
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="lptax"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Liquidity Pool tax
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="lptax"
-                        defaultValue="0"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.lptax
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="20"
-                        {...register("lptax", {
-                          required: true,
-                          max: 20,
-                          min: 0,
-                        })}
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <span>%</span>
-                      </div>
-                    </div>
-                    {errors.lptax && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Tax should be between 0 to 20.
-                      </p>
-                    )}
+                    <TextField
+                      label="Liquidity Pool tax"
+                      id="lptax"
+                      defaultValue="0"
+                      placeholder="0"
+                      {...register("lptax", {
+                        required: true,
+                        max: 20,
+                        min: 0,
+                      })}
+                      isPercent={true}
+                      isError={errors.lptax ? true : false}
+                      error="Tax can only be between 0 to 20."
+                    />
                   </div>
                 </div>
               </div>
@@ -753,270 +414,173 @@ function Launch() {
 
                 <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="cliffPeriod"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Cliff period
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="cliffPeriod"
-                        defaultValue="30"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.cliffPeriod
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="30"
-                        {...register("cliffPeriod", {
-                          required: true,
-                          min: 30,
-                        })}
-                      />
-                      {errors.cliffPeriod && (
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                            className="h-5 w-5 text-pink-600"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-                              clip-rule="evenodd"
-                            ></path>
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                    {errors.cliffPeriod && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Minimum of 30 days Cliff period is suggested.
-                      </p>
-                    )}
+                    <TextField
+                      label="Cliff period"
+                      id="cliffPeriod"
+                      placeholder="30"
+                      {...register("cliffPeriod", {
+                        min: 30,
+                      })}
+                      isError={errors.cliffPeriod ? true : false}
+                      error="Minimum of 30 days Cliff period is needed."
+                    />
                   </div>
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="vestingPeriod"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Vesting period
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="vestingPeriod"
-                        defaultValue="30"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.vestingPeriod
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="30"
-                        {...register("vestingPeriod", {
-                          required: true,
-                          min: 30,
-                        })}
-                      />
-                      {errors.vestingPeriod && (
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                            className="h-5 w-5 text-pink-600"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-                              clip-rule="evenodd"
-                            ></path>
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                    {errors.vestingPeriod && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Minimum of 30 days Vesting period is suggested.
-                      </p>
-                    )}
+                    <TextField
+                      label="Vesting period"
+                      id="vestingPeriod"
+                      placeholder="30"
+                      {...register("vestingPeriod", {
+                        min: 30,
+                      })}
+                      isError={errors.vestingPeriod ? true : false}
+                      error="Minimum of 30 days Vesting period is needed."
+                    />
                   </div>
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="team1"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Team wallet
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="team1"
-                        defaultValue={address}
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.team1
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="0xXXXXXXXXXXXXXXXXXXXXXXXXX"
-                        {...register("team1", {
-                          required: true,
-                          minLength: 42,
-                          pattern: /^[A-Za-z0-9]+$/i,
-                        })}
-                      />
-                      {errors.team1 && (
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                            className="h-5 w-5 text-pink-600"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-                              clip-rule="evenodd"
-                            ></path>
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                    {errors.team1 && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Please provide a valid wallet address.
-                      </p>
-                    )}
+                    <TextField
+                      label="Team wallet"
+                      id="team1"
+                      defaultValue=""
+                      placeholder="0xXXXXXXXXXXXXXXXXXXXXXXXXX"
+                      {...register("team1", {
+                        minLength: 42,
+                        pattern: /^[A-Za-z0-9]+$/i,
+                      })}
+                      isError={errors.team1 ? true : false}
+                      error="Please provide a valid wallet address."
+                    />
                   </div>
 
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="team1p"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Percentage share
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="team1p"
-                        defaultValue="1"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.team1p
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="1"
-                        {...register("team1p", {
-                          required: true,
-                          max: 1,
-                          min: 0,
-                        })}
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <span>%</span>
-                      </div>
-                    </div>
-                    {errors.team1p && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Share cannot be more than 1%.
-                      </p>
-                    )}
+                    <TextField
+                      label="Percentage share"
+                      id="team1p"
+                      placeholder="0"
+                      {...register("team1p", {
+                        max: 1,
+                        min: 0,
+                      })}
+                      isPercent={true}
+                      isError={errors.team1p ? true : false}
+                      error="Share cannot be more than 1%."
+                    />
                   </div>
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="team2"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Team wallet 2
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="team2"
-                        defaultValue={address}
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.team2
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="0xXXXXXXXXXXXXXXXXXXXXXXXXX"
-                        {...register("team2", {
-                          required: true,
-                          minLength: 42,
-                          pattern: /^[A-Za-z0-9]+$/i,
-                        })}
-                      />
-                      {errors.team2 && (
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                            className="h-5 w-5 text-pink-600"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-                              clip-rule="evenodd"
-                            ></path>
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                    {errors.team2 && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Please provide a valid wallet address.
-                      </p>
-                    )}
+                    <TextField
+                      label="Team wallet 2"
+                      id="team2"
+                      defaultValue=""
+                      placeholder="0xXXXXXXXXXXXXXXXXXXXXXXXXX"
+                      {...register("team2", {
+                        minLength: 42,
+                        pattern: /^[A-Za-z0-9]+$/i,
+                      })}
+                      isError={errors.team2 ? true : false}
+                      error="Please provide a valid wallet address."
+                    />
                   </div>
 
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="team2p"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Percentage share
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="team2p"
-                        defaultValue="1"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.team2p
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="1"
-                        {...register("team2p", {
-                          required: true,
-                          max: 1,
-                          min: 0,
-                        })}
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <span>%</span>
-                      </div>
-                    </div>
-                    {errors.team2p && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Share cannot be more than 1%.
-                      </p>
-                    )}
+                    <TextField
+                      label="Percentage share"
+                      id="team2p"
+                      placeholder="0"
+                      {...register("team2p", {
+                        max: 1,
+                        min: 0,
+                      })}
+                      isPercent={true}
+                      isError={errors.team2p ? true : false}
+                      error="Share cannot be more than 1%."
+                    />
+                  </div>
+                  <div className="sm:col-span-3">
+                    <TextField
+                      label="Team wallet 3"
+                      id="team3"
+                      defaultValue=""
+                      placeholder="0xXXXXXXXXXXXXXXXXXXXXXXXXX"
+                      {...register("team3", {
+                        minLength: 42,
+                        pattern: /^[A-Za-z0-9]+$/i,
+                      })}
+                      isError={errors.team3 ? true : false}
+                      error="Please provide a valid wallet address."
+                    />
+                  </div>
+
+                  <div className="sm:col-span-3">
+                    <TextField
+                      label="Percentage share"
+                      id="team3p"
+                      placeholder="0"
+                      {...register("team3p", {
+                        max: 1,
+                        min: 0,
+                      })}
+                      isPercent={true}
+                      isError={errors.team3p ? true : false}
+                      error="Share cannot be more than 1%."
+                    />
+                  </div>
+                  <div className="sm:col-span-3">
+                    <TextField
+                      label="Team wallet 4"
+                      id="team4"
+                      defaultValue=""
+                      placeholder="0xXXXXXXXXXXXXXXXXXXXXXXXXX"
+                      {...register("team4", {
+                        minLength: 42,
+                        pattern: /^[A-Za-z0-9]+$/i,
+                      })}
+                      isError={errors.team4 ? true : false}
+                      error="Please provide a valid wallet address."
+                    />
+                  </div>
+
+                  <div className="sm:col-span-3">
+                    <TextField
+                      label="Percentage share"
+                      id="team4p"
+                      placeholder="0"
+                      {...register("team4p", {
+                        max: 1,
+                        min: 0,
+                      })}
+                      isPercent={true}
+                      isError={errors.team4p ? true : false}
+                      error="Share cannot be more than 1%."
+                    />
+                  </div>
+                  <div className="sm:col-span-3">
+                    <TextField
+                      label="Team wallet 5"
+                      id="team5"
+                      defaultValue=""
+                      placeholder="0xXXXXXXXXXXXXXXXXXXXXXXXXX"
+                      {...register("team5", {
+                        minLength: 42,
+                        pattern: /^[A-Za-z0-9]+$/i,
+                      })}
+                      isError={errors.team5 ? true : false}
+                      error="Please provide a valid wallet address."
+                    />
+                  </div>
+
+                  <div className="sm:col-span-3">
+                    <TextField
+                      label="Percentage share"
+                      id="team5p"
+                      placeholder="0"
+                      {...register("team5p", {
+                        max: 1,
+                        min: 0,
+                      })}
+                      isPercent={true}
+                      isError={errors.team5p ? true : false}
+                      error="Share cannot be more than 1%."
+                    />
                   </div>
                   <Link
                     href="#"
@@ -1034,218 +598,91 @@ function Launch() {
                 <p className="mt-1 text-sm leading-6 text-white">
                   This section is for advanced users.
                 </p>
-                <div className="relative flex gap-x-3 mt-4">
+                <div className="relative flex gap-x-3">
                   <div className="flex h-6 items-center">
                     <input
-                      id="comments"
-                      name="comments"
+                      id="user"
+                      name="user"
                       type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 bg-gray-600"
+                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                     />
                   </div>
                   <div className="text-sm leading-6">
-                    <label
-                      htmlFor="comments"
-                      className="font-medium text-white"
-                    >
-                      Set advanced options
+                    <label htmlFor="user" className="font-medium text-white">
+                      I'm an advanced user
                     </label>
                   </div>
                 </div>
 
                 <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="maxbtax"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Max Transaction Limit
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="maxbtax"
-                        defaultValue="1"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.maxbtax
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="1"
-                        {...register("maxbtax", {
-                          required: true,
-                          max: 100,
-                          min: 0,
-                        })}
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <span>%</span>
-                      </div>
-                    </div>
-                    {errors.maxbtax && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Tax should be between 0 to 20.
-                      </p>
-                    )}
+                    <TextField
+                      label="Max Transaction Limit"
+                      id="maxTx"
+                      placeholder="0"
+                      {...register("maxTx", {
+                        max: 1,
+                        min: 0,
+                      })}
+                      isError={errors.maxTx ? true : false}
+                      error="Please provide a valid limit."
+                    />
                   </div>
 
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="maxstax"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Max Wallet Limit
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="maxstax"
-                        defaultValue="1"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.maxstax
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="1"
-                        {...register("maxstax", {
-                          required: true,
-                          max: 100,
-                          min: 0,
-                        })}
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <span>%</span>
-                      </div>
-                    </div>
-                    {errors.maxstax && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Tax should be between 0 to 20.
-                      </p>
-                    )}
+                    <TextField
+                      label="Max Wallet Limit"
+                      id="maxWallet"
+                      placeholder="0"
+                      {...register("maxWallet", {
+                        max: 1,
+                        min: 0,
+                      })}
+                      isError={errors.maxWallet ? true : false}
+                      error="Please provide a valid limit."
+                    />
                   </div>
 
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="minbtax"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Tax Swap Threshold
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="minbtax"
-                        defaultValue="0.1"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.minbtax
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="0.1"
-                        {...register("minbtax", {
-                          required: true,
-                          max: 1,
-                          min: 0.01,
-                        })}
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <span>%</span>
-                      </div>
-                    </div>
-                    {errors.minbtax && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Tax should be between 0 to 20.
-                      </p>
-                    )}
+                    <TextField
+                      label="Tax Swap Threshold"
+                      id="taxSwapThreshold"
+                      placeholder="1000"
+                      {...register("taxSwapThreshold", {
+                        max: 1000,
+                        min: 0,
+                      })}
+                      isError={errors.taxSwapThreshold ? true : false}
+                      error="Please provide a valid limit."
+                    />
                   </div>
 
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="minstax"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Max Tax Swap
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="minstax"
-                        defaultValue="1"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.minstax
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="1"
-                        {...register("minstax", {
-                          required: true,
-                          max: 2,
-                          min: 1,
-                        })}
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <span>%</span>
-                      </div>
-                    </div>
-                    {errors.minstax && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Tax should be between 0 to 20.
-                      </p>
-                    )}
+                    <TextField
+                      label="Max Tax Swap"
+                      id="maxSwap"
+                      placeholder="10000"
+                      {...register("maxSwap", {
+                        max: 10000,
+                        min: 0,
+                      })}
+                      isError={errors.maxSwap ? true : false}
+                      error="Please provide a valid limit."
+                    />
                   </div>
 
                   <div className="sm:col-span-3">
-                    <label
-                      htmlFor="lptax"
-                      className="block text-sm font-medium leading-6 text-white"
-                    >
-                      Prevent Swap Before
-                    </label>
-                    <div className="mt-2 relative">
-                      <input
-                        type="text"
-                        id="lptax"
-                        defaultValue="20"
-                        className={
-                          "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-                          (errors.lptax
-                            ? "border border-pink-600"
-                            : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
-                        }
-                        placeholder="20"
-                        {...register("lptax", {
-                          required: true,
-                          max: 20,
-                          min: 0,
-                        })}
-                      />
-                      {errors.lptax && (
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                            className="h-5 w-5 text-pink-600"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-                              clip-rule="evenodd"
-                            ></path>
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                    {errors.lptax && (
-                      <p className="mt-2 text-pink-600 text-sm">
-                        Tax should be between 0 to 20.
-                      </p>
-                    )}
+                    <TextField
+                      label="Prevent Swap Before"
+                      id="preventSwap"
+                      placeholder="10"
+                      {...register("preventSwap", {
+                        max: 10,
+                        min: 0,
+                      })}
+                      isError={errors.preventSwap ? true : false}
+                      error="Please provide a valid limit."
+                    />
                   </div>
                 </div>
               </div>
@@ -1280,7 +717,7 @@ function Launch() {
                 <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                   <div className="sm:col-span-3">
                     <label
-                      htmlFor="lptax"
+                      htmlFor="amount"
                       className="block text-sm font-medium leading-6 text-white"
                     >
                       Amount
@@ -1288,7 +725,7 @@ function Launch() {
                     <div className="mt-2 relative">
                       <input
                         type="text"
-                        id="lptax"
+                        id="amount"
                         defaultValue="20"
                         className={
                           "block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
@@ -1297,11 +734,12 @@ function Launch() {
                             : "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
                         }
                         placeholder="20"
-                        {...register("lptax", {
-                          required: true,
-                          max: 20,
-                          min: 0,
-                        })}
+                        // {...register("lptax", {
+                        //   required: true,
+                        //   max: 20,
+                        //   min: 0,
+                        // })}
+                        name="amount"
                       />
                       {errors.lptax && (
                         <div className="absolute inset-y-0 right-0 flex items-center pr-4">
@@ -1337,8 +775,8 @@ function Launch() {
                     </label>
                     <div className="mt-2">
                       <select
-                        id="tier"
-                        name="tier"
+                        id="currency"
+                        name="currency"
                         defaultValue="SAFU"
                         className="block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-blue-400 sm:max-w-xs sm:text-sm sm:leading-6 bg-neutral-800 outline-0 ps-2 pe-2 appearance-none"
                       >

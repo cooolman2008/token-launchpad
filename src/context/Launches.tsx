@@ -1,6 +1,6 @@
 "use client";
 
-import { useWalletClient, useContractRead, useAccount } from "wagmi";
+import { useWalletClient, useAccount } from "wagmi";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 

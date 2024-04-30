@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 
-const API_ENDPOINT = 'http://localhost:8000/subgraphs/name/SAFUlauncher';
+const API_ENDPOINT = process.env.API_ENDPOINT;
 
 interface Tokens {
   id: string;
