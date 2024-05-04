@@ -2,7 +2,7 @@ import { GraphQLClient } from 'graphql-request';
 
 const API_ENDPOINT = process.env.API_ENDPOINT;
 
-interface Tokens {
+export interface Tokens {
   id: string;
   name: string;
   symbol: string;
@@ -15,7 +15,7 @@ interface TokenArray {
     tokens: Tokens[]
 }
 
-export async function fetchTokens(owner: string) {
+export async function fetchMyTokens(owner: string) {
   const query = `query MyQuery {
     tokens(where: {owner: "${owner}"}) {
       id

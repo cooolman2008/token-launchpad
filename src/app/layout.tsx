@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import Web3Modal from "../context/Web3Modal";
 import Link from "next/link";
 import "./globals.css";
-const inter = Inter({ subsets: ["latin"] });
+const plus_Jakarta_Sans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "SAFU Launcher",
@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className + " pt-4"}>
+      <body className={plus_Jakarta_Sans.className + " pt-4"}>
         <nav
           className="flex justify-between px-24 py-4"
           style={{ height: "100px" }}

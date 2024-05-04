@@ -2,10 +2,16 @@ import { GraphQLClient } from 'graphql-request';
 
 const API_ENDPOINT = process.env.API_ENDPOINT;
 
-interface Token {
+export interface Token {
     name: string;
     totalSupply: number;
     symbol: string;
+    owner: string;
+    team1: string;
+    team2: string;
+    team3: string;
+    team4: string;
+    team5: string;
 }
 
 interface tokenResponse {
@@ -19,6 +25,12 @@ export async function fetchToken(id: string) {
             name
             totalSupply
             symbol
+            owner
+            team1
+            team2
+            team3
+            team4
+            team5
           }
         }`;
       

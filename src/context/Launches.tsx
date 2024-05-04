@@ -4,17 +4,8 @@ import { useWalletClient, useAccount } from "wagmi";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import { fetchTokens } from "@/api/getTokens";
+import { fetchMyTokens, Tokens } from "@/api/getMyTokens";
 import { animate } from "motion";
-
-interface Tokens {
-  id: string;
-  name: string;
-  symbol: string;
-  totalSupply: number;
-  totalTax: number;
-  tradeVolume: number;
-}
 
 function Launches() {
   const { data: walletClient } = useWalletClient();
@@ -51,7 +42,7 @@ function Launches() {
   useEffect(() => {
     async function fetchOwnedTokens() {
       if (address) {
-        const tokensFetched = await fetchTokens(address?.toString());
+        const tokensFetched = await fetchMyTokens(address?.toString());
         setTokens(tokensFetched);
       }
     }
@@ -125,7 +116,7 @@ function Launches() {
                   </svg>
                 </h2>
               </div>
-              <div className="w-full mb-8 overflow-hidden rounded-lg shadow-lg">
+              <div className="w-full mb-8 overflow-hidden rounded-2xl shadow-lg border border-gray-600">
                 <div className="w-full overflow-x-auto">
                   <table className="w-full">
                     <thead>
@@ -188,9 +179,9 @@ function Launches() {
           )}
           <Link
             href="/launch"
-            className="px-6 py-2 select-none rounded-md text-white bg-blue-500 hover:bg-blue-600 me-2 mb-2"
+            className="px-6 py-2 select-none rounded-3xl text-white bg-blue-500 text-xl font-medium hover:bg-blue-600 me-2 mb-2"
           >
-            Launch a token
+            Launch token
           </Link>
         </>
       )}
