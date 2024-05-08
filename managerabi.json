@@ -605,21 +605,6 @@
 		  "stateMutability": "nonpayable",
 		  "type": "function"
 		},
-        {
-            "inputs":[
-                
-            ],
-            "name":"getMyLaunches",
-            "outputs":[
-                {
-                    "internalType":"address[]",
-                    "name":"",
-                    "type":"address[]"
-                }
-            ],
-            "stateMutability":"view",
-            "type":"function"
-        },
 		{
 		  "inputs": [
 			{

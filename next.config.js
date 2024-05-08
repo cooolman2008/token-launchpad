@@ -4,7 +4,7 @@ const nextConfig = {
     return config
   },
   env: {
-    CONTRACT_ADDRESS: "0x90E75f390332356426B60FB440DF23f860F6A113",
+    CONTRACT_ADDRESS: "0x798f111c92E38F102931F34D1e0ea7e671BDBE31",
     API_ENDPOINT: 'http://localhost:8000/subgraphs/name/SAFUlauncher'
   }
 }

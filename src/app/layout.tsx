@@ -29,7 +29,7 @@ export default function RootLayout({
               style={{ width: "auto", height: "100%" }}
             />
           </Link>
-          <div className="wallet-details">
+          <div className="float-right">
             <w3m-button />
           </div>
         </nav>

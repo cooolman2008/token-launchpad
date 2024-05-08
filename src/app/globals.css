@@ -26,8 +26,8 @@ body {
     rgb(var(--background-start-rgb));
 }
 
-.wallet-details {
-  float: right;
+.safu-button-primary {
+  @apply px-4 py-1 select-none rounded-3xl text-white bg-blue-500 hover:bg-blue-600 cursor-pointer text-lg font-medium;
 }
 
 select {

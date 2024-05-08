@@ -1,301 +1,41 @@
 {
   "abi":[
-      {
-          "anonymous":false,
-          "inputs":[
-              {
-                  "indexed":false,
-                  "internalType":"uint256",
-                  "name":"minLiq",
-                  "type":"uint256"
-              }
-          ],
-          "name":"ChangeMinLiquidity",
-          "type":"event"
-      },
-      {
-          "anonymous":false,
-          "inputs":[
-              {
-                  "indexed":false,
-                  "internalType":"uint256",
-                  "name":"ethCost",
-                  "type":"uint256"
-              },
-              {
-                  "indexed":false,
-                  "internalType":"uint256",
-                  "name":"safuCost",
-                  "type":"uint256"
-              }
-          ],
-          "name":"LaunchCostChanged",
-          "type":"event"
-      },
-      {
-          "anonymous":false,
-          "inputs":[
-              {
-                  "indexed":false,
-                  "internalType":"uint256",
-                  "name":"ethCost",
-                  "type":"uint256"
-              },
-              {
-                  "indexed":false,
-                  "internalType":"uint256",
-                  "name":"safuCost",
-                  "type":"uint256"
-              }
-          ],
-          "name":"PromoCostChanged",
-          "type":"event"
-      },
-      {
-          "anonymous":false,
-          "inputs":[
-              {
-                  "indexed":false,
-                  "internalType":"address",
-                  "name":"from",
-                  "type":"address"
-              },
-              {
-                  "indexed":false,
-                  "internalType":"address",
-                  "name":"token",
-                  "type":"address"
-              },
-              {
-                  "indexed":false,
-                  "internalType":"uint256",
-                  "name":"times",
-                  "type":"uint256"
-              },
-              {
-                  "indexed":false,
-                  "internalType":"bool",
-                  "name":"isEth",
-                  "type":"bool"
-              },
-              {
-                  "indexed":false,
-                  "internalType":"uint256",
-                  "name":"cost",
-                  "type":"uint256"
-              }
-          ],
-          "name":"PromoteToken",
-          "type":"event"
-      },
-      {
-          "anonymous":false,
-          "inputs":[
-              {
-                  "indexed":true,
-                  "internalType":"address",
-                  "name":"from",
-                  "type":"address"
-              },
-              {
-                  "indexed":true,
-                  "internalType":"address",
-                  "name":"to",
-                  "type":"address"
-              },
-              {
-                  "indexed":false,
-                  "internalType":"uint256",
-                  "name":"value",
-                  "type":"uint256"
-              }
-          ],
-          "name":"Transfer",
-          "type":"event"
-      },
-      {
-          "inputs":[
-              {
-                  "internalType":"uint256",
-                  "name":"ethCost",
-                  "type":"uint256"
-              },
-              {
-                  "internalType":"uint256",
-                  "name":"safuCost",
-                  "type":"uint256"
-              }
-          ],
-          "name":"changeLaunchCost",
-          "outputs":[
-              
-          ],
-          "stateMutability":"nonpayable",
-          "type":"function"
-      },
-      {
-          "inputs":[
-              {
-                  "internalType":"uint256",
-                  "name":"minLiq",
-                  "type":"uint256"
-              }
-          ],
-          "name":"changeMinLiquidity",
-          "outputs":[
-              
-          ],
-          "stateMutability":"nonpayable",
-          "type":"function"
-      },
-      {
-          "inputs":[
-              {
-                  "internalType":"uint256",
-                  "name":"promoCostEth",
-                  "type":"uint256"
-              },
-              {
-                  "internalType":"uint256",
-                  "name":"promoCostSafu",
-                  "type":"uint256"
-              }
-          ],
-          "name":"changePromoCost",
-          "outputs":[
-              
-          ],
-          "stateMutability":"nonpayable",
-          "type":"function"
-      },
-      {
-          "inputs":[
-              
-          ],
-          "name":"getLauncherDetails",
-          "outputs":[
-              {
-                  "internalType":"uint256",
-                  "name":"",
-                  "type":"uint256"
-              },
-              {
-                  "internalType":"uint256",
-                  "name":"",
-                  "type":"uint256"
-              },
-              {
-                  "internalType":"uint256",
-                  "name":"",
-                  "type":"uint256"
-              },
-              {
-                  "internalType":"uint256",
-                  "name":"",
-                  "type":"uint256"
-              },
-              {
-                  "internalType":"uint256",
-                  "name":"",
-                  "type":"uint256"
-              }
-          ],
-          "stateMutability":"view",
-          "type":"function"
-      },
-      {
-          "inputs":[
-              {
-                  "internalType":"address",
-                  "name":"owner",
-                  "type":"address"
-              }
-          ],
-          "name":"getLaunches",
-          "outputs":[
-              {
-                  "internalType":"address[]",
-                  "name":"",
-                  "type":"address[]"
-              }
-          ],
-          "stateMutability":"view",
-          "type":"function"
-      },
-      {
-          "inputs":[
-              {
-                  "internalType":"address",
-                  "name":"_token",
-                  "type":"address"
-              },
-              {
-                  "internalType":"uint256",
-                  "name":"times",
-                  "type":"uint256"
-              }
-          ],
-          "name":"promoteToken",
-          "outputs":[
-              
-          ],
-          "stateMutability":"payable",
-          "type":"function"
-      },
-      {
-          "inputs":[
-              {
-                  "internalType":"address",
-                  "name":"_token",
-                  "type":"address"
-              },
-              {
-                  "internalType":"uint256",
-                  "name":"times",
-                  "type":"uint256"
-              }
-          ],
-          "name":"promoteTokenBridge",
-          "outputs":[
-              
-          ],
-          "stateMutability":"nonpayable",
-          "type":"function"
-      },
-      {
-          "inputs":[
-              {
-                  "internalType":"address",
-                  "name":"_token",
-                  "type":"address"
-              },
-              {
-                  "internalType":"uint256",
-                  "name":"times",
-                  "type":"uint256"
-              }
-          ],
-          "name":"promoteTokenSafu",
-          "outputs":[
-              
-          ],
-          "stateMutability":"nonpayable",
-          "type":"function"
-      },
-      {
-          "inputs":[
-              {
-                  "internalType":"address",
-                  "name":"bridge",
-                  "type":"address"
-              }
-          ],
-          "name":"setBridge",
-          "outputs":[
-              
-          ],
-          "stateMutability":"nonpayable",
-          "type":"function"
-      }
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "times",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "isEth",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "cost",
+          "type": "uint256"
+        }
+      ],
+      "name": "PromoteToken",
+      "type": "event"
+    }
   ]
 }
