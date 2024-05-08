@@ -1,0 +1,24 @@
+{
+    "USDSC":
+    {
+      "minLiq": 0,
+      "supply": 10000000,
+      "initTaxType": 0,
+      "initInterval": 20,
+      "countInterval": 2,
+      "maxBuyTax": 20,
+      "minBuyTax": 1,
+      "maxSellTax": 20,
+      "minSellTax": 1,
+      "lpTax": 10,
+      "maxWallet": 1,
+      "maxTx": 1,
+      "preventSwap": 10,
+      "maxSwap": 10000,
+      "taxSwapThreshold": 1000,
+      "cliffPeriod": 30,
+      "vestingPeriod": 30,
+      "name": "USDCoin",
+      "symbol": "USDC"
+    }
+}
