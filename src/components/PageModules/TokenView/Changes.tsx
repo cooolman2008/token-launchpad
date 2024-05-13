@@ -91,7 +91,7 @@ const Changes = ({
                 onClick={() => {
                   remove();
                 }}
-                className="safu-button-primary"
+                className="safu-button-secondary"
               >
                 Remove Limits
               </button>
@@ -104,7 +104,7 @@ const Changes = ({
                   onClick={() => {
                     burn();
                   }}
-                  className="safu-button-primary"
+                  className="safu-button-secondary"
                 >
                   Burn LP
                 </button>
@@ -131,7 +131,7 @@ const Changes = ({
                   <input
                     type="submit"
                     value="Extend"
-                    className="safu-button-primary cursor-pointer"
+                    className="safu-button-secondary cursor-pointer"
                   />
                 </div>
               </form>

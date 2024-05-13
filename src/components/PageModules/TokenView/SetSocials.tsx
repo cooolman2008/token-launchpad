@@ -48,7 +48,6 @@ const SetSocials = ({
     formState: { errors },
   } = useForm<SocialsForm>();
   const onSubmit: SubmitHandler<SocialsForm> = (formData) => {
-    // console.log(some);
     set({
       args: [formData.telegram, formData.twitter, formData.website],
     });
@@ -164,7 +163,7 @@ const SetSocials = ({
             </span>
           </div>
         </div>
-        <div className="flex justify-center w-full mb-4">
+        <div className="flex flex-col justify-center w-full mb-4">
           <input
             type="submit"
             value="Set"

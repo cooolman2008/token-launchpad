@@ -41,7 +41,6 @@ const StartTrading = ({
     formState: { errors },
   } = useForm<TradingForm>();
   const onSubmit: SubmitHandler<TradingForm> = (formData) => {
-    console.log(formData.lockPeriod);
     write({
       args: [formData.lockPeriod, formData.shouldBurn],
       value: parseEther("1"),
@@ -61,7 +60,7 @@ const StartTrading = ({
             <input
               type="text"
               id="liq"
-              defaultValue="0.01"
+              defaultValue="15"
               placeholder="Liquid ETH"
               className="block w-32 rounded-xl ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-4xl border-x border-gray-400"
               {...register("liq", {
@@ -102,7 +101,7 @@ const StartTrading = ({
               <input
                 type="submit"
                 value="Start"
-                className="safu-button-primary cursor-pointer"
+                className="safu-button-secondary cursor-pointer"
               />
             </div>
           </div>

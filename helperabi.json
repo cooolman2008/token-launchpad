@@ -1,41 +1,22 @@
 {
   "abi":[
     {
-      "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
           "internalType": "address",
-          "name": "from",
+          "name": "_token",
           "type": "address"
         },
         {
-          "indexed": false,
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "indexed": false,
           "internalType": "uint256",
           "name": "times",
           "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "bool",
-          "name": "isEth",
-          "type": "bool"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "cost",
-          "type": "uint256"
         }
       ],
-      "name": "PromoteToken",
-      "type": "event"
+      "name": "promoteToken",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
     }
   ]
 }

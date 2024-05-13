@@ -7,7 +7,7 @@ import { arbitrum, mainnet, sepolia } from "viem/chains";
 import { defineChain } from "viem";
 
 export const local = defineChain({
-  id: 31337,
+  id: 1337,
   name: "Local",
   network: "Local",
   nativeCurrency: {
@@ -40,7 +40,7 @@ const metadata = {
 };
 
 const chains = [mainnet, arbitrum, sepolia, local];
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
+const wagmiConfig = defaultWagmiConfig({ projectId, chains, metadata });
 
 // 3. Create modal
 createWeb3Modal({ wagmiConfig, projectId, chains });

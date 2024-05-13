@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { animate } from "motion";
-import Explore from "@/components/Modules/Launches/Explore";
-import MyTokens from "@/components/Modules/Launches/MyTokens";
-import Stealth from "@/components/Modules/Launches/Stealth";
+import Explore from "@/components/PageModules/Launches/Explore";
+import MyTokens from "@/components/PageModules/Launches/MyTokens";
+import Stealth from "@/components/PageModules/Launches/Stealth";
 import { fetchSafu } from "@/api/getSafu";
 
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;

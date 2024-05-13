@@ -26,8 +26,16 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+.text-correct {
+  padding-bottom: 0.35rem;
+}
+
 .safu-button-primary {
-  @apply px-4 py-1 select-none rounded-3xl text-white bg-blue-500 hover:bg-blue-600 cursor-pointer text-lg font-medium;
+  @apply px-4 pt-1 select-none rounded-3xl text-white bg-pink-600 hover:bg-pink-700 cursor-pointer text-lg font-medium text-correct;
+}
+
+.safu-button-secondary {
+  @apply px-4 pt-1 select-none rounded-3xl text-white bg-blue-500 hover:bg-blue-600 cursor-pointer text-lg font-medium text-correct;
 }
 
 select {
@@ -39,4 +47,3 @@ select {
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
-

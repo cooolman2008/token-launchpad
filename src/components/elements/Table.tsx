@@ -29,11 +29,18 @@ const Table = ({ tokens }: { tokens: Tokens[] }) => {
             <td className="px-4 py-3 text-ms text-green-400">+1.2</td>
             <td className="px-4 py-3 text-ms text-pink-600">-0.3</td>
             <td className="px-4 py-3 text-xs">
-              <span className="px-2 py-1 leading-tight bg-pink-600 text-sm">
-                $ {token.tradeVolume}.0
+              <span className="px-2 py-1 leading-tight bg-green-600 text-sm font-medium">
+                $
+                {Math.round(
+                  (token?.tradeVolume ? token?.tradeVolume : 0) * 100
+                ) / 100}
               </span>
             </td>
-            <td className="px-4 py-3 text-sm">${token.tradeVolume}.0M</td>
+            <td className="px-4 py-3 text-sm">
+              $
+              {Math.round((token?.tradeVolume ? token?.tradeVolume : 0) * 100) /
+                100}
+            </td>
           </tr>
         ))}
       </tbody>
