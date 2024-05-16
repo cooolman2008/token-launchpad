@@ -8,6 +8,7 @@ import {
     createPublicClient,
     http,
     parseUnits,
+    formatEther
 } from "viem";
 
 const UNISWAP_ROUTER_ADDRESS = process.env.UNISWAP_ROUTER_ADDRESS;
@@ -51,7 +52,7 @@ export const getReserves = (
     });
 }
 
-export const getExchangeRate = (reserves:bigint[], amount: bigint, chain: Chain): Promise<bigint> => {
+export const getExchangeRate = (reserves:bigint[], amount: bigint, chain: Chain): Promise<string> => {
     const publicClient = createPublicClient({
       chain,
       transport: http(),
@@ -71,7 +72,14 @@ export const getExchangeRate = (reserves:bigint[], amount: bigint, chain: Chain)
         })
         .then((value) => {
         if(typeof value === 'bigint'){
-            return resolve(value);
+
+            const rate = parseFloat(formatEther(BigInt(value))).toLocaleString(
+            "en",
+            {
+              minimumFractionDigits: 4,
+            }
+          );
+            return resolve(rate);
         }
         }).catch(()=> {
             return reject(undefined);
@@ -79,16 +87,15 @@ export const getExchangeRate = (reserves:bigint[], amount: bigint, chain: Chain)
     });
 }
 
-// Failed like shit!!!!
 export const getMinAmountOut = (
-    tokenA: Token, tokenB: Token, amountInMax: bigint, pair: Pair, slippage = '50'): bigint => {
+    tokenA: Token, tokenB: Token, amountInMax: bigint, pair: Pair, slippage = '6'): bigint => {
     const route = new Route([pair], tokenA, tokenB);
     const tokenAmount = CurrencyAmount.fromRawAmount(
       tokenA,
       amountInMax.toString()
     );
     const trade = new Trade(route, tokenAmount, TradeType.EXACT_INPUT);
-    const slippageTolerance = new Percent('50', "10000"); // 50 bips, or 0.50% - Slippage tolerance
+    const slippageTolerance = new Percent(slippage, "10000"); // 50 bips, or 0.50% - Slippage tolerance
     console.log(
       "worst execution price",
       trade.worstExecutionPrice(slippageTolerance).toSignificant(18)

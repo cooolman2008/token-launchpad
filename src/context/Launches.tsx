@@ -8,47 +8,12 @@ import { animate } from "motion";
 import Explore from "@/components/PageModules/Launches/Explore";
 import MyTokens from "@/components/PageModules/Launches/MyTokens";
 import Stealth from "@/components/PageModules/Launches/Stealth";
-import { fetchSafu } from "@/api/getSafu";
-
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+import Details from "@/components/PageModules/Launches/Details";
 
 function Launches() {
   const { data: walletClient } = useWalletClient();
   const [isClient, setIsClient] = useState(false);
   const [tab, setTab] = useState("Explore");
-  const [safuTVL, setSafuTVL] = useState(0);
-  const [safuVolume, setSafuVolume] = useState(0);
-  const [safuLaunches, setSafuLaunches] = useState(0);
-
-  useEffect(() => {
-    async function fetchSafuDetails() {
-      const safuDetails = await fetchSafu(CONTRACT_ADDRESS);
-      setSafuTVL(
-        Math.round(
-          (safuDetails?.totalLiquidityUSD
-            ? safuDetails?.totalLiquidityUSD
-            : 0) * 100
-        ) / 100
-      );
-      setSafuVolume(
-        Math.round(
-          (safuDetails?.totalVolumeUSD ? safuDetails?.totalVolumeUSD : 0) * 100
-        ) / 100
-      );
-      setSafuLaunches(safuDetails?.launchCount ? safuDetails?.launchCount : 0);
-    }
-    fetchSafuDetails();
-    animate(
-      "#box",
-      { rotate: 90 },
-      {
-        duration: 0.5,
-        easing: "ease-in-out",
-        repeat: 3,
-        direction: "alternate",
-      }
-    );
-  }, []);
 
   useEffect(() => {
     animate(
@@ -66,19 +31,8 @@ function Launches() {
     <>
       {isClient && walletClient && (
         <>
-          <div className="flex my-12">
-            <div className="flex flex-col px-12">
-              <span className="text-lg mb-2 text-gray-400">SAFU TVL</span>
-              <h2 className="text-5xl">${safuTVL.toFixed(2)}</h2>
-            </div>
-            <div className="flex flex-col px-12">
-              <span className="text-lg mb-2 text-gray-400">SAFU Volume</span>
-              <h2 className="text-5xl">${safuVolume.toFixed(2)}</h2>
-            </div>
-            <div className="flex flex-col px-12">
-              <span className="text-lg mb-2 text-gray-400">SAFU Launches</span>
-              <h2 className="text-5xl">{safuLaunches}</h2>
-            </div>
+          <div className="w-full flex my-12 justify-between">
+            <Details />
           </div>
           <div className="flex self-start my-4 min-w-full px-3">
             <h2
@@ -130,11 +84,8 @@ function Launches() {
               {tab === "Stealth" && <Stealth />}
             </div>
           </div>
-          <Link
-            href="/launch"
-            className="px-6 py-2 select-none rounded-3xl text-white bg-blue-500 text-xl font-medium hover:bg-blue-600 me-2 mb-2"
-          >
-            Launch token
+          <Link href="/launch" className="safu-button-secondary">
+            Launch a token
           </Link>
         </>
       )}

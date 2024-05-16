@@ -1,9 +1,9 @@
 import Table from "../../elements/Table";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { useAccount } from "wagmi";
 import { fetchMyTokens, Tokens } from "@/api/getMyTokens";
 
-const MyTokens = () => {
+const MyTokens = memo(() => {
   const [tokens, setTokens] = useState<Tokens[]>([]);
   const { address } = useAccount();
   useEffect(() => {
@@ -14,8 +14,8 @@ const MyTokens = () => {
       }
     }
     fetchOwnedTokens();
-  }, []);
+  }, [address]);
   return <Table tokens={tokens} />;
-};
+});
 
 export default MyTokens;

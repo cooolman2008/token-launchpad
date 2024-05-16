@@ -100,7 +100,7 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
             <div className="w-full rounded-3xl flex items-center">
               <span className="text-xl text-gray-400 pr-4">Times</span>
               <input
-                type="number"
+                type="text"
                 id="times"
                 placeholder="2"
                 {...register("times", {

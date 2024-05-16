@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Tokens } from "@/api/getMyTokens";
+import { getAbr } from "@/utils/math";
 
 const Table = ({ tokens }: { tokens: Tokens[] }) => {
   return (
@@ -30,16 +31,14 @@ const Table = ({ tokens }: { tokens: Tokens[] }) => {
             <td className="px-4 py-3 text-ms text-pink-600">-0.3</td>
             <td className="px-4 py-3 text-xs">
               <span className="px-2 py-1 leading-tight bg-green-600 text-sm font-medium">
-                $
-                {Math.round(
+                ${getAbr(token?.tradeVolume ? Number(token?.tradeVolume) : 0)}
+                {/* {Math.round(
                   (token?.tradeVolume ? token?.tradeVolume : 0) * 100
-                ) / 100}
+                ) / 100} */}
               </span>
             </td>
             <td className="px-4 py-3 text-sm">
-              $
-              {Math.round((token?.tradeVolume ? token?.tradeVolume : 0) * 100) /
-                100}
+              ${getAbr(token?.tradeVolume ? Number(token?.tradeVolume) : 0)}
             </td>
           </tr>
         ))}

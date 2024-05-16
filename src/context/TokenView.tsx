@@ -2,9 +2,11 @@
 
 import { useWalletClient, useAccount } from "wagmi";
 import { useEffect, useState } from "react";
-import { fetchToken, Token } from "@/api/getToken";
 import { useRouter } from "next/navigation";
 import { isAddress } from "viem";
+import Image from "next/image";
+
+import { fetchToken, Token } from "@/api/getToken";
 import EtherscanBadge from "@/components/images/EtherscanBadge";
 import DextoolsBadge from "@/components/images/DextoolsBadge";
 import StartTrading from "@/components/PageModules/TokenView/StartTrading";
@@ -12,15 +14,17 @@ import Changes from "@/components/PageModules/TokenView/Changes";
 import SetSocials from "@/components/PageModules/TokenView/SetSocials";
 import Promote from "@/components/PageModules/TokenView/Promote";
 import Swap from "@/components/PageModules/TokenView/Swap";
+import logo from "../../public/coin.svg";
 
 function TokenView({ params }: { params: { slug: `0x${string}` } }) {
   const { data: walletClient } = useWalletClient();
+  const { address } = useAccount();
+  const router = useRouter();
+
   const [isClient, setIsClient] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [isTeam, setIsTeam] = useState(false);
   const [token, setToken] = useState<Token>();
-  const { address } = useAccount();
-  const router = useRouter();
 
   useEffect(() => {
     if (!isAddress(params?.slug)) {
@@ -60,10 +64,11 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
               </span>
               <div className="w-full flex my-8">
                 <div className="flex flex-1">
-                  <img
+                  <Image
                     id="box"
-                    src="/coin.svg"
+                    src={logo}
                     style={{ width: "auto", height: "40px" }}
+                    alt="SAFU Launcher Logo"
                   />
                   <h2 className="text-3xl mx-4">{token?.name}</h2>
                   <h2 className="text-3xl text-gray-400">{token?.symbol}</h2>
@@ -100,7 +105,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
                     <span className="text-sm mb-2 text-gray-400">
                       1 day Volume
                     </span>
-                    <h2 className="text-3xl">$321.4BM</h2>
+                    <h2 className="text-3xl">$321.4M</h2>
                   </div>
                 </div>
               </div>
@@ -149,7 +154,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
                 <Swap
                   contractAddress={params?.slug}
                   symbol={token?.symbol ? token?.symbol : ""}
-                  isLiquidity={token?.pair ? true : false}
+                  tradingEnabled={token?.pair ? true : false}
                 />
               </div>
               {isOwner && (

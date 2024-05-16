@@ -1,8 +1,8 @@
 import Table from "../../elements/Table";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { fetchStealthTokens, Tokens } from "@/api/getStealth";
 
-const Stealth = () => {
+const Stealth = memo(() => {
   const [tokens, setTokens] = useState<Tokens[]>([]);
   useEffect(() => {
     async function fetchStealth() {
@@ -12,6 +12,6 @@ const Stealth = () => {
     fetchStealth();
   }, []);
   return <Table tokens={tokens} />;
-};
+});
 
 export default Stealth;

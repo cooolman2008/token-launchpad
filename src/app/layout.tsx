@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import Web3Modal from "../context/Web3Modal";
 import Link from "next/link";
+import Image from "next/image";
 import "./globals.css";
+import logo from "../../public/safu.svg";
 const plus_Jakarta_Sans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -20,10 +22,11 @@ export default function RootLayout({
       <body className={plus_Jakarta_Sans.className + ""}>
         <nav className="flex px-8 py-5 h-20 text-gray-400">
           <Link href={"/"} className="pr-8">
-            <img
+            <Image
               id="box"
-              src="/safu.svg"
+              src={logo}
               style={{ width: "auto", height: "100%" }}
+              alt="SAFU Launcher Logo"
             />
           </Link>
           <Link href={"/"} className="self-center pr-8">
