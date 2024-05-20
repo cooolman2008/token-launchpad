@@ -8,8 +8,16 @@ export interface SAFU {
   totalLiquidityUSD: number
 }
 
+export interface Promo {
+    promoCostEth: bigint
+}
+
 interface safuResponse {
     safulauncher: SAFU
+}
+
+interface promoResponse {
+    safulauncher: Promo
 }
 
 export async function fetchSafu(id: string) {
@@ -26,5 +34,19 @@ export async function fetchSafu(id: string) {
       
         const data: safuResponse = await client.request(query);
         return data?.safulauncher;
+    }
+}
+
+export async function fetchPromoCost(id: string) {
+    if (id) {
+        const query = `query MyQuery {
+          safulauncher(id: "${id}") {
+            promoCostEth
+          }
+        }`;
+        const client = new GraphQLClient(API_ENDPOINT);
+        const data: promoResponse = await client.request(query);
+
+        return data?.safulauncher.promoCostEth;
     }
 }

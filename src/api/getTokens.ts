@@ -1,4 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
+import { cache } from 'react'
 
 const API_ENDPOINT = process.env.API_ENDPOINT;
 
@@ -15,7 +16,7 @@ interface TokenArray {
     tokens: Tokens[]
 }
 
-export async function fetchTokens() {
+export const fetchTokens =  cache( async() => {
   const query = `query MyQuery {
     tokens(first: 10, where: {pair_not: "0x0000000000000000000000000000000000000000"}) {
       id
@@ -31,4 +32,4 @@ export async function fetchTokens() {
 
   const data: TokenArray  = await client.request(query);
   return data?.tokens;
-}
+})
