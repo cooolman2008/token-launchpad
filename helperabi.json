@@ -1,22 +1,24 @@
 {
   "abi":[
     {
-      "inputs": [
+      "inputs":[
         {
-          "internalType": "address",
-          "name": "_token",
-          "type": "address"
+          "internalType":"address",
+          "name":"_token",
+          "type":"address"
         },
         {
-          "internalType": "uint256",
-          "name": "times",
-          "type": "uint256"
+          "internalType":"uint256",
+          "name":"times",
+          "type":"uint256"
         }
       ],
-      "name": "promoteToken",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function"
+      "name":"promoteToken",
+      "outputs":[
+        
+      ],
+      "stateMutability":"payable",
+      "type":"function"
     }
   ]
 }
