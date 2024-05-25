@@ -10,7 +10,7 @@ import TextField from "@/components/elements/TextField/TextField";
 
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 
-interface IFormInput {
+interface LaunchForm {
 	name: string;
 	symbol: string;
 	supply: bigint;
@@ -82,13 +82,6 @@ function Launch() {
 	// redirect to the token page once the address is aquired from the waitForTransaction hook.
 	useEffect(() => {
 		if (transaction?.logs[0]?.address) {
-			console.log("waiting start");
-			const wait = setTimeout(function () {
-				console.log("waited!");
-			}, 10 * 1000);
-			console.log("waiting ends");
-			clearTimeout(wait);
-			console.log("waited ends");
 			console.log(transaction?.logs[0]?.address);
 			router.push("/" + transaction?.logs[0]?.address);
 		}
@@ -104,8 +97,8 @@ function Launch() {
 		handleSubmit,
 		watch,
 		formState: { errors },
-	} = useForm<IFormInput>();
-	const onSubmit: SubmitHandler<IFormInput> = (formData) => {
+	} = useForm<LaunchForm>();
+	const onSubmit: SubmitHandler<LaunchForm> = (formData) => {
 		write({
 			args: [
 				{
@@ -155,7 +148,7 @@ function Launch() {
 		<>
 			{isClient && walletClient && (
 				<div>
-					<form onSubmit={handleSubmit(onSubmit)}>
+					{/* <form onSubmit={handleSubmit(onSubmit)}>
 						<div className="space-y-12">
 							<div className="border-b border-gray-600 pb-12">
 								<div className="sm:col-span-3">
@@ -665,6 +658,8 @@ function Launch() {
 											isError={errors.preventSwap ? true : false}
 											error="Please provide a valid limit."
 										/>
+										<input type="range" min={1} max={10} />
+										<output></output>
 									</div>
 								</div>
 							</div>
@@ -760,7 +755,7 @@ function Launch() {
 							value="Launch"
 							className="px-6 py-2 select-none rounded-md text-white bg-blue-500 hover:bg-blue-600 me-2 mb-2 cursor-pointer"
 						/>
-					</form>
+					</form> */}
 				</div>
 			)}
 		</>

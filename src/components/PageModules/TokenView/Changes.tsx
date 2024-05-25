@@ -13,12 +13,10 @@ const Changes = ({
 	contractAddress,
 	isLimited,
 	isLpBurnt,
-	isLpRetrieved,
 }: {
 	contractAddress: `0x${string}`;
 	isLimited: boolean;
 	isLpBurnt: boolean;
-	isLpRetrieved: boolean;
 }) => {
 	const { data: walletClient } = useWalletClient();
 	const [lpBurnt, setLpBurnt] = useState(isLpBurnt);
@@ -85,32 +83,38 @@ const Changes = ({
 	};
 	return (
 		<>
-			<h2 className="block text-2xl mb-4">Change the game!</h2>
-			<div className="w-full py-4 rounded-xl mb-2">
+			<h2 className="text-2xl mb-1">Changes to your token!</h2>
+			<p className="text-sm text-gray-400 mb-4 font-thin">
+				You can either<b className="font-bold"> Burn LP </b>tokens or<b className="font-bold"> Extend </b>the lock
+				period.
+				<br />
+				You can<b className="font-bold"> Remove Limits </b>to allow people to buy bigger chunks.
+			</p>
+			<div className="w-full pb-4 rounded-xl mb-2">
 				<div className="w-full flex justify-between">
 					<div className="flex justify-center">
-						{isLimited && !isLpRetrieved && (
+						{isLimited && (
 							<button
 								onClick={() => {
 									remove();
 								}}
 								className="safu-button-secondary mr-4"
 							>
-								Remove Limits
+								Remove limits
 							</button>
 						)}
-						{!lpBurnt && !isLpRetrieved && (
+						{!lpBurnt && (
 							<button
 								onClick={() => {
 									burn();
 								}}
-								className="safu-button-secondary"
+								className="safu-button-primary"
 							>
-								Burn LP
+								Burn LP tokens
 							</button>
 						)}
 					</div>
-					{!lpBurnt && !isLpRetrieved && (
+					{!lpBurnt && (
 						<form onSubmit={handleSubmit(onSubmit)} className="flex items-center">
 							<div className="w-full rounded-3xl flex items-center mr-4">
 								<span className="text-xl text-gray-400 pr-4">Lock</span>

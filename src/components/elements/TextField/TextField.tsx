@@ -21,10 +21,8 @@ const TextField = forwardRef(
 						id={id}
 						ref={ref}
 						className={
-							"block w-full rounded-md ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 bg-neutral-800 outline-0 " +
-							(isError
-								? "border border-pink-600"
-								: "border-0 focus:ring-blue-400 focus:ring-2 focus:ring-inset ring-1 ring-inset ring-gray-600")
+							"w-full rounded-xl ps-3 pe-3 py-1.5 shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-xl " +
+							(isError ? "border-x border-pink-500" : "border-l border-gray-400")
 						}
 						{...rest}
 					/>
