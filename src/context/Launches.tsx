@@ -4,7 +4,6 @@ import { useWalletClient } from "wagmi";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import { animate } from "motion";
 import Explore from "@/components/PageModules/Launches/Explore";
 import MyTokens from "@/components/PageModules/Launches/MyTokens";
 import Stealth from "@/components/PageModules/Launches/Stealth";
@@ -16,14 +15,6 @@ function Launches() {
 	const [tab, setTab] = useState("Explore");
 
 	useEffect(() => {
-		animate(
-			"#box",
-			{ rotate: [0, 35, -35, 0] },
-			{
-				duration: 0.5,
-				offset: [0, 0.25, 0.75],
-			}
-		);
 		setIsClient(true);
 	}, []);
 

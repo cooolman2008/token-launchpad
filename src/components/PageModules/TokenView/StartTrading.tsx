@@ -46,7 +46,7 @@ const StartTrading = ({ contractAddress }: { contractAddress: `0x${string}` }) =
 	};
 	return (
 		<>
-			<h2 className="block text-2xl mb-1">Start trading</h2>
+			<h2 className="text-2xl mb-1">Start trading!</h2>
 			<p className="text-sm text-gray-400 mb-4 font-thin">
 				Start trading your tokens by creating a liquidity pool
 				<br />
@@ -105,7 +105,7 @@ const StartTrading = ({ contractAddress }: { contractAddress: `0x${string}` }) =
 									defaultChecked={false}
 									className="focus:outline focus-visible:outline outline-offset-2 outline-2"
 								/>
-								<span className="text-xl text-gray-400 pl-2 pb-0.5">Burn Liquidity</span>
+								<span className="text-xl text-gray-400 pl-2 pb-0.5">Burn liquidity</span>
 							</div>
 						</div>
 						<div className="flex justify-center flex-col">

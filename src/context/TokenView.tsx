@@ -112,13 +112,12 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 											<StartTrading contractAddress={params?.slug} />
 										</div>
 									)}
-									{token?.pair && (
+									{token?.pair && !token?.isLpRetrieved && (token?.isLimited || !token?.isLpBurnt) && (
 										<div className="w-full py-8 border-b border-gray-700">
 											<Changes
 												contractAddress={params?.slug}
 												isLimited={token?.isLimited}
 												isLpBurnt={token?.isLpBurnt}
-												isLpRetrieved={token?.isLpRetrieved}
 											/>
 										</div>
 									)}

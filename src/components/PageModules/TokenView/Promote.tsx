@@ -87,7 +87,7 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 				<b className="font-bold"> Cost</b> for you.
 			</p>
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<div className="w-full py-4 rounded-xl mb-2">
+				<div className="w-full pb-4 rounded-xl mb-2">
 					<div className="w-full flex">
 						<div className="w-full rounded-3xl flex items-center">
 							<span className="text-xl text-gray-400 pr-4">Cost (ETH)</span>
@@ -122,7 +122,11 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 							/>
 						</div>
 						<div className="flex justify-center flex-col">
-							<input type="submit" value={"Promote for " + price} className="safu-button-secondary cursor-pointer" />
+							<input
+								type="submit"
+								value={"Promote for " + price + " ETH"}
+								className="safu-button-secondary cursor-pointer"
+							/>
 						</div>
 					</div>
 				</div>
