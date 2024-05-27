@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		<html lang="en">
 			<body className={plus_Jakarta_Sans.className + " pb-4 overflow-x-hidden"}>
 				<Navigation />
-				<main className="container mx-auto flex min-h-screen flex-col items-center px-24">
+				<main className="container mx-auto flex min-h-screen flex-col items-center px-6 lg:px-24">
 					<Web3Modal>{children}</Web3Modal>
 				</main>
 			</body>

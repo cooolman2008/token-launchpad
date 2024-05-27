@@ -19,7 +19,7 @@ function Navigation() {
 	const handleClickOutside = (event: MouseEvent | TouchEvent) => {
 		const wrapper = wrapperRef.current;
 		if (wrapper instanceof HTMLElement && !wrapper.contains(event.target as Node)) {
-			animate("#menu", { x: [0] }, { easing: spring({ stiffness: 200, damping: 18 }) });
+			animate("#menu", { x: [0] }, { easing: spring({ stiffness: 300, damping: 16, mass: 0.4 }) });
 			document.removeEventListener("mouseup", handleClickOutside);
 			document.removeEventListener("touchend", handleClickOutside);
 		}
@@ -35,7 +35,7 @@ function Navigation() {
 					<div
 						className="menu-button w-10 h-10 rounded-full flex flex-col items-center justify-center ml-auto lg:hidden"
 						onClick={() => {
-							animate("#menu", { x: [-250] }, { easing: spring({ stiffness: 300, damping: 18 }) });
+							animate("#menu", { x: [-320] }, { easing: spring({ stiffness: 300, damping: 16, mass: 0.4 }) });
 							document.addEventListener("mouseup", handleClickOutside);
 							document.addEventListener("touchend", handleClickOutside);
 						}}

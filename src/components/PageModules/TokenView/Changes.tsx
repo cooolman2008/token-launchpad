@@ -90,7 +90,7 @@ const Changes = ({
 				<br />
 				You can<b className="font-bold"> Remove Limits </b>to allow people to buy bigger chunks.
 			</p>
-			<div className="w-full pb-4 rounded-xl mb-2">
+			<div className="w-full pb-4 rounded-xl">
 				<div className="w-full flex justify-between">
 					<div className="flex justify-center">
 						{isLimited && (

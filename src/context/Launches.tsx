@@ -29,7 +29,7 @@ function Launches() {
 						<h2
 							className={
 								"transition-colors duration-200 ease-in text-2xl pr-8 cursor-pointer " +
-								(tab === "Explore" ? "text-pink-600" : "text-gray-400")
+								(tab === "Explore" ? "safu-grad-text-l" : "text-gray-400")
 							}
 							onClick={() => setTab("Explore")}
 						>
