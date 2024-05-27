@@ -53,11 +53,11 @@ const StartTrading = ({ contractAddress }: { contractAddress: `0x${string}` }) =
 				You can either <b className="font-bold">Burn</b> the LP tokens or <b className="font-bold">Lock</b> them for a
 				period of time.
 			</p>
-			<div className="w-full pb-4 rounded-xl mb-2">
+			<div className="w-full pb-4 rounded-xl">
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className="w-full flex justify-between">
 						<div className="flex mr-4 items-center">
-							<span className="text-xl text-gray-400 pr-4">Liquidity in ETH</span>
+							<span className="text-xl text-gray-400 mr-4">Liquidity in ETH</span>
 							<input
 								type="text"
 								id="liq"
@@ -74,7 +74,7 @@ const StartTrading = ({ contractAddress }: { contractAddress: `0x${string}` }) =
 							/>
 						</div>
 						<div className="flex mr-4 items-center">
-							<span className="text-xl text-gray-400 pr-4">Lock days {errors.lockPeriod ? "> 30" : ""}</span>
+							<span className="text-xl text-gray-400 mr-4">Lock days</span>
 							<input
 								type="text"
 								id="days"
@@ -94,18 +94,19 @@ const StartTrading = ({ contractAddress }: { contractAddress: `0x${string}` }) =
 						</div>
 						<div className="flex flex-col mr-4 justify-center">
 							<div className="flex items-center">
-								<input
-									type="checkbox"
-									id="burn"
-									{...register("shouldBurn")}
-									onChange={() => {
-										setShowLock((showLock) => !showLock);
-										setValue("lockPeriod", 0);
-									}}
-									defaultChecked={false}
-									className="focus:outline focus-visible:outline outline-offset-2 outline-2"
-								/>
-								<span className="text-xl text-gray-400 pl-2 pb-0.5">Burn liquidity</span>
+								<span className="text-xl text-gray-400 pb-0.5 mr-4">Burn liquidity</span>
+								<label className="switch">
+									<input
+										type="checkbox"
+										{...register("shouldBurn")}
+										onChange={() => {
+											setShowLock((showLock) => !showLock);
+											setValue("lockPeriod", 0);
+										}}
+										defaultChecked={false}
+									/>
+									<span className="slider round"></span>
+								</label>
 							</div>
 						</div>
 						<div className="flex justify-center flex-col">

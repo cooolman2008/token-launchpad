@@ -13,7 +13,7 @@ function Links() {
 				<span className="hover:text-white">Swap</span>
 			</Link>
 			<Link href={"/launch"} className="self-center safu-soft-button">
-				<span className="safu-grad-text">Launch</span>
+				<span className="">Launch</span>
 			</Link>
 		</>
 	);

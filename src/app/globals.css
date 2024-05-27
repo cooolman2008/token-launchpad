@@ -18,12 +18,9 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
+  background: linear-gradient(to bottom,
       transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
 }
 
 .text-correct {
@@ -40,20 +37,22 @@ body {
 /* Primary button */
 .safu-button-primary {
   @apply px-4 pt-1 select-none rounded-3xl text-white bg-pink-600 hover:bg-pink-500 cursor-pointer text-lg font-medium text-correct focus-visible:bg-pink-500 focus-visible:outline-0 tracking-wide border-gradient;
-    background-image: linear-gradient(transparent, transparent), linear-gradient(90deg, rgba(219, 39, 119, 1) 0%, rgba(50, 130, 246, 1) 100%);
+  background-image: linear-gradient(transparent, transparent), linear-gradient(90deg, rgba(219, 39, 119, 1) 0%, rgba(50, 130, 246, 1) 100%);
 }
 
-.safu-button-primary:hover, .safu-button-primary:focus-visible {
+.safu-button-primary:hover,
+.safu-button-primary:focus-visible {
   box-shadow: rgba(0, 0, 0, 0.7) 1px 1000px 1px inset;
 }
 
 /* Secondary button */
 .safu-button-secondary {
   @apply px-4 pt-1 select-none rounded-3xl text-white bg-blue-500 hover:bg-blue-600 cursor-pointer text-lg font-medium text-correct focus-visible:bg-blue-600 focus-visible:outline-0 tracking-wide border-gradient;
-    background-image: linear-gradient(transparent, transparent), linear-gradient(90deg, rgba(50, 130, 246, 1) 0%, rgba(219, 39, 119, 1) 100%);
+  background-image: linear-gradient(transparent, transparent), linear-gradient(90deg, rgba(50, 130, 246, 1) 0%, rgba(219, 39, 119, 1) 100%);
 }
 
-.safu-button-secondary:hover, .safu-button-secondary:focus-visible {
+.safu-button-secondary:hover,
+.safu-button-secondary:focus-visible {
   box-shadow: rgba(0, 0, 0, 0.7) 1px 1000px 1px inset;
 }
 
@@ -63,7 +62,8 @@ body {
   background-image: linear-gradient(transparent, transparent), linear-gradient(90deg, rgba(219, 39, 119, 1) 0%, rgba(39, 99, 235, 1) 100%);
 }
 
-.safu-soft-button:hover, .safu-soft-button:focus-visible {
+.safu-soft-button:hover,
+.safu-soft-button:focus-visible {
   box-shadow: rgb(0 0 0) 1px 1000px 1px inset, rgba(255, 255, 255, 0.3) 0 0 5px 0;
   background-image: linear-gradient(transparent, transparent), linear-gradient(90deg, rgba(236, 72, 153, 1) 0%, rgba(50, 130, 246, 1) 100%);
 }
@@ -73,38 +73,49 @@ body {
   @apply border-gradient;
   background-image: linear-gradient(transparent, transparent), linear-gradient(45deg, rgba(39, 99, 235, 1) 0%, rgba(219, 39, 119, 1) 100%);
 }
+
 .menu-button div {
   width: 18px;
   height: 1px;
   background-color: #ffffff;
 }
+
 .menu-button div:not(:last-child) {
   margin-bottom: 4px;
 }
 
 .menu {
-  @apply min-w-64 fixed h-screen top-0 left-full bg-neutral-900 p-8;
+  @apply min-w-80 fixed h-screen top-0 left-full bg-neutral-900 p-8 z-10 border-l border-neutral-700;
 }
 
-select {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 0.5rem center;
-  background-repeat: no-repeat;
-  background-size: 1.5em 1.5em;
-  padding-right: 2.5rem;
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
+/* Gradient text */
+.safu-grad-text {
+  background: linear-gradient(135deg, rgb(252, 190, 138) 0%, rgba(219, 39, 119, 1) 50% 65%, rgba(39, 99, 235, 1) 95%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.safu-grad-text-l {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 1) 0%, rgba(50, 130, 246, 1) 70%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.safu-icon {
+  @apply px-3 py-3 rounded-3xl;
+  background-image: linear-gradient(transparent, transparent), linear-gradient(90deg, rgba(219, 39, 119, 1) 0%, rgba(50, 130, 246, 1) 100%);
 }
 
 [type='checkbox']:checked {
   background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
 }
 
-[type='checkbox']:checked, [type='radio']:checked {
+[type='checkbox']:checked,
+[type='radio']:checked {
   @apply border-transparent bg-blue-500 bg-cover bg-center bg-no-repeat;
 }
 
-[type='checkbox'], [type='radio'] {
+[type='checkbox'],
+[type='radio'] {
   @apply appearance-none h-4 w-4 rounded bg-white/5 border border-white/20 cursor-pointer text-blue-500;
 }
 
@@ -131,6 +142,66 @@ input[type='range']::-webkit-slider-thumb {
   background: #db2877;
   border-radius: 50px;
   box-shadow: -80px 0 0 80px #db2877;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  @apply bg-neutral-700;
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-image: linear-gradient(transparent, transparent), linear-gradient(90deg, rgba(219, 39, 119, 1) 0%, rgba(39, 99, 235, 1) 100%);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px rgba(39, 99, 235, 1);
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
 
 /* .safu-soft-button:hover>.safu-grad-text {
