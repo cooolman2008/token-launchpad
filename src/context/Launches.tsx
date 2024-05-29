@@ -38,7 +38,7 @@ function Launches() {
 						<h2
 							className={
 								"transition-colors duration-200 ease-in text-2xl px-8 cursor-pointer " +
-								(tab === "Launches" ? "text-pink-600" : "text-gray-400")
+								(tab === "Launches" ? "safu-grad-text-l" : "text-gray-400")
 							}
 							onClick={() => setTab("Launches")}
 						>
@@ -47,7 +47,7 @@ function Launches() {
 						<h2
 							className={
 								"transition-colors duration-200 ease-in text-2xl px-8 cursor-pointer " +
-								(tab === "Stealth" ? "text-pink-600" : "text-gray-400")
+								(tab === "Stealth" ? "safu-grad-text-l" : "text-gray-400")
 							}
 							onClick={() => setTab("Stealth")}
 						>

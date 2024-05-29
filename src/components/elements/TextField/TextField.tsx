@@ -18,7 +18,7 @@ const TextField = forwardRef(
 	) => {
 		return (
 			<>
-				<div className="w-full md:w-1/2 flex lg:pr-4 items-center flex-wrap mb-8">
+				<div className="w-full md:w-1/2 2xl:w-1/3 flex md:pr-4 2xl:pr-12 items-center flex-wrap mb-4">
 					<label htmlFor={id} className={"text-xl text-gray-400 pr-4 " + labelWidth}>
 						{label}
 					</label>
@@ -27,7 +27,7 @@ const TextField = forwardRef(
 							id={id}
 							ref={ref}
 							className={
-								"block w-full rounded-xl ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 xl:leading-6 bg-neutral-900 outline-0 xl:text-2xl " +
+								"block w-full rounded-xl ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 bg-neutral-900 outline-0 2xl:text-sm " +
 								(isError ? "border-x border-pink-500" : "border-l border-gray-400")
 							}
 							{...rest}
