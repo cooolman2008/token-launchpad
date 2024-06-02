@@ -101,7 +101,7 @@ body {
   -webkit-text-fill-color: transparent;
 }
 .safu-icon {
-  @apply px-3 py-3 rounded-3xl;
+  @apply px-6 py-3 rounded-3xl;
   background-image: linear-gradient(transparent, transparent), linear-gradient(90deg, rgba(219, 39, 119, 1) 0%, rgba(50, 130, 246, 1) 100%);
 }
 
@@ -203,15 +203,3 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
-
-/* .safu-soft-button:hover>.safu-grad-text {
-  background: linear-gradient(90deg, rgba(236, 72, 153, 1) 0%, rgba(50, 130, 246, 1) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.safu-grad-text {
-  background: linear-gradient(90deg, rgba(219, 39, 119, 1) 0%, rgba(39, 99, 235, 1) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-} */

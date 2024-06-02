@@ -2,7 +2,7 @@ import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { animate, spring } from "motion";
 import { useEffect } from "react";
 
-import TextField from "@/components/elements/TextField/TextField";
+import TextField from "@/components/elements/TextField";
 import { LaunchForm } from "@/context/Launch";
 
 const Team = ({ register, errors }: { register: UseFormRegister<LaunchForm>; errors: FieldErrors<LaunchForm> }) => {
@@ -56,7 +56,7 @@ const Team = ({ register, errors }: { register: UseFormRegister<LaunchForm>; err
 						labelWidth="grow"
 					/>
 					<TextField
-						label="Wallet 1 share"
+						label="Share"
 						id="team1p"
 						placeholder="0"
 						{...register("team1p", {
@@ -70,7 +70,7 @@ const Team = ({ register, errors }: { register: UseFormRegister<LaunchForm>; err
 						labelWidth="grow"
 					/>
 				</div>
-				<div className="w-full flex justify-center">
+				<div className="w-full 2xl:w-2/3 md:pr-4 2xl:pr-12 flex justify-center">
 					<button className="safu-icon">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
