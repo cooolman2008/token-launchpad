@@ -2,7 +2,7 @@ import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { animate, spring } from "motion";
 import { useEffect } from "react";
 
-import TextField from "@/components/elements/TextField/TextField";
+import TextField from "@/components/elements/TextField";
 import { LaunchForm } from "@/context/Launch";
 
 const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>; errors: FieldErrors<LaunchForm> }) => {

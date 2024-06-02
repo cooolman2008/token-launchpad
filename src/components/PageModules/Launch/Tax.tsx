@@ -3,7 +3,7 @@ import { animate, spring } from "motion";
 import { useEffect, useState } from "react";
 import Select from "react-select";
 
-import TextField from "@/components/elements/TextField/TextField";
+import TextField from "@/components/elements/TextField";
 import { LaunchForm } from "@/context/Launch";
 
 const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; errors: FieldErrors<LaunchForm> }) => {
@@ -14,11 +14,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 		{ value: "interval", label: "Interval" },
 	];
 	useEffect(() => {
-		animate(
-			"#tax",
-			{ maxHeight: "600px", overflow: "none" },
-			{ easing: spring({ stiffness: 300, damping: 16, mass: 0.4 }), delay: 0.1 }
-		);
+		animate("#tax", { maxHeight: "600px" }, { easing: spring({ stiffness: 300, damping: 16, mass: 0.4 }), delay: 0.1 });
 		setTimeout(() => {
 			setIsLoaded(true);
 		}, 200);
@@ -95,14 +91,14 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 				<div className="w-full flex flex-wrap">
 					<div className="w-full md:w-1/2 2xl:w-1/3 flex md:pr-4 2xl:pr-12 items-center flex-wrap mb-4">
 						<label htmlFor="" className="text-xl text-gray-400 pr-4 grow">
-							Tax drop style
+							Tax drop
 						</label>
 						<Select
 							unstyled={true}
 							defaultValue={taxOptions[0]}
 							classNames={{
-								control: (state) => "bg-neutral-800 p-2 rounded-xl border-l border-gray-400",
-								menuList: (state) => "bg-neutral-800 mt-1 rounded-xl cursor-pointer",
+								control: (state) => "bg-neutral-900 p-2 rounded-xl border-l border-gray-600 2xl:text-sm",
+								menuList: (state) => "bg-neutral-900 mt-1 rounded-xl 2xl:text-sm",
 								option: (state) => " flex flex-col justify-center px-4 py-2 cursor-pointer",
 							}}
 							options={taxOptions}
@@ -125,7 +121,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 						labelWidth="grow"
 					/>
 					<TextField
-						label="Count Interval"
+						label="Buy count"
 						id="countinterval"
 						defaultValue="60"
 						placeholder="60"
@@ -141,7 +137,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 					/>
 				</div>
 				<TextField
-					label="Liquidity Pool tax"
+					label="Buy back tax"
 					id="lptax"
 					defaultValue="0"
 					placeholder="0"
