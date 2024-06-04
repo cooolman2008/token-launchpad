@@ -3,7 +3,7 @@ import { animate, spring } from "motion";
 import { useEffect } from "react";
 
 import TextField from "@/components/elements/TextField";
-import { LaunchForm } from "@/context/Launch";
+import { LaunchForm } from "@/utils/launchHelper";
 
 const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>; errors: FieldErrors<LaunchForm> }) => {
 	useEffect(() => {
