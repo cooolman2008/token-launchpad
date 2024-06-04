@@ -1,9 +1,6 @@
 {
-    "SAFU":
+  "templates": [
     {
-			"stakingFacet": "0x2f321ed425c82E74925488139e1556f9B76a2551",
-			"isFreeTier": true,
-			"minLiq": 0,
 			"supply": 1000000,
 			"initTaxType": 0,
 			"initInterval": 0,
@@ -13,21 +10,15 @@
 			"maxSellTax": 40,
 			"minSellTax": 5,
 			"lpTax": 0,
-			"maxWallet": 1,
+			"maxWallet": 2,
 			"maxTx": 1,
 			"preventSwap": 10,
 			"maxSwap": 10000,
 			"taxSwapThreshold": 1000,
-			"cliffPeriod": 30,
-			"vestingPeriod": 30,
 			"name": "SAFU",
 			"symbol": "SAFU"
 		},
-    "USDC":
     {
-			"stakingFacet": "0x2f321ed425c82E74925488139e1556f9B76a2551",
-			"isFreeTier": true,
-			"minLiq": 0,
 			"supply": 1000000,
 			"initTaxType": 0,
 			"initInterval": 0,
@@ -42,16 +33,28 @@
 			"preventSwap": 10,
 			"maxSwap": 10000,
 			"taxSwapThreshold": 1000,
-			"cliffPeriod": 30,
-			"vestingPeriod": 30,
+			"name": "Etherium",
+			"symbol": "ETH"
+		},
+    {
+			"supply": 1000000,
+			"initTaxType": 0,
+			"initInterval": 0,
+			"countInterval": 0,
+			"maxBuyTax": 40,
+			"minBuyTax": 5,
+			"maxSellTax": 40,
+			"minSellTax": 5,
+			"lpTax": 0,
+			"maxWallet": 1,
+			"maxTx": 1,
+			"preventSwap": 10,
+			"maxSwap": 10000,
+			"taxSwapThreshold": 1000,
 			"name": "USD Coin",
 			"symbol": "USDC"
 		},
-    "WBTC":
     {
-			"stakingFacet": "0x2f321ed425c82E74925488139e1556f9B76a2551",
-			"isFreeTier": true,
-			"minLiq": 0,
 			"supply": 1000000,
 			"initTaxType": 0,
 			"initInterval": 0,
@@ -66,16 +69,10 @@
 			"preventSwap": 10,
 			"maxSwap": 10000,
 			"taxSwapThreshold": 1000,
-			"cliffPeriod": 30,
-			"vestingPeriod": 30,
 			"name": "Wrapped BTC",
 			"symbol": "WBTC"
 		},
-    "USDT":
     {
-			"stakingFacet": "0x2f321ed425c82E74925488139e1556f9B76a2551",
-			"isFreeTier": true,
-			"minLiq": 0,
 			"supply": 1000000,
 			"initTaxType": 0,
 			"initInterval": 0,
@@ -90,16 +87,10 @@
 			"preventSwap": 10,
 			"maxSwap": 10000,
 			"taxSwapThreshold": 1000,
-			"cliffPeriod": 30,
-			"vestingPeriod": 30,
 			"name": "Tether USD",
 			"symbol": "USDT"
 		},
-    "MAGA":
     {
-			"stakingFacet": "0x2f321ed425c82E74925488139e1556f9B76a2551",
-			"isFreeTier": true,
-			"minLiq": 0,
 			"supply": 1000000,
 			"initTaxType": 0,
 			"initInterval": 0,
@@ -114,16 +105,10 @@
 			"preventSwap": 10,
 			"maxSwap": 10000,
 			"taxSwapThreshold": 1000,
-			"cliffPeriod": 30,
-			"vestingPeriod": 30,
 			"name": "MAGA",
 			"symbol": "MAGA"
 		},
-    "MOG":
     {
-			"stakingFacet": "0x2f321ed425c82E74925488139e1556f9B76a2551",
-			"isFreeTier": true,
-			"minLiq": 0,
 			"supply": 1000000,
 			"initTaxType": 0,
 			"initInterval": 0,
@@ -138,9 +123,54 @@
 			"preventSwap": 10,
 			"maxSwap": 10000,
 			"taxSwapThreshold": 1000,
-			"cliffPeriod": 30,
-			"vestingPeriod": 30,
 			"name": "Mog Coin",
 			"symbol": "MOG"
 		},
+    {
+			"supply": 1000000,
+			"initTaxType": 0,
+			"initInterval": 0,
+			"countInterval": 0,
+			"maxBuyTax": 40,
+			"minBuyTax": 5,
+			"maxSellTax": 40,
+			"minSellTax": 5,
+			"lpTax": 0,
+			"maxWallet": 1,
+			"maxTx": 1,
+			"preventSwap": 10,
+			"maxSwap": 10000,
+			"taxSwapThreshold": 1000,
+			"name": "Dai Stablecoin",
+			"symbol": "DAI"
+		},
+    {
+			"supply": 1000000,
+			"initTaxType": 0,
+			"initInterval": 0,
+			"countInterval": 0,
+			"maxBuyTax": 40,
+			"minBuyTax": 5,
+			"maxSellTax": 40,
+			"minSellTax": 5,
+			"lpTax": 0,
+			"maxWallet": 1,
+			"maxTx": 1,
+			"preventSwap": 10,
+			"maxSwap": 10000,
+			"taxSwapThreshold": 1000,
+			"name": "Pepe",
+			"symbol": "PEPE"
+		}],
+    "options": [
+      { "value": "SAFU", "label": "SAFU" },
+      { "value": "ETH", "label": "Ethereum" },
+      { "value": "USDC", "label": "USD Coin" },
+      { "value": "WBTC", "label": "Wrapped BTC" },
+      { "value": "USDT", "label": "Tether USD" },
+      { "value": "MAGA", "label": "MAGA" },
+      { "value": "MOG", "label": "Mog Coin" },
+      { "value": "DAI", "label": "Dai Stablecoin" },
+      { "value": "PEPE", "label": "Pepe" }
+    ]
 }

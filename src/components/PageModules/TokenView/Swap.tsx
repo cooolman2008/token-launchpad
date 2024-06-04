@@ -11,7 +11,7 @@ import tokenAbi from "../../../../newtokenabi.json";
 import routerAbi from "../../../../routerabi.json";
 
 // internal utils
-import { createPair, getExchangeRate, getMinAmountOut, getReserves } from "@/utils/swapTokens";
+import { createPair, getExchangeRate, getMinAmountOut, getReserves } from "@/utils/swapHelper";
 
 const WETH_ADDRESS = process.env.WETH_ADDRESS;
 const UNISWAP_ROUTER_ADDRESS = process.env.UNISWAP_ROUTER_ADDRESS;

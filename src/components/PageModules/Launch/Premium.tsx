@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 
 import TextField from "@/components/elements/TextField";
-import { LaunchForm } from "@/context/Launch";
+import { LaunchForm } from "@/utils/launchHelper";
 
 const Premium = ({ register, errors }: { register: UseFormRegister<LaunchForm>; errors: FieldErrors<LaunchForm> }) => {
 	const [isLoaded, setIsLoaded] = useState(false);

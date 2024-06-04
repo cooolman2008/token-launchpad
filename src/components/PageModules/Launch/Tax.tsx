@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 
 import TextField from "@/components/elements/TextField";
-import { LaunchForm } from "@/context/Launch";
+import { LaunchForm } from "@/utils/launchHelper";
 
 const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; errors: FieldErrors<LaunchForm> }) => {
 	const [isLoaded, setIsLoaded] = useState(false);
@@ -27,13 +27,13 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 					id="maxbtax"
 					defaultValue="40.44"
 					placeholder="40"
-					{...register("maxbtax", {
+					{...register("maxBuyTax", {
 						required: true,
 						max: 40,
 						min: 0,
 					})}
 					isPercent={true}
-					isError={errors.maxbtax ? true : false}
+					isError={errors.maxBuyTax ? true : false}
 					error="Tax can only be between 0 to 40."
 					width="w-24"
 					labelWidth="grow"
@@ -43,13 +43,13 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 					id="maxstax"
 					defaultValue="40"
 					placeholder="40"
-					{...register("maxstax", {
+					{...register("maxSellTax", {
 						required: true,
 						max: 40,
 						min: 0,
 					})}
 					isPercent={true}
-					isError={errors.maxstax ? true : false}
+					isError={errors.maxSellTax ? true : false}
 					error="Tax can only be between 0 to 40."
 					width="w-24"
 					labelWidth="grow"
@@ -60,13 +60,13 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 						id="minbtax"
 						defaultValue="0"
 						placeholder="0"
-						{...register("minbtax", {
+						{...register("minBuyTax", {
 							required: true,
 							max: 40,
 							min: 0,
 						})}
 						isPercent={true}
-						isError={errors.minbtax ? true : false}
+						isError={errors.minBuyTax ? true : false}
 						error="Tax can only be between 0 to 40."
 						width="w-24"
 						labelWidth="grow"
@@ -76,13 +76,13 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 						id="minstax"
 						defaultValue="0"
 						placeholder="0"
-						{...register("minstax", {
+						{...register("minSellTax", {
 							required: true,
 							max: 40,
 							min: 0,
 						})}
 						isPercent={true}
-						isError={errors.minstax ? true : false}
+						isError={errors.minSellTax ? true : false}
 						error="Tax can only be between 0 to 40."
 						width="w-24"
 						labelWidth="grow"
@@ -110,12 +110,12 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 						id="initinterval"
 						defaultValue="60"
 						placeholder="60"
-						{...register("initinterval", {
+						{...register("initInterval", {
 							required: true,
 							max: 60,
 							min: 0,
 						})}
-						isError={errors.initinterval ? true : false}
+						isError={errors.initInterval ? true : false}
 						error="Interval should be between 0-60."
 						width="w-24"
 						labelWidth="grow"
@@ -125,12 +125,12 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 						id="countinterval"
 						defaultValue="60"
 						placeholder="60"
-						{...register("countinterval", {
+						{...register("countInterval", {
 							required: true,
 							max: 60,
 							min: 0,
 						})}
-						isError={errors.countinterval ? true : false}
+						isError={errors.countInterval ? true : false}
 						error="Interval should be between 0-60."
 						width="w-24"
 						labelWidth="grow"
@@ -141,13 +141,13 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 					id="lptax"
 					defaultValue="0"
 					placeholder="0"
-					{...register("lptax", {
+					{...register("lpTax", {
 						required: true,
 						max: 20,
 						min: 0,
 					})}
 					isPercent={true}
-					isError={errors.lptax ? true : false}
+					isError={errors.lpTax ? true : false}
 					error="Tax can only be between 0 to 20."
 					width="w-24"
 					labelWidth="grow"
