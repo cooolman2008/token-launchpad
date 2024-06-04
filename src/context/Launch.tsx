@@ -19,6 +19,7 @@ import Loading from "@/components/elements/Loading";
 
 import ManagerAbi from "../../managerabi.json";
 import templateOptions from "../static/templates.json";
+import Error from "@/components/elements/Error";
 
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 
@@ -33,12 +34,12 @@ function Launch() {
 	const [advanced, setAdvanced] = useState(false);
 	const [premium, setPremium] = useState(false);
 	const [template, setTemplate] = useState(templateOptions.templates[0]);
+	const [error, setError] = useState("");
 
 	// contract call for token launch.
 	const {
 		data: response,
 		write,
-		error,
 		isLoading,
 	} = useContractWrite({
 		address: CONTRACT_ADDRESS,
@@ -48,16 +49,13 @@ function Launch() {
 			console.log(res);
 		},
 		onError(error) {
+			setError("Launch failed with an unknown reason!");
 			console.log(error);
 		},
 	});
 
 	// get the transaction details by waiting for the transaction.
-	const {
-		data: transaction,
-		isError,
-		isLoading: retrieval,
-	} = useWaitForTransaction({
+	const { data: transaction, isLoading: retrieval } = useWaitForTransaction({
 		hash: response?.hash,
 		onSuccess(res) {
 			console.log(res);
@@ -99,13 +97,13 @@ function Launch() {
 	}, [setValue]);
 
 	// Error messages in case of redirection failure & display instructions to manually check the token from launches.
-	// Error messages in case of contract call failure.
 
 	return (
 		<>
 			{isClient && walletClient && (
 				<>
 					{(isLoading || retrieval) && <Loading />}
+					{error && <Error error={error} des="This might be a temporary issue, try again in sometime" />}
 					<form onSubmit={handleSubmit(onSubmit)} className="w-full">
 						<h2 className="block text-4xl lg:text-5xl font-thin safu-grad-text text-center uppercase py-8 lg:py-24">
 							Launch your token in 60 seconds
