@@ -81,6 +81,7 @@ export const getArgs = ( address: `0x${string}`, formData: LaunchForm, template:
     owner: address,
     taxWallet: formData.taxWallet,
     stakingFacet: CONTRACT_ADDRESS,
+    v2router: CONTRACT_ADDRESS,
     isFreeTier: true,
     minLiq: 0,
     supply: BigInt( formData.supply ),

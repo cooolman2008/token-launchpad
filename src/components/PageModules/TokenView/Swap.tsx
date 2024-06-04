@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { animate, spring } from "motion";
 import { Token } from "@uniswap/sdk-core";
 import { Pair } from "@uniswap/v2-sdk";
-import { parseEther, formatEther } from "viem";
+import { parseEther } from "viem";
 
 // token & router abis
 import tokenAbi from "../../../../newtokenabi.json";
