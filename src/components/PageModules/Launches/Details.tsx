@@ -1,10 +1,13 @@
+import { useWeb3ModalState } from "@web3modal/wagmi/react";
 import { useEffect, useState, memo } from "react";
 import { fetchSafu } from "@/api/getSafu";
 import { getAbr } from "@/utils/math";
-
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+import { getContractAddress } from "@/utils/utils";
 
 const Details = memo(() => {
+	const { selectedNetworkId: chainId } = useWeb3ModalState();
+	const CONTRACT_ADDRESS = getContractAddress(Number(chainId));
+
 	const [safuTVL, setSafuTVL] = useState(0);
 	const [safuVolume, setSafuVolume] = useState(0);
 	const [safuLaunches, setSafuLaunches] = useState(0);

@@ -2,6 +2,7 @@ import { useContractWrite, useWalletClient } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { parseEther } from "viem";
 
+import TextField from "@/components/elements/TextField";
 import Tokenabi from "../../../../newtokenabi.json";
 import { useState } from "react";
 
@@ -45,53 +46,48 @@ const StartTrading = ({ contractAddress }: { contractAddress: `0x${string}` }) =
 		});
 	};
 	return (
-		<>
+		<div className="w-full py-8 border-b border-gray-700">
 			<h2 className="text-2xl mb-1">Start trading!</h2>
-			<p className="text-sm text-gray-400 mb-4 font-thin">
-				Start trading your tokens by creating a liquidity pool
+			<p className="text-sm text-gray-500 mb-4">
+				Start trading your tokens by creating a <b className="font-bold text-gray-400">liquidity pool</b>
 				<br />
-				You can either <b className="font-bold">Burn</b> the LP tokens or <b className="font-bold">Lock</b> them for a
-				period of time.
+				You can either <b className="font-bold text-gray-400">Burn</b> the LP tokens or{" "}
+				<b className="font-bold text-gray-400">Lock</b> them for a period of time.
 			</p>
 			<div className="w-full pb-4 rounded-xl">
 				<form onSubmit={handleSubmit(onSubmit)}>
-					<div className="w-full flex justify-between">
-						<div className="flex mr-4 items-center">
-							<span className="text-xl text-gray-400 mr-4">Liquidity in ETH</span>
-							<input
-								type="text"
-								id="liq"
-								defaultValue="0"
-								placeholder="0"
-								className={
-									"block w-20 rounded-xl ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-2xl " +
-									(errors.liq ? "border-x border-pink-500" : "border-l border-gray-400")
-								}
-								{...register("liq", {
-									required: true,
-									min: 1,
-								})}
-							/>
-						</div>
-						<div className="flex mr-4 items-center">
-							<span className="text-xl text-gray-400 mr-4">Lock days</span>
-							<input
-								type="text"
-								id="days"
-								{...register("lockPeriod", {
-									required: showLock,
-									min: !showLock ? 0 : 30,
-								})}
-								disabled={!showLock}
-								placeholder="0"
-								className={
-									"block w-20 rounded-xl ps-3 pe-3 py-1.5 shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-2xl " +
-									(showLock
-										? "text-white " + (errors.lockPeriod ? "border-x border-pink-500" : "border-l border-gray-400")
-										: "text-gray-400")
-								}
-							/>
-						</div>
+					<div className="w-full flex justify-between flex-wrap">
+						<TextField
+							label="Liquidity in ETH"
+							id="liq"
+							defaultValue="0"
+							placeholder="0"
+							{...register("liq", {
+								required: true,
+								min: 1,
+							})}
+							isError={errors.liq ? true : false}
+							error="Please enter minimum liquidity"
+							width="w-20"
+							labelWidth="grow lg:grow-0"
+							margin="mb-4 2xl:mb-0"
+						/>
+						<TextField
+							label="Lock days"
+							id="days"
+							{...register("lockPeriod", {
+								required: showLock,
+								min: !showLock ? 0 : 30,
+							})}
+							defaultValue={30}
+							disabled={!showLock}
+							placeholder="0"
+							isError={errors.lockPeriod ? true : false}
+							error="Minimum 30 days required"
+							width="w-20"
+							labelWidth="grow lg:grow-0"
+							margin="mb-4 2xl:mb-0"
+						/>
 						<div className="flex flex-col mr-4 justify-center">
 							<div className="flex items-center">
 								<span className="text-xl text-gray-400 pb-0.5 mr-4">Burn liquidity</span>
@@ -115,7 +111,7 @@ const StartTrading = ({ contractAddress }: { contractAddress: `0x${string}` }) =
 					</div>
 				</form>
 			</div>
-		</>
+		</div>
 	);
 };
 

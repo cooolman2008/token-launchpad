@@ -23,7 +23,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 		<>
 			<div id="tax" className={"flex flex-wrap max-h-0" + (!isLoaded && " overflow-hidden")}>
 				<TextField
-					label="Maximum buy tax"
+					label="Initial buy tax"
 					id="maxbtax"
 					defaultValue="40.44"
 					placeholder="40"
@@ -39,7 +39,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 					labelWidth="grow"
 				/>
 				<TextField
-					label="Max sell tax"
+					label="Initial sell tax"
 					id="maxstax"
 					defaultValue="40"
 					placeholder="40"

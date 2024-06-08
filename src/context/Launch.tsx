@@ -1,36 +1,38 @@
 "use client";
 
 import { useAccount, useContractWrite, useWalletClient, useWaitForTransaction } from "wagmi";
-import { useEffect, useState } from "react";
+import { useWeb3ModalState } from "@web3modal/wagmi/react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Select from "react-select";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Select from "react-select";
 import { animate } from "motion";
 
-import Tax from "@/components/PageModules/Launch/Tax";
-import Team from "@/components/PageModules/Launch/Team";
-import Advanced from "@/components/PageModules/Launch/Advanced";
-import InformationTip from "@/components/elements/InformationTip";
-import Premium from "@/components/PageModules/Launch/Premium";
 import { LaunchForm, getArgs, updateFields } from "@/utils/launchHelper";
-import Switch from "@/components/elements/Switch";
-import Basic from "@/components/PageModules/Launch/Basic";
+import { getContractAddress } from "@/utils/utils";
+
 import Loading from "@/components/elements/Loading";
+import Switch from "@/components/elements/Switch";
+import Modal from "@/components/elements/Modal";
+
+import Advanced from "@/components/PageModules/Launch/Advanced";
+import Premium from "@/components/PageModules/Launch/Premium";
+import Basic from "@/components/PageModules/Launch/Basic";
+import Tax from "@/components/PageModules/Launch/Tax";
 
 import ManagerAbi from "../../managerabi.json";
 import templateOptions from "../static/templates.json";
-import Error from "@/components/elements/Error";
-
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 
 function Launch() {
 	const { data: walletClient } = useWalletClient();
 	const { address } = useAccount();
 	const router = useRouter();
 
+	const { selectedNetworkId: chainId } = useWeb3ModalState();
+	const CONTRACT_ADDRESS = getContractAddress(Number(chainId));
+
 	const [isClient, setIsClient] = useState(false);
 	const [tax, setTax] = useState(false);
-	const [team, setTeam] = useState(false);
 	const [advanced, setAdvanced] = useState(false);
 	const [premium, setPremium] = useState(false);
 	const [template, setTemplate] = useState(templateOptions.templates[0]);
@@ -85,7 +87,7 @@ function Launch() {
 	} = useForm<LaunchForm>();
 	const onSubmit: SubmitHandler<LaunchForm> = (formData) => {
 		if (address) {
-			const args = getArgs(address, formData, template);
+			const args = getArgs(address, CONTRACT_ADDRESS, formData, template);
 			console.log(args);
 			write({ args: [args] });
 		}
@@ -102,14 +104,14 @@ function Launch() {
 		<>
 			{isClient && walletClient && (
 				<>
-					{(isLoading || retrieval) && <Loading />}
-					{error && <Error error={error} des="This might be a temporary issue, try again in sometime" />}
+					{(isLoading || retrieval) && <Loading msg="Launching..." />}
+					{error && <Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} />}
 					<form onSubmit={handleSubmit(onSubmit)} className="w-full">
 						<h2 className="block text-4xl lg:text-5xl font-thin safu-grad-text text-center uppercase py-8 lg:py-24">
 							Launch your token in 60 seconds
 						</h2>
 						<div className="border-b border-gray-700 py-8">
-							<h3 className="text-2xl mb-4">Pick a template</h3>
+							<h3 className="text-2xl mb-4">Choose a template</h3>
 							<div className="w-80 lg:w-80">
 								<Select
 									unstyled={true}
@@ -133,8 +135,8 @@ function Launch() {
 						<div className="border-b border-gray-700 py-8">
 							<h3 className="text-2xl mb-1">Customise token</h3>
 							<p className="text-sm text-gray-500 mb-4">
-								You can also give a <b className="font-bold text-gray-400"> splitter contract</b> address for tax wallet
-								to split your tax.
+								Enter wallet address or <b className="font-bold text-gray-400"> splitter contract </b> address as your
+								tax wallet.
 							</p>
 							<Basic register={register} errors={errors} />
 						</div>
@@ -153,36 +155,12 @@ function Launch() {
 									}}
 									checked={tax}
 								/>
-								<h3 className="text-2xl mb-1">Modify taxations</h3>
-								<InformationTip />
+								<h3 className="text-2xl mb-1">Modify Tokenomics</h3>
 							</div>
 							<p className="text-sm text-gray-500 mb-4">
-								Set your <b className="font-bold text-gray-400">tax</b> expectations in this section.
+								Define your <b className="font-bold text-gray-400">tokenomics</b>.
 							</p>
 							{tax && <Tax register={register} errors={errors} />}
-						</div>
-						<div className="border-b border-gray-700 py-8">
-							<div className="flex mb-1">
-								<Switch
-									onChange={() => {
-										if (team) {
-											animate("#team", { maxHeight: 0 }, { easing: "ease-in-out" });
-											setTimeout(() => {
-												setTeam(!team);
-											}, 200);
-										} else {
-											setTeam(!team);
-										}
-									}}
-									checked={team}
-								/>
-								<h3 className="text-2xl mb-1">I have a team</h3>
-								<InformationTip />
-							</div>
-							<p className="text-sm text-gray-500 mb-4">
-								Add your <b className="font-bold text-gray-400">team</b> information.
-							</p>
-							{team && <Team register={register} errors={errors} />}
 						</div>
 						<div className="border-b border-gray-700 py-8">
 							<div className="flex mb-1">
@@ -200,7 +178,6 @@ function Launch() {
 									checked={advanced}
 								/>
 								<h3 className="text-2xl mb-1">I know this</h3>
-								<InformationTip />
 							</div>
 							<p className="text-sm text-gray-500 mb-4">
 								You can configure <b className="font-bold text-gray-400">advanced settings</b> if you know what you are
@@ -226,7 +203,7 @@ function Launch() {
 								<h3 className="text-2xl mb-1">Go premium</h3>
 							</div>
 							<p className="text-sm text-gray-500 mb-4">
-								You can go premium, <b className="font-bold text-gray-400">pay once</b> & be done.
+								Pay once and access <b className="font-bold text-gray-400">premium features</b>.
 							</p>
 							{premium && <Premium register={register} errors={errors} />}
 						</div>

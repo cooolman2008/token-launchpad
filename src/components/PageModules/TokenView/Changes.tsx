@@ -2,22 +2,14 @@ import { useContractWrite, useWalletClient } from "wagmi";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-import Tokenabi from "../../../../newtokenabi.json";
+import TextField from "@/components/elements/TextField";
 import Ownerabi from "../../../../ownerabi.json";
 
 interface LockForm {
 	ldays: number;
 }
 
-const Changes = ({
-	contractAddress,
-	isLimited,
-	isLpBurnt,
-}: {
-	contractAddress: `0x${string}`;
-	isLimited: boolean;
-	isLpBurnt: boolean;
-}) => {
+const Changes = ({ contractAddress, isLpBurnt }: { contractAddress: `0x${string}`; isLpBurnt: boolean }) => {
 	const { data: walletClient } = useWalletClient();
 	const [lpBurnt, setLpBurnt] = useState(isLpBurnt);
 
@@ -32,21 +24,6 @@ const Changes = ({
 		functionName: "extendLock",
 		account: walletClient?.account,
 		onSuccess(res) {
-			console.log(res);
-		},
-		onError(error) {
-			console.log(error);
-		},
-	});
-
-	// contract call to remove Limits of the launched token.
-	const { isSuccess: removed, write: remove } = useContractWrite({
-		address: contractAddress,
-		abi: Tokenabi.abi,
-		functionName: "removeLimits",
-		account: walletClient?.account,
-		onSuccess(res) {
-			isLimited = false;
 			console.log(res);
 		},
 		onError(error) {
@@ -82,29 +59,18 @@ const Changes = ({
 		});
 	};
 	return (
-		<>
+		<div className="w-full py-8 border-b border-gray-700">
 			<h2 className="text-2xl mb-1">Changes to your token!</h2>
-			<p className="text-sm text-gray-400 mb-4 font-thin">
-				You can either<b className="font-bold"> Burn LP </b>tokens or<b className="font-bold"> Extend </b>the lock
-				period.
-				<br />
-				You can<b className="font-bold"> Remove Limits </b>to allow people to buy bigger chunks.
+			<p className="text-sm text-gray-500 mb-4">
+				You can either<b className="font-bold text-gray-400"> Burn LP </b>tokens or
+				<b className="font-bold text-gray-400"> Extend </b>the lock period.
 			</p>
-			<div className="w-full pb-4 rounded-xl">
-				<div className="w-full flex justify-between">
-					<div className="flex justify-center">
-						{isLimited && (
+			<div className="w-full flex pb-4 rounded-xl justify-between flex-wrap">
+				{!lpBurnt && (
+					<>
+						<div className="flex flex-col justify-center">
 							<button
-								onClick={() => {
-									remove();
-								}}
-								className="safu-button-secondary mr-4"
-							>
-								Remove limits
-							</button>
-						)}
-						{!lpBurnt && (
-							<button
+								type="button"
 								onClick={() => {
 									burn();
 								}}
@@ -112,35 +78,32 @@ const Changes = ({
 							>
 								Burn LP tokens
 							</button>
-						)}
-					</div>
-					{!lpBurnt && (
-						<form onSubmit={handleSubmit(onSubmit)} className="flex items-center">
-							<div className="w-full rounded-3xl flex items-center mr-4">
-								<span className="text-xl text-gray-400 pr-4">Lock</span>
-								<input
-									type="text"
-									id="lock"
-									{...register("ldays", {
-										required: true,
-										min: 30,
-									})}
-									placeholder="30"
-									defaultValue="30"
-									className={
-										"block w-20 rounded-xl ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-2xl " +
-										(errors.ldays ? "border-x border-pink-500" : "border-l border-gray-400")
-									}
-								/>
-							</div>
+						</div>
+						<form onSubmit={handleSubmit(onSubmit)} className="w-full md:w-auto flex justify-between">
+							<TextField
+								label="Lock"
+								id="lock"
+								{...register("ldays", {
+									required: true,
+									min: 30,
+								})}
+								placeholder="30"
+								defaultValue="30"
+								isError={errors.ldays ? true : false}
+								error="Minimum 30 days required"
+								width="w-20"
+								labelWidth="grow lg:grow-0"
+								containerWidth="w-full md:w-auto"
+								margin="mr-2 md:mr-0"
+							/>
 							<div className="flex justify-center flex-col">
 								<input type="submit" value="Extend" className="safu-button-secondary cursor-pointer" />
 							</div>
 						</form>
-					)}
-				</div>
+					</>
+				)}
 			</div>
-		</>
+		</div>
 	);
 };
 

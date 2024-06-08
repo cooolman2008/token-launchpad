@@ -211,66 +211,6 @@
 				"type":"uint256"
 			  },
 			  {
-				"internalType":"uint256",
-				"name":"cliffPeriod",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"vestingPeriod",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team1p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team2p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team3p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team4p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team5p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team1",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team2",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team3",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team4",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team5",
-				"type":"address"
-			  },
-			  {
 				"internalType":"string",
 				"name":"name",
 				"type":"string"
@@ -396,66 +336,6 @@
 				"internalType":"uint256",
 				"name":"taxSwapThreshold",
 				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"cliffPeriod",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"vestingPeriod",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team1p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team2p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team3p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team4p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team5p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team1",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team2",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team3",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team4",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team5",
-				"type":"address"
 			  },
 			  {
 				"internalType":"string",
@@ -585,66 +465,6 @@
 				"type":"uint256"
 			  },
 			  {
-				"internalType":"uint256",
-				"name":"cliffPeriod",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"vestingPeriod",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team1p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team2p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team3p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team4p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team5p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team1",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team2",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team3",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team4",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team5",
-				"type":"address"
-			  },
-			  {
 				"internalType":"string",
 				"name":"name",
 				"type":"string"
@@ -770,66 +590,6 @@
 				"internalType":"uint256",
 				"name":"taxSwapThreshold",
 				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"cliffPeriod",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"vestingPeriod",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team1p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team2p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team3p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team4p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"uint256",
-				"name":"team5p",
-				"type":"uint256"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team1",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team2",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team3",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team4",
-				"type":"address"
-			  },
-			  {
-				"internalType":"address",
-				"name":"team5",
-				"type":"address"
 			  },
 			  {
 				"internalType":"string",

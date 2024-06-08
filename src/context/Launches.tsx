@@ -14,6 +14,8 @@ function Launches() {
 	const [isClient, setIsClient] = useState(false);
 	const [tab, setTab] = useState("Explore");
 
+	// Get all data here & once only.
+
 	useEffect(() => {
 		setIsClient(true);
 	}, []);
