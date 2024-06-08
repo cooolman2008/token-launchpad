@@ -84,6 +84,12 @@
         },
         {
           "indexed":false,
+          "internalType":"address",
+          "name":"owner",
+          "type":"address"
+        },
+        {
+          "indexed":false,
           "internalType":"uint256",
           "name":"share",
           "type":"uint256"
@@ -188,59 +194,100 @@
     },
     {
       "inputs":[
+        {
+          "internalType":"address",
+          "name":"user",
+          "type":"address"
+        }
+      ],
+      "name":"getClaimAmount",
+      "outputs":[
+        {
+          "internalType":"uint256",
+          "name":"",
+          "type":"uint256"
+        },
+        {
+          "internalType":"uint256",
+          "name":"",
+          "type":"uint256"
+        }
+      ],
+      "stateMutability":"view",
+      "type":"function"
+    },
+    {
+      "inputs":[
         
       ],
       "name":"getLPDetails",
       "outputs":[
         {
-          "internalType":"address",
+          "components":[
+            {
+              "internalType":"address",
+              "name":"pair",
+              "type":"address"
+            },
+            {
+              "internalType":"uint256",
+              "name":"buycount",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"taxBuy",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"taxSell",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"lockDays",
+              "type":"uint256"
+            },
+            {
+              "internalType":"bool",
+              "name":"isBurnt",
+              "type":"bool"
+            },
+            {
+              "internalType":"uint256",
+              "name":"tradingOpened",
+              "type":"uint256"
+            },
+            {
+              "internalType":"bool",
+              "name":"walletLimited",
+              "type":"bool"
+            },
+            {
+              "internalType":"address",
+              "name":"stakingContract",
+              "type":"address"
+            },
+            {
+              "internalType":"uint256",
+              "name":"stakingShare",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"maxTx",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"maxWallet",
+              "type":"uint256"
+            }
+          ],
+          "internalType":"struct IOwnership.LPDetails",
           "name":"",
-          "type":"address"
-        },
-        {
-          "internalType":"uint256",
-          "name":"",
-          "type":"uint256"
-        },
-        {
-          "internalType":"uint256",
-          "name":"",
-          "type":"uint256"
-        },
-        {
-          "internalType":"uint256",
-          "name":"",
-          "type":"uint256"
-        },
-        {
-          "internalType":"uint256",
-          "name":"",
-          "type":"uint256"
-        },
-        {
-          "internalType":"bool",
-          "name":"",
-          "type":"bool"
-        },
-        {
-          "internalType":"uint256",
-          "name":"",
-          "type":"uint256"
-        },
-        {
-          "internalType":"bool",
-          "name":"",
-          "type":"bool"
-        },
-        {
-          "internalType":"address",
-          "name":"",
-          "type":"address"
-        },
-        {
-          "internalType":"uint256",
-          "name":"",
-          "type":"uint256"
+          "type":"tuple"
         }
       ],
       "stateMutability":"view",

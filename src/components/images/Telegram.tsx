@@ -1,4 +1,4 @@
-const XBadge = ({ url }: { url: string }) => {
+const Telegram = ({ url }: { url: string }) => {
 	return (
 		<a href={url} className="inline-flex items-center rounded-xl bg-gray-800 px-2 py-1 mr-4 hover:bg-gray-600">
 			<svg
@@ -15,4 +15,4 @@ const XBadge = ({ url }: { url: string }) => {
 	);
 };
 
-export default XBadge;
+export default Telegram;

@@ -1,4 +1,4 @@
-const Loading = () => {
+const Loading = ({ msg }: { msg: string }) => {
 	return (
 		<div className="fixed top-0 left-0 z-50 flex justify-center items-center h-screen w-screen bg-[rgba(0,0,0,0.75)]">
 			<div className="flex flex-col items-center">
@@ -28,7 +28,7 @@ const Loading = () => {
 						></animate>
 					</path>
 				</svg>
-				<p className="text-base mt-8">Launching...</p>
+				<p className="text-base mt-8">{msg}</p>
 			</div>
 		</div>
 	);

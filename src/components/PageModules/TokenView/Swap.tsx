@@ -218,8 +218,8 @@ const Swap = ({
 	};
 
 	return (
-		<>
-			<div className="flex justify-between mb-4 items-center relative">
+		<div className="swap-container">
+			<div className="flex justify-between mb-2 items-center relative">
 				<h2 className="text-2xl">Swap</h2>
 				<svg
 					ref={settingRef}
@@ -340,7 +340,7 @@ const Swap = ({
 					</div>
 				)}
 			</form>
-		</>
+		</div>
 	);
 };
 

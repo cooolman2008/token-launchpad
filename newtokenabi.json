@@ -28,9 +28,59 @@
     {
       "anonymous":false,
       "inputs":[
-        
+        {
+          "indexed":false,
+          "internalType":"uint256",
+          "name":"maxWallet",
+          "type":"uint256"
+        },
+        {
+          "indexed":false,
+          "internalType":"uint256",
+          "name":"maxTx",
+          "type":"uint256"
+        }
       ],
-      "name":"RemovedLimits",
+      "name":"IncreasedLimits",
+      "type":"event"
+    },
+    {
+      "anonymous":false,
+      "inputs":[
+        {
+          "indexed":false,
+          "internalType":"address",
+          "name":"presaleId",
+          "type":"address"
+        }
+      ],
+      "name":"PresaleAdded",
+      "type":"event"
+    },
+    {
+      "anonymous":false,
+      "inputs":[
+        {
+          "indexed":false,
+          "internalType":"address",
+          "name":"presaleId",
+          "type":"address"
+        }
+      ],
+      "name":"PresaleEnded",
+      "type":"event"
+    },
+    {
+      "anonymous":false,
+      "inputs":[
+        {
+          "indexed":false,
+          "internalType":"address",
+          "name":"presaleId",
+          "type":"address"
+        }
+      ],
+      "name":"PresaleRefunded",
       "type":"event"
     },
     {
@@ -70,6 +120,81 @@
         }
       ],
       "name":"TaxMade",
+      "type":"event"
+    },
+    {
+      "anonymous":false,
+      "inputs":[
+        {
+          "components":[
+            {
+              "internalType":"address",
+              "name":"team1",
+              "type":"address"
+            },
+            {
+              "internalType":"address",
+              "name":"team2",
+              "type":"address"
+            },
+            {
+              "internalType":"address",
+              "name":"team3",
+              "type":"address"
+            },
+            {
+              "internalType":"address",
+              "name":"team4",
+              "type":"address"
+            },
+            {
+              "internalType":"address",
+              "name":"team5",
+              "type":"address"
+            },
+            {
+              "internalType":"uint256",
+              "name":"team1p",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"team2p",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"team3p",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"team4p",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"team5p",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"cliffPeriod",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"vestingPeriod",
+              "type":"uint256"
+            }
+          ],
+          "indexed":false,
+          "internalType":"struct INewToken.TeamParams",
+          "name":"tparams",
+          "type":"tuple"
+        }
+      ],
+      "name":"TeamSet",
       "type":"event"
     },
     {
@@ -127,6 +252,180 @@
       ],
       "name":"Transfer",
       "type":"event"
+    },
+    {
+      "inputs":[
+        {
+          "internalType":"address",
+          "name":"presale",
+          "type":"address"
+        },
+        {
+          "internalType":"uint256",
+          "name":"percent",
+          "type":"uint256"
+        },
+        {
+          "components":[
+            {
+              "internalType":"address",
+              "name":"owner",
+              "type":"address"
+            },
+            {
+              "internalType":"address",
+              "name":"token",
+              "type":"address"
+            },
+            {
+              "internalType":"uint256",
+              "name":"softcap",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"hardcap",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"startTs",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"duration",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"liqPercent",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"cliffPeriod",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"vestingPeriod",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"status",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"sold",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"maxEth",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"maxBag",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"fee",
+              "type":"uint256"
+            }
+          ],
+          "internalType":"struct IPresale.PresaleParams",
+          "name":"newdetails",
+          "type":"tuple"
+        }
+      ],
+      "name":"addPresale",
+      "outputs":[
+        
+      ],
+      "stateMutability":"nonpayable",
+      "type":"function"
+    },
+    {
+      "inputs":[
+        {
+          "components":[
+            {
+              "internalType":"address",
+              "name":"team1",
+              "type":"address"
+            },
+            {
+              "internalType":"address",
+              "name":"team2",
+              "type":"address"
+            },
+            {
+              "internalType":"address",
+              "name":"team3",
+              "type":"address"
+            },
+            {
+              "internalType":"address",
+              "name":"team4",
+              "type":"address"
+            },
+            {
+              "internalType":"address",
+              "name":"team5",
+              "type":"address"
+            },
+            {
+              "internalType":"uint256",
+              "name":"team1p",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"team2p",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"team3p",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"team4p",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"team5p",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"cliffPeriod",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"vestingPeriod",
+              "type":"uint256"
+            }
+          ],
+          "internalType":"struct INewToken.TeamParams",
+          "name":"params",
+          "type":"tuple"
+        }
+      ],
+      "name":"addTeam",
+      "outputs":[
+        
+      ],
+      "stateMutability":"nonpayable",
+      "type":"function"
     },
     {
       "inputs":[
@@ -214,6 +513,37 @@
       "inputs":[
         
       ],
+      "name":"finPresale",
+      "outputs":[
+        
+      ],
+      "stateMutability":"nonpayable",
+      "type":"function"
+    },
+    {
+      "inputs":[
+        {
+          "internalType":"uint256",
+          "name":"maxwallet",
+          "type":"uint256"
+        },
+        {
+          "internalType":"uint256",
+          "name":"maxtx",
+          "type":"uint256"
+        }
+      ],
+      "name":"increaseLimits",
+      "outputs":[
+        
+      ],
+      "stateMutability":"nonpayable",
+      "type":"function"
+    },
+    {
+      "inputs":[
+        
+      ],
       "name":"name",
       "outputs":[
         {
@@ -229,7 +559,7 @@
       "inputs":[
         
       ],
-      "name":"removeLimits",
+      "name":"refPresale",
       "outputs":[
         
       ],

@@ -4,21 +4,45 @@ import { forwardRef } from "react";
 interface TextFieldProps extends ComponentProps<"input"> {
 	label: string;
 	id: string;
+	disabled?: boolean;
 	isPercent?: boolean;
 	isError: boolean;
 	error: string;
+	containerWidth?: string;
 	width: string;
-	labelWidth: string;
+	labelWidth?: string;
+	padding?: string;
+	margin?: string;
 }
 
 const TextField = forwardRef(
 	(
-		{ label, id, isPercent, isError, error, width, labelWidth, ...rest }: TextFieldProps,
+		{
+			label,
+			id,
+			disabled = false,
+			isPercent,
+			isError,
+			error,
+			containerWidth,
+			width,
+			labelWidth = "",
+			padding,
+			margin,
+			...rest
+		}: TextFieldProps,
 		ref: LegacyRef<HTMLInputElement>
 	) => {
 		return (
 			<>
-				<div className="w-full md:w-1/2 2xl:w-1/3 flex md:pr-4 2xl:pr-12 items-center flex-wrap mb-4">
+				<div
+					className={
+						"flex items-center flex-wrap " +
+						(containerWidth ? containerWidth : " w-full md:w-1/2 2xl:w-1/3 ") +
+						(padding ? padding : " md:pr-4 2xl:pr-12 ") +
+						(margin ? margin : " mb-4 ")
+					}
+				>
 					<label htmlFor={id} className={"text-xl text-gray-400 pr-4 " + labelWidth}>
 						{label}
 					</label>
@@ -27,9 +51,12 @@ const TextField = forwardRef(
 							id={id}
 							ref={ref}
 							className={
-								"block w-full rounded-xl ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 bg-neutral-900 outline-0 2xl:text-sm " +
-								(isError ? "border-x border-pink-500" : "border-l border-gray-600")
+								"block w-full rounded-xl ps-3 pe-3 py-1.5 shadow-sm placeholder:text-gray-400 bg-neutral-900 outline-0 2xl:text-sm " +
+								(disabled
+									? "text-gray-400"
+									: "text-white " + (isError ? "border-x border-pink-500" : "border-l border-gray-600"))
 							}
+							disabled={disabled}
 							{...rest}
 						/>
 						{(isError || isPercent) && (

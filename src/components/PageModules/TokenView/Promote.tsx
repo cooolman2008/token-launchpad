@@ -1,12 +1,16 @@
 import { useContractWrite, useWalletClient } from "wagmi";
+import { useWeb3ModalState } from "@web3modal/wagmi/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { parseEther, formatEther } from "viem";
 import { useEffect, useState } from "react";
 
-import Helperabi from "../../../../helperabi.json";
+import { getContractAddress } from "@/utils/utils";
 import { fetchPromoCost } from "@/api/getSafu";
 
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+import TextField from "@/components/elements/TextField";
+import InformationTip from "@/components/elements/InformationTip";
+
+import Helperabi from "../../../../helperabi.json";
 
 interface PromoteForm {
 	cost: number;
@@ -17,6 +21,9 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 	const { data: walletClient } = useWalletClient();
 	const [promoCost, setPromoCost] = useState(0);
 	const [price, setPrice] = useState(0);
+
+	const { selectedNetworkId: chainId } = useWeb3ModalState();
+	const CONTRACT_ADDRESS = getContractAddress(Number(chainId));
 
 	useEffect(() => {
 		async function fetchTheCost() {
@@ -57,7 +64,6 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 		formState: { errors },
 	} = useForm<PromoteForm>();
 	const onSubmit: SubmitHandler<PromoteForm> = (formData) => {
-		// console.log(parseEther(promoCost.toString()) * BigInt(formData.times));
 		if (promoCost) {
 			promote({
 				args: [contractAddress, formData.times],
@@ -67,61 +73,55 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 	};
 
 	return (
-		<>
+		<div className="w-full py-8 border-b border-gray-700">
 			<div className="flex mb-1">
 				<h2 className="text-2xl">Promote this token</h2>
-				<svg
-					width="24"
-					height="24"
-					viewBox="0 0 24 24"
-					xmlns="http://www.w3.org/2000/svg"
-					className="h-5 w-5 fill-gray-600 hover:fill-gray-400 cursor-pointer ml-1"
-				>
-					<path d="M12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2ZM12.02 17.5C11.468 17.5 11.0149 17.052 11.0149 16.5C11.0149 15.948 11.458 15.5 12.01 15.5H12.02C12.573 15.5 13.02 15.948 13.02 16.5C13.02 17.052 12.572 17.5 12.02 17.5ZM13.603 12.5281C12.872 13.0181 12.7359 13.291 12.7109 13.363C12.6059 13.676 12.314 13.874 12 13.874C11.921 13.874 11.841 13.862 11.762 13.835C11.369 13.703 11.1581 13.278 11.2891 12.885C11.4701 12.345 11.9391 11.836 12.7671 11.281C13.7881 10.597 13.657 9.84707 13.614 9.60107C13.501 8.94707 12.95 8.38988 12.303 8.27588C11.811 8.18588 11.3301 8.31488 10.9541 8.62988C10.5761 8.94688 10.3589 9.41391 10.3589 9.90991C10.3589 10.3239 10.0229 10.6599 9.60889 10.6599C9.19489 10.6599 8.85889 10.3239 8.85889 9.90991C8.85889 8.96891 9.27099 8.08396 9.98999 7.48096C10.702 6.88496 11.639 6.63605 12.564 6.80005C13.831 7.02405 14.8701 8.07097 15.0911 9.34497C15.3111 10.607 14.782 11.7381 13.603 12.5281Z"></path>
-				</svg>
+				<InformationTip msg="Your token will be displayed in our twitter account as many times as you say" />
 			</div>
-			<p className="text-sm text-gray-400 mb-4 font-thin">
+			<p className="text-sm text-gray-500 mb-4">
 				Start promoting this token to raise the noice!
 				<br />
-				Just enter the number of <b className="font-bold">Times</b> you want to display, we will populate the
-				<b className="font-bold"> Cost</b> for you.
+				Just enter the number of <b className="font-bold text-gray-400">Times</b> you want to display, we will populate
+				the
+				<b className="font-bold text-gray-400"> Cost</b> for you.
 			</p>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="w-full pb-4 rounded-xl mb-2">
-					<div className="w-full flex">
-						<div className="w-full rounded-3xl flex items-center">
-							<span className="text-xl text-gray-400 pr-4">Cost (ETH)</span>
-							<input
-								type="text"
-								id="cost"
-								placeholder="30"
-								{...register("cost", {
-									valueAsNumber: true,
-									disabled: true,
-								})}
-								className="block w-20 rounded-xl ps-2 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-2xl border-l border-gray-400"
-							/>
-						</div>
-						<div className="w-full rounded-3xl flex items-center">
-							<span className="text-xl text-gray-400 pr-4">Times</span>
-							<input
-								type="text"
-								id="times"
-								placeholder="0"
-								{...register("times", {
-									required: true,
-									min: 1,
-								})}
-								onBlur={() => {
-									setPrice(Number((getValues("times") * promoCost).toFixed(4)));
-								}}
-								className={
-									"block w-20 rounded-xl ps-2 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-2xl appearance-none " +
-									(errors.times ? "border-x border-pink-500" : "border-l border-gray-400")
-								}
-							/>
-						</div>
-						<div className="flex justify-center flex-col">
+					<div className="w-full flex flex-wrap justify-between">
+						<TextField
+							label="Cost (ETH)"
+							id="cost"
+							placeholder="30"
+							{...register("cost", {
+								valueAsNumber: true,
+								disabled: true,
+							})}
+							isError={errors.cost ? true : false}
+							error="Minimum 30 days required"
+							width="w-20"
+							labelWidth="grow lg:grow-0"
+							containerWidth="w-full md:w-auto"
+							margin="mb-4 lg:mb-0"
+						/>
+						<TextField
+							label="Times"
+							id="times"
+							placeholder="0"
+							{...register("times", {
+								required: true,
+								min: 1,
+							})}
+							onBlur={() => {
+								setPrice(Number((getValues("times") * promoCost).toFixed(4)));
+							}}
+							isError={errors.cost ? true : false}
+							error="Minimum 30 days required"
+							width="w-20"
+							labelWidth="grow lg:grow-0"
+							containerWidth="w-full md:w-auto"
+							margin="mb-4 lg:mb-0"
+						/>
+						<div className="w-full lg:w-auto flex justify-center flex-col align-self-start">
 							<input
 								type="submit"
 								value={"Promote for " + price + " ETH"}
@@ -131,7 +131,7 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 					</div>
 				</div>
 			</form>
-		</>
+		</div>
 	);
 };
 
