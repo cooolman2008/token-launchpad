@@ -9,9 +9,23 @@ interface LockForm {
 	ldays: number;
 }
 
-const Changes = ({ contractAddress, isLpBurnt }: { contractAddress: `0x${string}`; isLpBurnt: boolean }) => {
+const LPChanges = ({
+	contractAddress,
+	isLpBurnt,
+	lplockDays,
+	lplockStart,
+}: {
+	contractAddress: `0x${string}`;
+	isLpBurnt: boolean;
+	lplockDays: number;
+	lplockStart: number;
+}) => {
 	const { data: walletClient } = useWalletClient();
 	const [lpBurnt, setLpBurnt] = useState(isLpBurnt);
+
+	const endDate = lplockStart + lplockDays * 86400;
+	const today = Math.floor(Date.now() / 1000);
+	const remaining = Math.floor((endDate - today) / 86400);
 
 	// contract call to extend the lock period for LP tokens.
 	const {
@@ -60,7 +74,10 @@ const Changes = ({ contractAddress, isLpBurnt }: { contractAddress: `0x${string}
 	};
 	return (
 		<div className="w-full py-8 border-b border-gray-700">
-			<h2 className="text-2xl mb-1">Changes to your token!</h2>
+			<div className="flex mb-1 justify-between">
+				<h2 className="text-xl">Lock or Burn!</h2>
+				<span className="text-sm font-medium text-gray-400">{remaining} days lock remaining</span>
+			</div>
 			<p className="text-sm text-gray-500 mb-4">
 				You can either<b className="font-bold text-gray-400"> Burn LP </b>tokens or
 				<b className="font-bold text-gray-400"> Extend </b>the lock period.
@@ -107,4 +124,4 @@ const Changes = ({ contractAddress, isLpBurnt }: { contractAddress: `0x${string}
 	);
 };
 
-export default Changes;
+export default LPChanges;

@@ -48,7 +48,6 @@ const SetSocials = memo(
 		const {
 			register,
 			handleSubmit,
-			watch,
 			formState: { errors },
 		} = useForm<SocialsForm>();
 		const onSubmit: SubmitHandler<SocialsForm> = (formData) => {

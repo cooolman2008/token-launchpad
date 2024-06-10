@@ -37,7 +37,7 @@ const Team = ({
 	const [count, setCount] = useState(1);
 	const [error, setError] = useState("");
 
-	// contract call to start trading of the launched token.
+	// contract call to add team members.
 	const { isLoading, write } = useContractWrite({
 		address: contractAddress,
 		abi: Tokenabi.abi,
@@ -54,7 +54,7 @@ const Team = ({
 		},
 	});
 
-	// handle extend lock form.
+	// handle team form.
 	const {
 		register,
 		handleSubmit,
@@ -85,7 +85,7 @@ const Team = ({
 			{isLoading && <Loading msg="Adding your team..." />}
 			{error && <Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} />}
 			<div className="w-full py-8 border-b border-gray-700">
-				<h2 className="text-2xl mb-1">Add your team</h2>
+				<h2 className="text-xl mb-1">Add your team</h2>
 				<p className="text-sm text-gray-500 mb-4">
 					Add your team members <b className="font-bold text-gray-400">before starting the trade</b>
 					<br />

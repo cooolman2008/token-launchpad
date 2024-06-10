@@ -4,6 +4,7 @@ export interface Token {
     name: string;
     totalSupply: number;
     pair: string;
+    staking: string;
     lplockDays: number;
     isLpRetrieved: boolean;
     isLpBurnt: boolean;
@@ -33,6 +34,7 @@ export async function fetchToken(id: string, api_endpoint: string) {
             name
             totalSupply
             pair
+            staking
             lplockDays
             isLpRetrieved
             isLpBurnt
