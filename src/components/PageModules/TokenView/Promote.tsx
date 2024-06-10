@@ -75,7 +75,7 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 	return (
 		<div className="w-full py-8 border-b border-gray-700">
 			<div className="flex mb-1">
-				<h2 className="text-2xl">Promote this token</h2>
+				<h2 className="text-xl">Promote this token</h2>
 				<InformationTip msg="Your token will be displayed in our twitter account as many times as you say" />
 			</div>
 			<p className="text-sm text-gray-500 mb-4">

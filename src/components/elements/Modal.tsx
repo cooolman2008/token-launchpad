@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 
-const Modal = ({ msg, des, error }: { msg: string; des?: string; error?: boolean }) => {
+const Modal = ({
+	msg,
+	des,
+	error,
+	callback,
+}: {
+	msg: string;
+	des?: string;
+	error?: boolean;
+	callback?: () => void;
+}) => {
 	const [isOpen, setIsOpen] = useState(false);
 
 	useEffect(() => {
@@ -24,6 +34,9 @@ const Modal = ({ msg, des, error }: { msg: string; des?: string; error?: boolean
 							viewBox="0 0 72 72"
 							className="absolute right-0 top-0 mr-2 mt-2 font-bold cursor-pointer fill-gray-400"
 							onClick={() => {
+								if (callback) {
+									callback();
+								}
 								setIsOpen(false);
 							}}
 						>

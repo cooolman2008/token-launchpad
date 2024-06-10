@@ -30,23 +30,23 @@ const Intro = ({ address, token, isOwner }: { address: `0x${string}`; token: Tok
 				</div>
 			</div>
 			<div className="w-full pb-8 border-b border-gray-700">
-				<h2 className="mb-1 text-2xl text-slate-200">Statistics</h2>
+				<h2 className="mb-1 text-xl text-slate-200">Statistics</h2>
 				<div className="flex flex-wrap">
 					<div className="w-1/2 flex flex-col lg:flex-1">
 						<span className="text-sm mb-2 text-gray-400">TVL</span>
-						<h2 className="text-3xl text-slate-200">$662.28M</h2>
+						<h2 className="text-2xl text-slate-200">$662.28M</h2>
 					</div>
 					<div className="w-1/2 flex flex-col lg:flex-1">
 						<span className="text-sm mb-2 text-gray-400">Market cap</span>
-						<h2 className="text-3xl text-slate-200">$33.5B</h2>
+						<h2 className="text-2xl text-slate-200">$33.5B</h2>
 					</div>
 					<div className="w-1/2 flex flex-col lg:flex-1">
 						<span className="text-sm mb-2 text-gray-400">FDV</span>
-						<h2 className="text-3xl text-slate-200">$1.25B</h2>
+						<h2 className="text-2xl text-slate-200">$1.25B</h2>
 					</div>
 					<div className="w-1/2 flex flex-col lg:flex-1">
 						<span className="text-sm mb-2 text-gray-400">1 day Volume</span>
-						<h2 className="text-3xl text-slate-200">$321.4M</h2>
+						<h2 className="text-2xl text-slate-200">$321.4M</h2>
 					</div>
 				</div>
 			</div>

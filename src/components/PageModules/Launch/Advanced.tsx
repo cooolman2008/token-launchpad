@@ -19,6 +19,7 @@ const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>;
 				<TextField
 					label="Max Transaction Limit"
 					id="maxTx"
+					isPercent={true}
 					placeholder="0"
 					{...register("maxTx", {
 						max: 1,
@@ -26,12 +27,13 @@ const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>;
 					})}
 					isError={errors.maxTx ? true : false}
 					error="Please provide a valid limit."
-					width="w-14"
+					width="w-20"
 					labelWidth="grow"
 				/>
 				<TextField
 					label="Max Wallet Limit"
 					id="maxWallet"
+					isPercent={true}
 					placeholder="0"
 					{...register("maxWallet", {
 						max: 1,
@@ -39,7 +41,7 @@ const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>;
 					})}
 					isError={errors.maxWallet ? true : false}
 					error="Please provide a valid limit."
-					width="w-14"
+					width="w-20"
 					labelWidth="grow"
 				/>
 				<TextField
