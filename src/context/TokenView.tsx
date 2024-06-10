@@ -111,7 +111,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 									{isTrading && !token?.isLpRetrieved && !token?.isLpBurnt && (
 										<LPChanges
 											contractAddress={params?.slug}
-											isLpBurnt={token?.isLpBurnt}
+											setSuccess={setSuccess}
 											lplockDays={token?.lplockDays}
 											lplockStart={Number(token?.lplockStart)}
 										/>
