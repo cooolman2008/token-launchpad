@@ -19,9 +19,9 @@ import LPChanges from "@/components/PageModules/TokenView/LPChanges";
 import Team from "@/components/PageModules/Launch/Team";
 import Claim from "@/components/PageModules/TokenView/Claim";
 import Modal from "@/components/elements/Modal";
+import Limits from "@/components/PageModules/TokenView/Limits";
 
 import { getGraphUrl } from "@/utils/utils";
-import Limits from "@/components/PageModules/TokenView/Limits";
 
 function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	const { data: walletClient } = useWalletClient();
@@ -90,14 +90,14 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 
 	return (
 		<>
-			{isClient && walletClient && token && (
+			{isClient && token && (
 				<>
 					{success && <Modal msg={success} callback={clear} />}
 					<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-12 w-full">
 						<div className="sm:col-span-7 lg:col-span-8">
 							<Intro address={params?.slug} token={token} isOwner={isOwner} />
 							{isTeam && <Claim contractAddress={params?.slug} />}
-							{isOwner && (
+							{isOwner && walletClient && (
 								<>
 									{!isTrading && !isTeamSet && (
 										<Team contractAddress={params?.slug} callback={setIsTeamSet} setSuccess={setSuccess} />
@@ -126,7 +126,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 									)}
 								</>
 							)}
-							<Promote contractAddress={params?.slug} />
+							{walletClient && <Promote contractAddress={params?.slug} />}
 						</div>
 						<div className="sm:col-span-5 lg:col-span-4">
 							<Swap
@@ -134,7 +134,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 								symbol={token?.symbol ? token?.symbol : ""}
 								tradingEnabled={token?.pair ? true : false}
 							/>
-							{isStaking && token?.staking && (
+							{isStaking && token?.staking && walletClient && (
 								<Staking
 									contractAddress={params?.slug}
 									stakingAddress={getAddress(token?.staking)}
@@ -143,7 +143,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 									setSuccess={setSuccess}
 								/>
 							)}
-							{isOwner && (
+							{isOwner && walletClient && (
 								<SetSocials
 									contractAddress={params?.slug}
 									telegram={token?.telegram ? token?.telegram : ""}

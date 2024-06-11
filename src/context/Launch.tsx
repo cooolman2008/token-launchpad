@@ -102,7 +102,7 @@ function Launch() {
 
 	return (
 		<>
-			{isClient && walletClient && (
+			{isClient && (
 				<>
 					{(isLoading || retrieval) && <Loading msg="Launching..." />}
 					{error && <Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} />}
@@ -207,9 +207,15 @@ function Launch() {
 							</p>
 							{premium && <Premium register={register} errors={errors} />}
 						</div>
-						<div className="w-full flex justify-center mt-4">
-							<input type="submit" value="Launch" className="safu-button-primary" />
-						</div>
+						{walletClient ? (
+							<div className="w-full flex justify-center mt-4">
+								<input type="submit" value="Launch" className="safu-button-primary" />
+							</div>
+						) : (
+							<div className="w-full flex justify-center mt-4">
+								<w3m-button />
+							</div>
+						)}
 					</form>
 				</>
 			)}

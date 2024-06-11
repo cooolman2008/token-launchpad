@@ -1,7 +1,4 @@
 import { GraphQLClient } from 'graphql-request';
-import { cache } from 'react'
-
-const API_ENDPOINT = process.env.API_ENDPOINT;
 
 export interface Tokens {
   id: string;
@@ -16,9 +13,9 @@ interface TokenArray {
     tokens: Tokens[]
 }
 
-export const fetchTokens =  cache( async() => {
+export async function fetchMyTokens(owner: string, APIEndpoint: string) {
   const query = `query MyQuery {
-    tokens(first: 10, where: {pair_not: "0x0000000000000000000000000000000000000000"}) {
+    tokens(first: 100, where: {owner: "${owner}"}) {
       id
       name
       symbol
@@ -28,8 +25,44 @@ export const fetchTokens =  cache( async() => {
     }
   }`;
 
-  const client = new GraphQLClient(API_ENDPOINT);
+  const client = new GraphQLClient(APIEndpoint);
 
   const data: TokenArray  = await client.request(query);
   return data?.tokens;
-})
+}
+
+export async function fetchStealthTokens(APIEndpoint: string) {
+    const query = `query MyQuery {
+      tokens(first: 100, where: {pair: "0x0000000000000000000000000000000000000000"}) {
+        id
+        name
+        symbol
+        totalSupply
+        totalTax
+        tradeVolume
+      }
+    }`;
+  
+    const client = new GraphQLClient(APIEndpoint);
+  
+    const data: TokenArray  = await client.request(query);
+    return data?.tokens;
+  }
+
+export async function fetchTokens(APIEndpoint: string) {
+    const query = `query MyQuery {
+        tokens(first: 100, where: {pair_not: "0x0000000000000000000000000000000000000000"}) {
+        id
+        name
+        symbol
+        totalSupply
+        totalTax
+        tradeVolume
+        }
+    }`;
+
+    const client = new GraphQLClient(APIEndpoint);
+
+    const data: TokenArray  = await client.request(query);
+    return data?.tokens;
+}

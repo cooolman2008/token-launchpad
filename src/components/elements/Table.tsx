@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Tokens } from "@/api/getMyTokens";
+import { Tokens } from "@/api/getTokens";
 import { getAbr } from "@/utils/math";
 
 const Table = ({ tokens }: { tokens: Tokens[] }) => {

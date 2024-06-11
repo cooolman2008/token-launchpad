@@ -25,17 +25,6 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 	const { selectedNetworkId: chainId } = useWeb3ModalState();
 	const CONTRACT_ADDRESS = getContractAddress(Number(chainId));
 
-	useEffect(() => {
-		async function fetchTheCost() {
-			const data = await fetchPromoCost(CONTRACT_ADDRESS);
-			if (data) {
-				setPromoCost(Number(formatEther(data)));
-				setValue("cost", Number(formatEther(data)));
-			}
-		}
-		fetchTheCost();
-	}, []);
-
 	// contract call to start trading of the launched token.
 	const {
 		data,
@@ -58,7 +47,6 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 	const {
 		register,
 		handleSubmit,
-		watch,
 		setValue,
 		getValues,
 		formState: { errors },
@@ -71,6 +59,17 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 			});
 		}
 	};
+
+	useEffect(() => {
+		async function fetchTheCost() {
+			const data = await fetchPromoCost(CONTRACT_ADDRESS);
+			if (data) {
+				setPromoCost(Number(formatEther(data)));
+				setValue("cost", Number(formatEther(data)));
+			}
+		}
+		fetchTheCost();
+	}, [CONTRACT_ADDRESS, setValue]);
 
 	return (
 		<div className="w-full py-8 border-b border-gray-700">
@@ -111,7 +110,7 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 								required: true,
 								min: 1,
 							})}
-							onBlur={() => {
+							onKeyUp={() => {
 								setPrice(Number((getValues("times") * promoCost).toFixed(4)));
 							}}
 							isError={errors.cost ? true : false}

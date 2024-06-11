@@ -20,7 +20,7 @@ const Details = memo(() => {
 			setSafuLaunches(safuDetails?.launchCount ? safuDetails?.launchCount : 0);
 		}
 		fetchSafuDetails();
-	}, []);
+	}, [CONTRACT_ADDRESS]);
 	return (
 		<>
 			<div className="flex flex-col px-12">

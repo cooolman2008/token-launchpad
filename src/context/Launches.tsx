@@ -1,20 +1,62 @@
 "use client";
 
-import { useWalletClient } from "wagmi";
+import { useWalletClient, useAccount } from "wagmi";
+import { useWeb3ModalState } from "@web3modal/wagmi/react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import Explore from "@/components/PageModules/Launches/Explore";
-import MyTokens from "@/components/PageModules/Launches/MyTokens";
-import Stealth from "@/components/PageModules/Launches/Stealth";
 import Details from "@/components/PageModules/Launches/Details";
+import Table from "@/components/elements/Table";
+
+import { getGraphUrl } from "@/utils/utils";
+import { fetchTokens, fetchMyTokens, fetchStealthTokens, Tokens } from "@/api/getTokens";
 
 function Launches() {
 	const { data: walletClient } = useWalletClient();
+	const { address } = useAccount();
+
+	const { selectedNetworkId: chainId } = useWeb3ModalState();
+	const API_ENDPOINT = getGraphUrl(Number(chainId));
+
 	const [isClient, setIsClient] = useState(false);
 	const [tab, setTab] = useState("Explore");
+	const [tokens, setTokens] = useState<Tokens[]>([]);
+	const [explore, setExplore] = useState<Tokens[]>([]);
+	const [launches, setLaunches] = useState<Tokens[]>([]);
+	const [stealth, setStealth] = useState<Tokens[]>([]);
 
-	// Get all data here & once only.
+	useEffect(() => {
+		switch (tab) {
+			case "Launches":
+				if (launches.length > 0) {
+					setTokens(launches);
+				} else {
+					if (address) {
+						fetchMyTokens(address?.toString(), API_ENDPOINT).then((tokensFetched) => {
+							setLaunches(tokensFetched);
+						});
+					}
+				}
+				break;
+			case "Stealth":
+				if (stealth.length > 0) {
+					setTokens(stealth);
+				} else {
+					fetchStealthTokens(API_ENDPOINT).then((tokensFetched) => {
+						setStealth(tokensFetched);
+					});
+				}
+				break;
+			default:
+				if (explore.length > 0) {
+					setTokens(explore);
+				} else {
+					fetchTokens(API_ENDPOINT).then((tokensFetched) => {
+						setExplore(tokensFetched);
+					});
+				}
+		}
+	}, [API_ENDPOINT, address, explore, launches, stealth, tab]);
 
 	useEffect(() => {
 		setIsClient(true);
@@ -22,36 +64,37 @@ function Launches() {
 
 	return (
 		<>
-			{isClient && walletClient && (
+			{isClient && (
 				<>
 					<div className="w-full flex my-12 justify-between">
 						<Details />
 					</div>
 					<div className="flex self-start my-4 min-w-full px-3">
 						<h2
-							className={
-								"transition-colors duration-200 ease-in text-2xl pr-8 cursor-pointer " +
-								(tab === "Explore" ? "safu-grad-text-l" : "text-gray-400")
-							}
-							onClick={() => setTab("Explore")}
+							className={"text-2xl pr-8 cursor-pointer " + (tab === "Explore" ? "safu-grad-text-l" : "text-gray-400")}
+							onClick={() => {
+								setTab("Explore");
+							}}
 						>
 							Explore
 						</h2>
+						{walletClient && (
+							<h2
+								className={
+									"text-2xl px-8 cursor-pointer " + (tab === "Launches" ? "safu-grad-text-l" : "text-gray-400")
+								}
+								onClick={() => {
+									setTab("Launches");
+								}}
+							>
+								My Launches
+							</h2>
+						)}
 						<h2
-							className={
-								"transition-colors duration-200 ease-in text-2xl px-8 cursor-pointer " +
-								(tab === "Launches" ? "safu-grad-text-l" : "text-gray-400")
-							}
-							onClick={() => setTab("Launches")}
-						>
-							My Launches
-						</h2>
-						<h2
-							className={
-								"transition-colors duration-200 ease-in text-2xl px-8 cursor-pointer " +
-								(tab === "Stealth" ? "safu-grad-text-l" : "text-gray-400")
-							}
-							onClick={() => setTab("Stealth")}
+							className={"text-2xl px-8 cursor-pointer " + (tab === "Stealth" ? "safu-grad-text-l" : "text-gray-400")}
+							onClick={() => {
+								setTab("Stealth");
+							}}
 						>
 							Stealth Launches
 						</h2>
@@ -66,9 +109,7 @@ function Launches() {
 					</div>
 					<div className="w-full mb-8 overflow-hidden rounded-2xl shadow-lg border border-neutral-800">
 						<div className="w-full overflow-x-auto">
-							{tab === "Explore" && <Explore />}
-							{tab === "Launches" && <MyTokens />}
-							{tab === "Stealth" && <Stealth />}
+							<Table tokens={tokens} />
 						</div>
 					</div>
 					<Link href="/launch" className="safu-button-secondary">

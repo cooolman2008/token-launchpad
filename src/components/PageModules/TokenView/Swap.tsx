@@ -1,6 +1,6 @@
 import { mainnet, useAccount, useNetwork, useContractWrite, useContractRead } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { animate, spring } from "motion";
 import { Token } from "@uniswap/sdk-core";
 import { Pair } from "@uniswap/v2-sdk";
@@ -61,7 +61,7 @@ const Swap = ({
 				}
 			});
 		}
-	}, []);
+	}, [chain, token0, token1, tradingEnabled]);
 
 	// get the allowance of the user
 	useContractRead({
@@ -75,25 +75,6 @@ const Swap = ({
 			}
 		},
 	});
-
-	// sets the tokens to recieve on swap
-	const setAmounts = () => {
-		const amount = getValues("pay");
-		if (reserves && amount) {
-			// gets the tokens to recieve on swap
-			getExchangeRate(
-				tokenIn === token0 ? reserves : [reserves[1], reserves[0]],
-				parseEther(amount.toString()),
-				chain ? chain : mainnet
-			).then((data) => {
-				setWorstPrice(data);
-			});
-		}
-	};
-
-	useEffect(() => {
-		setAmounts();
-	}, [tokenIn]);
 
 	// router function to swap ETH for tokens
 	const {
@@ -190,6 +171,25 @@ const Swap = ({
 			}
 		}
 	};
+
+	// sets the tokens to recieve on swap
+	const setAmounts = useCallback(() => {
+		const amount = getValues("pay");
+		if (reserves && amount) {
+			// gets the tokens to recieve on swap
+			getExchangeRate(
+				tokenIn === token0 ? reserves : [reserves[1], reserves[0]],
+				parseEther(amount.toString()),
+				chain ? chain : mainnet
+			).then((data) => {
+				setWorstPrice(data);
+			});
+		}
+	}, [chain, getValues, reserves, token0, tokenIn]);
+
+	useEffect(() => {
+		setAmounts();
+	}, [setAmounts, tokenIn]);
 
 	const handleClickOutside = (event: MouseEvent | TouchEvent) => {
 		const wrapper = wrapperRef.current;
@@ -334,11 +334,16 @@ const Swap = ({
 						</span>
 					</div>
 				</div>
-				{tradingEnabled && (
-					<div className="flex justify-center flex-col mt-2">
-						<input className="safu-button-primary cursor-pointer" type="submit" value="Swap" />
-					</div>
-				)}
+				{tradingEnabled &&
+					(address ? (
+						<div className="flex justify-center flex-col mt-2">
+							<input className="safu-button-primary cursor-pointer" type="submit" value="Swap" />
+						</div>
+					) : (
+						<div className="w-full flex justify-center mt-4">
+							<w3m-button />
+						</div>
+					))}
 			</form>
 		</div>
 	);
