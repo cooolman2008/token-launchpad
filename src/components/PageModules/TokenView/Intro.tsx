@@ -15,13 +15,13 @@ const Intro = ({ address, token, isOwner }: { address: `0x${string}`; token: Tok
 			<span className="text-sm lg:text-md text-gray-400 px-2 border-x border-neutral-400 font-normal rounded-xl">
 				{address.toLowerCase()}
 			</span>
-			<div className="w-full flex mb-8 mt-2">
-				<div className="flex flex-1 items-center">
+			<div className="w-full flex flex-wrap mb-8 mt-2">
+				<div className="w-full xl:w-auto flex flex-1 mb-4 xl:mb-0 items-center">
 					<Image id="box" src={logo} style={{ width: "auto", height: "40px" }} alt="SAFU Launcher Logo" />
 					<h2 className="text-xl lg:text-3xl mx-4 text-slate-200">{token?.name}</h2>
 					<h2 className="text-xl lg:text-3xl text-gray-400">{token?.symbol}</h2>
 				</div>
-				<div className="flex items-center">
+				<div className="w-full xl:w-auto flex items-center">
 					{!isOwner && token?.website && <Website url="token?.website" />}
 					{!isOwner && token?.telegram && <Telegram url="token?.telegram" />}
 					{!isOwner && token?.twitter && <XBadge url="token?.twitter" />}

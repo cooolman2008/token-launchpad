@@ -130,7 +130,9 @@ const Staking = ({
 			<div className="stake-container mt-12">
 				<div className="flex justify-between mb-2 items-center relative">
 					<h2 className="text-2xl">Stake</h2>
-					<span className="text-xs font-medium text-gray-400">Balance: {Number(balance).toFixed(2)}</span>
+					<span className="text-xs font-medium text-gray-400">
+						Balance: {Number(balance).toFixed(2)} {symbol}
+					</span>
 				</div>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className="w-full p-4 rounded-xl border-2 border-transparent hover:border-neutral-800 bg-neutral-900">
