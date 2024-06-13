@@ -38,6 +38,10 @@ function Launch() {
 	const [template, setTemplate] = useState(templateOptions.templates[0]);
 	const [error, setError] = useState("");
 
+	const clear = () => {
+		setError("");
+	};
+
 	// contract call for token launch.
 	const {
 		data: response,
@@ -105,7 +109,14 @@ function Launch() {
 			{isClient && (
 				<>
 					{(isLoading || retrieval) && <Loading msg="Launching..." />}
-					{error && <Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} />}
+					{error && (
+						<Modal
+							msg={error}
+							des="This might be a temporary issue, try again in sometime"
+							error={true}
+							callback={clear}
+						/>
+					)}
 					<form onSubmit={handleSubmit(onSubmit)} className="w-full">
 						<h2 className="block text-4xl lg:text-5xl font-thin safu-grad-text text-center uppercase py-8 lg:py-24">
 							Launch your token in 60 seconds

@@ -324,7 +324,7 @@ const Swap = ({
 					</div>
 				</div>
 				<div className="w-full p-4 rounded-xl border-2 border-transparent hover:border-neutral-800 bg-neutral-900">
-					<label className="block text-sm leading-6 text-gray-400">Your returns</label>
+					<span className="block text-sm leading-6 text-gray-400">Your returns</span>
 					<div className="w-full flex">
 						<span className="block w-full pe-3 my-3 text-gray-400 sm:leading-6 bg-neutral-900 sm:text-3xl">
 							{worstPrice}

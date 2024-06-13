@@ -63,6 +63,29 @@ const StartTrading = ({
 			{isLoading && <Loading msg="Enabling trading..." />}
 			{error && <Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} />}
 			<div className="w-full py-8 border-b border-gray-700">
+				<div className="bg-gradient-to-r from-red-800/20 mb-2 p-4 rounded-xl border border-red-900/50">
+					<div className="flex items-center">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="18px"
+							height="18px"
+							viewBox="0 0 24 24"
+							className="stroke-red-600 mr-1"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+							<line x1="12" y1="9" x2="12" y2="13"></line>
+							<line x1="12" y1="17" x2="12.01" y2="17"></line>
+						</svg>
+						<p className="font-bold text-red-600">Warning!</p>
+					</div>
+					<span className=" font-medium text-red-700 text-sm">
+						Make sure you have set your <b className="font-semi-bold text-red-600">teams</b> & launched your{" "}
+						<b className="font-semi-bold text-red-600">pre-sales</b> before enabling the trade.
+					</span>
+				</div>
 				<h2 className="text-xl mb-1">Start trading!</h2>
 				<p className="text-sm text-gray-500 mb-4">
 					Start trading your tokens by creating a <b className="font-bold text-gray-400">liquidity pool</b>
@@ -72,7 +95,7 @@ const StartTrading = ({
 				</p>
 				<div className="w-full pb-4 rounded-xl">
 					<form onSubmit={handleSubmit(onSubmit)}>
-						<div className="w-full flex justify-between flex-wrap">
+						<div className="w-full flex justify-between flex-wrap items-center">
 							<TextField
 								label="Liquidity in ETH"
 								id="liq"
@@ -86,6 +109,7 @@ const StartTrading = ({
 								error="Please enter minimum liquidity"
 								width="w-20"
 								labelWidth="grow lg:grow-0"
+								containerWidth="w-full md:w-auto"
 								margin="mb-4 2xl:mb-0"
 							/>
 							<TextField
@@ -102,6 +126,7 @@ const StartTrading = ({
 								error="Minimum 30 days required"
 								width="w-20"
 								labelWidth="grow lg:grow-0"
+								containerWidth="w-full md:w-auto"
 								margin="mb-4 2xl:mb-0"
 							/>
 							<div className="flex flex-col mr-4 justify-center">

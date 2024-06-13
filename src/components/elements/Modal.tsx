@@ -22,17 +22,19 @@ const Modal = ({
 				<div className="fixed top-0 left-0 z-50 flex justify-center items-center h-screen w-screen bg-[rgba(0,0,0,0.75)]">
 					<div
 						className={
-							"relative flex flex-col w-3/4 xl:w-1/3 h-80 p-4 bg-neutral-900 rounded-xl items-center justify-center font-light border" +
-							(error ? " border-pink-600/45" : " border-green-600/45")
+							"relative flex flex-col w-3/4 xl:w-1/3 h-80 p-4 bg-gradient-to-r from-neutral-800/50 rounded-xl items-center justify-center font-light border" +
+							(error ? " border-pink-600/45" : " border-emerald-600/45")
 						}
 					>
-						<span className="text-base">{msg}</span>
-						{des && <span className="text-gray-400 text-sm">{des}</span>}
+						<span className={"text-base font-medium " + (error ? "text-red-600" : "text-emerald-600")}>{msg}</span>
+						{des && (
+							<span className={"text-sm font-normal " + (error ? "text-red-700" : "text-emerald-600")}>{des}</span>
+						)}
 						<svg
 							width={20}
 							height={20}
 							viewBox="0 0 72 72"
-							className="absolute right-0 top-0 mr-2 mt-2 font-bold cursor-pointer fill-gray-400"
+							className="absolute right-0 top-0 mr-2 mt-2 font-bold cursor-pointer fill-white/75"
 							onClick={() => {
 								if (callback) {
 									callback();

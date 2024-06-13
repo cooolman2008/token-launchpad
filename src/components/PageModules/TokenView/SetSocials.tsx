@@ -63,14 +63,11 @@ const SetSocials = memo(
 				</div>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className="w-full p-4 rounded-xl border-2 border-transparent hover:border-neutral-800 bg-neutral-900 mb-2">
-						<label htmlFor="twitter" className="block text-sm leading-6 text-gray-400">
-							Twitter
-						</label>
 						<div className="w-full flex">
 							<input
 								type="text"
 								id="twitter"
-								placeholder="safu_coin"
+								placeholder="x.com/SAFUlauncher"
 								{...register("twitter", {
 									required: true,
 								})}
@@ -92,9 +89,6 @@ const SetSocials = memo(
 						</div>
 					</div>
 					<div className="w-full p-4 rounded-xl border-2 border-transparent hover:border-neutral-800 bg-neutral-900 mb-2">
-						<label htmlFor="site" className="block text-sm leading-6 text-gray-400">
-							Website
-						</label>
 						<div className="w-full flex">
 							<input
 								type="text"
@@ -103,7 +97,7 @@ const SetSocials = memo(
 									required: true,
 								})}
 								defaultValue={website}
-								placeholder="http://www.w3.org"
+								placeholder="safulauncher.com"
 								className="block w-full rounded-xl pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-xl"
 							/>
 							<span className="block sm:text-4xl leading-6 text-gray-400 pt-1.5">
@@ -121,14 +115,11 @@ const SetSocials = memo(
 						</div>
 					</div>
 					<div className="w-full p-4 rounded-xl border-2 border-transparent hover:border-neutral-800 bg-neutral-900 mb-2">
-						<label htmlFor="telegram" className="block text-sm leading-6 text-gray-400">
-							Telegram
-						</label>
 						<div className="w-full flex">
 							<input
 								type="text"
 								id="telegram"
-								placeholder="@codeevolution"
+								placeholder="t.me/SAFULauncherPortal"
 								{...register("telegram", {
 									required: true,
 								})}

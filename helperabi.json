@@ -2,6 +2,17 @@
   "abi":[
     {
       "inputs":[
+        
+      ],
+      "name":"launchPresale",
+      "outputs":[
+        
+      ],
+      "stateMutability":"nonpayable",
+      "type":"function"
+    },
+    {
+      "inputs":[
         {
           "internalType":"address",
           "name":"_token",
