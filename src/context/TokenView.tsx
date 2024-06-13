@@ -16,7 +16,7 @@ import Swap from "@/components/PageModules/TokenView/Swap";
 import Staking from "@/components/PageModules/TokenView/Staking";
 import Promote from "@/components/PageModules/TokenView/Promote";
 import LPChanges from "@/components/PageModules/TokenView/LPChanges";
-import Team from "@/components/PageModules/Launch/Team";
+import Team from "@/components/PageModules/TokenView/Team";
 import Claim from "@/components/PageModules/TokenView/Claim";
 import Modal from "@/components/elements/Modal";
 import Limits from "@/components/PageModules/TokenView/Limits";
@@ -105,7 +105,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 									{!isTrading && (
 										<StartTrading contractAddress={params?.slug} callback={setIsTrading} setSuccess={setSuccess} />
 									)}
-									{isTrading && !isStaking && (
+									{!isStaking && (
 										<LaunchStaking contractAddress={params?.slug} callback={setIsStaking} setSuccess={setSuccess} />
 									)}
 									{isTrading && !token?.isLpRetrieved && !token?.isLpBurnt && (

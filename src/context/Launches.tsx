@@ -33,6 +33,7 @@ function Launches() {
 				} else {
 					if (address) {
 						fetchMyTokens(address?.toString(), API_ENDPOINT).then((tokensFetched) => {
+							if (tokensFetched.length === 0) setTokens([]);
 							setLaunches(tokensFetched);
 						});
 					}
@@ -43,6 +44,7 @@ function Launches() {
 					setTokens(stealth);
 				} else {
 					fetchStealthTokens(API_ENDPOINT).then((tokensFetched) => {
+						if (tokensFetched.length === 0) setTokens([]);
 						setStealth(tokensFetched);
 					});
 				}
@@ -52,6 +54,7 @@ function Launches() {
 					setTokens(explore);
 				} else {
 					fetchTokens(API_ENDPOINT).then((tokensFetched) => {
+						if (tokensFetched.length === 0) setTokens([]);
 						setExplore(tokensFetched);
 					});
 				}

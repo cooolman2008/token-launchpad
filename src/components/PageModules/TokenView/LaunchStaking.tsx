@@ -80,6 +80,7 @@ const LaunchStaking = ({
 								error="Share can be of maximum 20%"
 								width="w-24"
 								labelWidth="grow lg:grow-0"
+								containerWidth="w-full md:w-auto"
 								margin="mb-4 2xl:mb-0"
 							/>
 							<TextField
@@ -96,6 +97,7 @@ const LaunchStaking = ({
 								error="Timeout should be within 2-10 days"
 								width="w-20"
 								labelWidth="grow lg:grow-0"
+								containerWidth="w-full md:w-auto"
 								margin="mb-4 2xl:mb-0"
 							/>
 							<div className="flex justify-center flex-col">
