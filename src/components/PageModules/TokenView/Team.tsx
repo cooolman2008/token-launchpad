@@ -87,10 +87,9 @@ const Team = ({
 			<div className="w-full py-8 border-b border-gray-700">
 				<h2 className="text-xl mb-1">Add your team</h2>
 				<p className="text-sm text-gray-500 mb-4">
-					Add your team members <b className="font-bold text-gray-400">before starting the trade</b>
+					Add your team members before starting the trade
 					<br />
-					You can only add the team information <b className="font-bold text-gray-400">once.</b> So, be{" "}
-					<b className="font-bold text-gray-400">aware</b> of the details.
+					You can only add the team information once. So, be aware of the details.
 				</p>
 				<div className="w-full pb-4 rounded-xl">
 					<form onSubmit={handleSubmit(onSubmit)}>
@@ -123,7 +122,8 @@ const Team = ({
 								error="Minimum of 30 days Vesting period is needed."
 								width="w-24"
 								labelWidth="grow"
-								containerWidth="w-full md:w-1/2"
+								containerWidth="w-full md:w-1/2 "
+								padding="md:pr-0"
 							/>
 							<div className="w-full flex flex-wrap">
 								<TextField
@@ -156,7 +156,8 @@ const Team = ({
 									error="Share cannot be more than 1%."
 									width="w-24"
 									labelWidth="grow"
-									containerWidth="w-full md:w-1/2"
+									containerWidth="w-full md:w-1/2 "
+									padding="md:pr-0"
 								/>
 							</div>
 							{count > 1 && (

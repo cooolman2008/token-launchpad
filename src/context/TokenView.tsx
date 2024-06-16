@@ -22,6 +22,10 @@ import Modal from "@/components/elements/Modal";
 import Limits from "@/components/PageModules/TokenView/Limits";
 
 import { getGraphUrl } from "@/utils/utils";
+import LaunchPresale from "@/components/PageModules/TokenView/LaunchPresale";
+import Presale from "@/components/PageModules/TokenView/Presale";
+import PresaleDashboard from "@/components/PageModules/TokenView/PresaleDashboard";
+import PresaleUser from "@/components/PageModules/TokenView/PresaleUser";
 
 function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	const { data: walletClient } = useWalletClient();
@@ -37,6 +41,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	const [isTeamSet, setIsTeamSet] = useState(true);
 	const [isTrading, setIsTrading] = useState(true);
 	const [isStaking, setIsStaking] = useState(true);
+	const [presale, setPresale] = useState(0);
 	const [token, setToken] = useState<Token>();
 	const [success, setSuccess] = useState("");
 
@@ -48,15 +53,17 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	const fetchTheToken = useCallback(async () => {
 		const data = await fetchToken(params?.slug?.toString(), API_ENDPOINT);
 		const address_0 = "0x0000000000000000000000000000000000000000";
-		if (data?.pair === address_0) {
-			data.pair = "";
-			setIsTrading(false);
+		if (data?.presaleStatus) {
+			setPresale(Number(data?.presaleStatus));
 		}
 		if (data?.staking === address_0) {
 			data.staking = "";
 			setIsStaking(false);
 		}
-		setToken(data);
+		if (data?.pair === address_0) {
+			data.pair = "";
+			setIsTrading(false);
+		}
 		if (data?.owner.toLowerCase() === address?.toLowerCase()) {
 			setIsOwner(true);
 		}
@@ -78,6 +85,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 		) {
 			setIsTeam(true);
 		}
+		setToken(data);
 	}, [API_ENDPOINT, address, params?.slug]);
 
 	useEffect(() => {
@@ -95,14 +103,31 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 					{success && <Modal msg={success} callback={clear} />}
 					<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-12 w-full">
 						<div className="sm:col-span-7 lg:col-span-8">
-							<Intro address={params?.slug} token={token} isOwner={isOwner} />
+							<Intro address={params?.slug} token={token} isOwner={isOwner} isPresale={presale === 1} />
 							{isTeam && <Claim contractAddress={params?.slug} />}
-							{isOwner && walletClient && (
+							{isOwner && !isTrading && !isTeamSet && (
+								<Team contractAddress={params?.slug} callback={setIsTeamSet} setSuccess={setSuccess} />
+							)}
+							{isOwner && (
 								<>
-									{!isTrading && !isTeamSet && (
-										<Team contractAddress={params?.slug} callback={setIsTeamSet} setSuccess={setSuccess} />
+									{!isTrading && presale === 0 && (
+										<LaunchPresale
+											contractAddress={params?.slug}
+											callback={clear}
+											setSuccess={setSuccess}
+											presaleAddress={getAddress(token?.presale)}
+										/>
 									)}
-									{!isTrading && (
+									{presale !== 0 && token?.presale && (
+										<PresaleDashboard
+											contractAddress={params?.slug}
+											callback={clear}
+											setSuccess={setSuccess}
+											presaleAddress={getAddress(token?.presale)}
+											isTrading={isTrading}
+										/>
+									)}
+									{!isTrading && presale !== 1 && (
 										<StartTrading contractAddress={params?.slug} callback={setIsTrading} setSuccess={setSuccess} />
 									)}
 									{!isStaking && (
@@ -126,7 +151,20 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 									)}
 								</>
 							)}
-							{walletClient && <Promote contractAddress={params?.slug} />}
+							{walletClient && (
+								<>
+									{!isTrading && presale > 1 && token?.presale && (
+										<PresaleUser
+											contractAddress={params?.slug}
+											callback={clear}
+											setSuccess={setSuccess}
+											presaleAddress={getAddress(token?.presale)}
+											presaleStatus={presale}
+										/>
+									)}
+									<Promote contractAddress={params?.slug} />
+								</>
+							)}
 						</div>
 						<div className="sm:col-span-5 lg:col-span-4">
 							<Swap
@@ -134,12 +172,19 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 								symbol={token?.symbol ? token?.symbol : ""}
 								tradingEnabled={token?.pair ? true : false}
 							/>
+							{presale === 1 && token?.presale && walletClient && (
+								<Presale
+									contractAddress={params?.slug}
+									presaleAddress={getAddress(token?.presale)}
+									symbol={token?.symbol ? token?.symbol : ""}
+									setSuccess={setSuccess}
+								/>
+							)}
 							{isStaking && token?.staking && walletClient && (
 								<Staking
 									contractAddress={params?.slug}
 									stakingAddress={getAddress(token?.staking)}
 									symbol={token?.symbol ? token?.symbol : ""}
-									callback={setIsStaking}
 									setSuccess={setSuccess}
 								/>
 							)}

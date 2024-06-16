@@ -95,10 +95,7 @@ const LPChanges = ({
 						{remaining > 0 ? remaining + " days lock remaining" : "Lock period has expired!"}
 					</span>
 				</div>
-				<p className="text-sm text-gray-500 mb-4">
-					You can either<b className="font-bold text-gray-400"> Burn LP </b>tokens or
-					<b className="font-bold text-gray-400"> Extend </b>the lock period.
-				</p>
+				<p className="text-sm text-gray-500 mb-4">You can either Burn LP tokens or Extend the lock period.</p>
 				<div className="w-full flex pb-4 rounded-xl justify-between flex-wrap">
 					<div className="flex flex-col justify-center">
 						<button

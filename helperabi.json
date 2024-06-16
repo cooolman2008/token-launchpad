@@ -2,7 +2,11 @@
   "abi":[
     {
       "inputs":[
-        
+        {
+          "internalType":"address",
+          "name":"_token",
+          "type":"address"
+        }
       ],
       "name":"launchPresale",
       "outputs":[

@@ -1,4 +1,4 @@
-import { useContractWrite, useWalletClient } from "wagmi";
+import { useContractWrite, useWalletClient, useBalance } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, SetStateAction, Dispatch } from "react";
 import { parseEther } from "viem";
@@ -26,7 +26,23 @@ const StartTrading = ({
 }) => {
 	const { data: walletClient } = useWalletClient();
 	const [showLock, setShowLock] = useState(true);
+	const [balance, setBalance] = useState(0);
 	const [error, setError] = useState("");
+
+	const { data } = useBalance({
+		address: contractAddress,
+		onSuccess(data) {
+			console.log("Success", data);
+			setBalance(Number(data.formatted));
+		},
+		onError(error) {
+			console.log("Error", error);
+		},
+	});
+
+	const clear = () => {
+		setError("");
+	};
 
 	// contract call to start trading of the launched token.
 	const { isLoading, write } = useContractWrite({
@@ -61,7 +77,9 @@ const StartTrading = ({
 	return (
 		<>
 			{isLoading && <Loading msg="Enabling trading..." />}
-			{error && <Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} />}
+			{error && (
+				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
+			)}
 			<div className="w-full py-8 border-b border-gray-700">
 				<div className="bg-gradient-to-r from-red-800/20 mb-2 p-4 rounded-xl border border-red-900/50">
 					<div className="flex items-center">
@@ -82,16 +100,19 @@ const StartTrading = ({
 						<p className="font-bold text-red-600">Warning!</p>
 					</div>
 					<span className=" font-medium text-red-700 text-sm">
-						Make sure you have set your <b className="font-semi-bold text-red-600">teams</b> & launched your{" "}
-						<b className="font-semi-bold text-red-600">pre-sales</b> before enabling the trade.
+						Make sure you have set your team wallet details before enabling the trade.
 					</span>
 				</div>
-				<h2 className="text-xl mb-1">Start trading!</h2>
+				<div className="flex justify-between items-center">
+					<h2 className="text-xl mb-1 text-slate-200">Start trading!</h2>
+					<span className="text-xl font-medium text-slate-200">
+						<b className="font-bold text-gray-500">Available:</b> {balance} ETH
+					</span>
+				</div>
 				<p className="text-sm text-gray-500 mb-4">
-					Start trading your tokens by creating a <b className="font-bold text-gray-400">liquidity pool</b>
+					Start trading your tokens by creating a liquidity pool
 					<br />
-					You can either <b className="font-bold text-gray-400">Burn</b> the LP tokens or{" "}
-					<b className="font-bold text-gray-400">Lock</b> them for a period of time.
+					You can either Burn the LP tokens or Lock them for a period of time.
 				</p>
 				<div className="w-full pb-4 rounded-xl">
 					<form onSubmit={handleSubmit(onSubmit)}>
@@ -102,15 +123,19 @@ const StartTrading = ({
 								defaultValue="0.1"
 								placeholder="0"
 								{...register("liq", {
-									required: true,
-									min: 0.1,
+									valueAsNumber: true,
+									required: {
+										value: true,
+										message: "Value needed",
+									},
+									validate: (value) => value + balance > 0.1 || "Min liq needed",
 								})}
 								isError={errors.liq ? true : false}
-								error="Please enter minimum liquidity"
+								error={errors.liq?.message ? errors.liq?.message : "Some error"}
 								width="w-20"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"
-								margin="mb-4 2xl:mb-0"
+								margin="mb-4 lg:mb-0"
 							/>
 							<TextField
 								label="Lock days"
@@ -127,7 +152,7 @@ const StartTrading = ({
 								width="w-20"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"
-								margin="mb-4 2xl:mb-0"
+								margin="mb-4 lg:mb-0"
 							/>
 							<div className="flex flex-col mr-4 justify-center">
 								<div className="flex items-center">

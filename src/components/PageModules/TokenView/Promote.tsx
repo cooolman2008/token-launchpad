@@ -80,9 +80,7 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 			<p className="text-sm text-gray-500 mb-4">
 				Start promoting this token to raise the noice!
 				<br />
-				Just enter the number of <b className="font-bold text-gray-400">Times</b> you want to display, we will populate
-				the
-				<b className="font-bold text-gray-400"> Cost</b> for you.
+				Just enter the number of times you want to display, we will populate the cost for you.
 			</p>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="w-full pb-4 rounded-xl mb-2">
@@ -120,7 +118,7 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 							containerWidth="w-full md:w-auto"
 							margin="mb-4 lg:mb-0"
 						/>
-						<div className="w-full lg:w-auto flex justify-center flex-col align-self-start">
+						<div className="w-full lg:w-auto flex justify-center flex-col">
 							<input
 								type="submit"
 								value={"Promote for " + price + " ETH"}

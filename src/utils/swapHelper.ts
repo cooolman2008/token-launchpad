@@ -10,6 +10,7 @@ import {
     parseUnits,
     formatEther
 } from "viem";
+import { getNumber } from "./math";
 
 const UNISWAP_ROUTER_ADDRESS = process.env.UNISWAP_ROUTER_ADDRESS;
 
@@ -72,13 +73,7 @@ export const getExchangeRate = (reserves:bigint[], amount: bigint, chain: Chain)
         })
         .then((value) => {
         if(typeof value === 'bigint'){
-
-            const rate = parseFloat(formatEther(BigInt(value))).toLocaleString(
-            "en",
-            {
-              minimumFractionDigits: 4,
-            }
-          );
+            const rate = getNumber(value, 4).toString();
             return resolve(rate);
         }
         }).catch(()=> {

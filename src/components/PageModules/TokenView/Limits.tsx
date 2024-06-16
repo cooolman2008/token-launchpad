@@ -66,9 +66,7 @@ const Limits = ({
 			)}
 			<div className="w-full py-8 border-b border-gray-700">
 				<h2 className="text-xl mb-1">Increase Limits</h2>
-				<p className="text-sm text-gray-500 mb-4">
-					Increase <b className="font-bold text-gray-400"> Limits </b>to allow people to trade more.
-				</p>
+				<p className="text-sm text-gray-500 mb-4">Increase Limits to allow people to trade more.</p>
 				<form onSubmit={handleSubmit(onSubmit)} className="w-full md:w-auto flex justify-between">
 					<div className="w-full pb-4 rounded-xl mb-2">
 						<div className="w-full flex flex-wrap justify-between">

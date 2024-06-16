@@ -1,10 +1,16 @@
 import { GraphQLClient } from 'graphql-request';
 
+interface DayData {
+  dailyVolumeUSD: bigint;
+}
+
 export interface Token {
     name: string;
     totalSupply: number;
     pair: string;
     staking: string;
+    presale: string;
+    presaleStatus: string;
     lplockDays: number;
     isLpRetrieved: boolean;
     isLpBurnt: boolean;
@@ -21,6 +27,8 @@ export interface Token {
     telegram: string;
     website: string;
     twitter: string;
+    totalLiquidity: number;
+    tokenDayData:  DayData[];
 }
 
 interface tokenResponse {
@@ -35,6 +43,8 @@ export async function fetchToken(id: string, api_endpoint: string) {
             totalSupply
             pair
             staking
+            presale
+            presaleStatus
             lplockDays
             isLpRetrieved
             isLpBurnt
@@ -51,6 +61,10 @@ export async function fetchToken(id: string, api_endpoint: string) {
             telegram
             website
             twitter
+            totalLiquidity
+            tokenDayData {
+              dailyVolumeUSD
+            }
           }
         }`;
       
