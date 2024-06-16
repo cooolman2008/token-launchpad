@@ -9,6 +9,7 @@ import Modal from "@/components/elements/Modal";
 // token & staking abis
 import tokenAbi from "../../../../newtokenabi.json";
 import stakingabi from "../../../../stakingabi.json";
+import { getNumber } from "@/utils/math";
 
 interface StakingForm {
 	amount: number;
@@ -27,13 +28,11 @@ const Staking = ({
 	symbol,
 	contractAddress,
 	stakingAddress,
-	callback,
 	setSuccess,
 }: {
 	symbol: string;
 	contractAddress: `0x${string}`;
 	stakingAddress: `0x${string}`;
-	callback: Dispatch<SetStateAction<boolean>>;
 	setSuccess: Dispatch<SetStateAction<string>>;
 }) => {
 	const { data: walletClient } = useWalletClient();
@@ -199,11 +198,11 @@ const Staking = ({
 						<div className="flex justify-between mb-2">
 							<span className="text-sm font-medium text-gray-400">
 								<b className="font-bold text-gray-500">Staked:</b>{" "}
-								{user?.stakedAmount ? Number(formatEther(user?.stakedAmount)).toFixed(2) : "0.00"}
+								{user?.stakedAmount ? getNumber(user?.stakedAmount) : "0"}
 							</span>
 							<span className="text-sm font-medium text-gray-400">
 								<b className="font-bold text-gray-500">Unstaked:</b>{" "}
-								{user?.stakedAmount ? Number(formatEther(user?.unstakedAmount)).toFixed(2) : "0.00"}
+								{user?.stakedAmount ? getNumber(user?.unstakedAmount) : "0"}
 							</span>
 						</div>
 						<div className="w-full flex">
@@ -242,7 +241,7 @@ const Staking = ({
 					<div className="flex justify-between items-center mb-2">
 						<span className="text-base font-medium text-gray-400">
 							<b className="font-normal text-gray-500">Withdrawable:</b>{" "}
-							{user?.withdrawable ? Number(formatEther(user?.withdrawable)).toFixed(2) : "0.00"}
+							{user?.withdrawable ? getNumber(user?.withdrawable) : "0"}
 						</span>
 						<div className="flex justify-center flex-col mt-2">
 							<input
@@ -259,8 +258,7 @@ const Staking = ({
 				{user?.claimable !== BigInt(0) && (
 					<div className="flex justify-between items-center">
 						<span className="text-base font-medium text-gray-400">
-							<b className="font-normal text-gray-500">Reward:</b>{" "}
-							{user?.claimable ? Number(formatEther(user?.claimable)).toFixed(2) : "0.00"}
+							<b className="font-normal text-gray-500">Reward:</b> {user?.claimable ? getNumber(user?.claimable) : "0"}
 						</span>
 						<div className="flex justify-center flex-col mt-2">
 							<input className="safu-button-primary cursor-pointer" type="button" value="Claim" />

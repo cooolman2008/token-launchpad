@@ -1,7 +1,7 @@
 export const getContractAddress = ( chainId: number | undefined) => {
     switch(chainId) {
         case 1: return "0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-        default: return "0x716473fb4e7cd49c7d1ec7ec6d7490a03d9da332"
+        default: return "0x67fc5aa53440518ddbad4b381fd4b86ffd77b776"
     }
 }
 
@@ -25,3 +25,12 @@ export const getBaseCoin = ( chainId: number) => {
         default: return "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
     }
 }
+
+export const sleep = (milliseconds: number) => {
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+      if ((new Date().getTime() - start) > milliseconds) {
+        break;
+      }
+    }
+  }

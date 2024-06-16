@@ -25,7 +25,11 @@ const LaunchStaking = ({
 	const { data: walletClient } = useWalletClient();
 	const [error, setError] = useState("");
 
-	// contract call to start trading of the launched token.
+	const clear = () => {
+		setError("");
+	};
+
+	// contract call to launch staking.
 	const { isLoading, write } = useContractWrite({
 		address: contractAddress,
 		abi: Ownerabi.abi,
@@ -42,7 +46,7 @@ const LaunchStaking = ({
 		},
 	});
 
-	// handle trading form.
+	// handle launch staking form.
 	const {
 		register,
 		handleSubmit,
@@ -56,12 +60,12 @@ const LaunchStaking = ({
 	return (
 		<>
 			{isLoading && <Loading msg="Launching staking..." />}
-			{error && <Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} />}
+			{error && (
+				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
+			)}
 			<div className="w-full py-8 border-b border-gray-700">
 				<h2 className="text-xl mb-1">Launch Staking</h2>
-				<p className="text-sm text-gray-500 mb-4">
-					Launch <b className="font-bold text-gray-400">staking</b> for your token.
-				</p>
+				<p className="text-sm text-gray-500 mb-4">Launch staking for your token.</p>
 				<div className="w-full pb-4 rounded-xl">
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<div className="w-full flex justify-between flex-wrap">
@@ -81,7 +85,7 @@ const LaunchStaking = ({
 								width="w-24"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"
-								margin="mb-4 2xl:mb-0"
+								margin="mb-4 lg:mb-0"
 							/>
 							<TextField
 								label="Timeout"
@@ -98,9 +102,9 @@ const LaunchStaking = ({
 								width="w-20"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"
-								margin="mb-4 2xl:mb-0"
+								margin="mb-4 lg:mb-0"
 							/>
-							<div className="flex justify-center flex-col">
+							<div className="w-full lg:w-auto flex justify-center flex-col">
 								<input type="submit" value="Launch Staking" className="safu-button-secondary cursor-pointer" />
 							</div>
 						</div>

@@ -22,11 +22,11 @@ const Modal = ({
 				<div className="fixed top-0 left-0 z-50 flex justify-center items-center h-screen w-screen bg-[rgba(0,0,0,0.75)]">
 					<div
 						className={
-							"relative flex flex-col w-3/4 xl:w-1/3 h-80 p-4 bg-gradient-to-r from-neutral-800/50 rounded-xl items-center justify-center font-light border" +
+							"relative flex flex-col w-3/4 xl:w-1/3 h-80 p-4 bg-black/10 backdrop-blur-sm rounded-xl items-center justify-center font-light border" +
 							(error ? " border-pink-600/45" : " border-emerald-600/45")
 						}
 					>
-						<span className={"text-base font-medium " + (error ? "text-red-600" : "text-emerald-600")}>{msg}</span>
+						<span className={"text-xl font-medium " + (error ? "text-red-600" : "text-emerald-600")}>{msg}</span>
 						{des && (
 							<span className={"text-sm font-normal " + (error ? "text-red-700" : "text-emerald-600")}>{des}</span>
 						)}

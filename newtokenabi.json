@@ -67,7 +67,7 @@
           "type":"address"
         }
       ],
-      "name":"PresaleEnded",
+      "name":"PresaleFinished",
       "type":"event"
     },
     {
@@ -290,6 +290,11 @@
             {
               "internalType":"uint256",
               "name":"startTs",
+              "type":"uint256"
+            },
+            {
+              "internalType":"uint256",
+              "name":"finishTs",
               "type":"uint256"
             },
             {
