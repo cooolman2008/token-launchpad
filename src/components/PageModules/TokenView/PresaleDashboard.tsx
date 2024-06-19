@@ -1,5 +1,5 @@
 import { useContractWrite, useWalletClient, useContractRead, useBalance } from "wagmi";
-import { useState, SetStateAction, Dispatch } from "react";
+import { useState, SetStateAction, Dispatch, useEffect } from "react";
 
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
@@ -12,6 +12,7 @@ interface Presale {
 	softcap: bigint;
 	hardcap: bigint;
 	startTs: bigint;
+	finishTs: bigint;
 	duration: bigint;
 	sold: bigint;
 	maxEth: bigint;
@@ -23,14 +24,17 @@ const PresaleDashboard = ({
 	presaleAddress,
 	setSuccess,
 	isTrading,
+	symbol,
 }: {
 	presaleAddress?: `0x${string}`;
 	setSuccess: Dispatch<SetStateAction<string>>;
 	isTrading: boolean;
+	symbol: string;
 }) => {
 	const { data: walletClient } = useWalletClient();
 	const [presale, setPresale] = useState<Presale>();
 	const [balance, setBalance] = useState(0);
+	const [presaleScene, setPresaleScene] = useState(0);
 	const [error, setError] = useState("");
 
 	useBalance({
@@ -44,10 +48,6 @@ const PresaleDashboard = ({
 		},
 	});
 
-	const clear = () => {
-		setError("");
-	};
-
 	// get presale details.
 	const { refetch } = useContractRead({
 		address: presaleAddress,
@@ -59,6 +59,10 @@ const PresaleDashboard = ({
 			}
 		},
 	});
+
+	const clear = () => {
+		setError("");
+	};
 
 	// contract call to end presale.
 	const { isLoading: finishing, write: finish } = useContractWrite({
@@ -110,6 +114,41 @@ const PresaleDashboard = ({
 			setError("Something went wrong!");
 		},
 	});
+
+	// 1 - Presale live
+	// 2 - Presale successfull but not trading, refund - display banner
+	// 3 - Presale successfull but not trading & duration passed - display red banner
+	// 4 - Presale successfull trading started & balance claim.
+	// 5 - Presale Unsuccessfull
+	useEffect(() => {
+		switch (presale?.status) {
+			case BigInt(1):
+				setPresaleScene(1);
+				break;
+			case BigInt(2):
+				if (!isTrading) {
+					const finish = Number(presale.finishTs);
+					const durarion = Number(presale.duration);
+					if (Math.floor(Date.now() / 1000) < finish + durarion * 86400) {
+						setPresaleScene(2);
+					} else {
+						setPresaleScene(3);
+					}
+				} else {
+					if (balance > 0) {
+						setPresaleScene(4);
+					}
+				}
+				break;
+			case BigInt(3):
+				if (!isTrading) {
+					setPresaleScene(5);
+				}
+				break;
+			default:
+				setPresaleScene(0);
+		}
+	}, [balance, isTrading, presale]);
 	return (
 		<>
 			{refunding && <Loading msg="Retrieving presales fund from the token contract..." />}
@@ -117,16 +156,42 @@ const PresaleDashboard = ({
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
 			)}
-			{(presale?.status === BigInt(1) ||
-				(presale?.status === BigInt(2) && !isTrading) ||
-				(presale?.status === BigInt(2) && isTrading && balance > 0) ||
-				presale?.status === BigInt(3)) && (
+			{presaleScene > 0 && (
 				<div className="w-full py-8 border-b border-gray-700">
+					{(presaleScene === 2 || presaleScene === 3) && (
+						<div
+							className={
+								"bg-gradient-to-r mb-2 p-4 rounded-xl border" +
+								(presaleScene === 2 ? " from-yellow-800/20 border-yellow-900/50" : " from-red-800/20 border-red-900/50")
+							}
+						>
+							<div className="flex items-center">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="18px"
+									height="18px"
+									viewBox="0 0 24 24"
+									className={"mr-1" + (presaleScene === 2 ? " stroke-yellow-600" : " stroke-red-600")}
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
+									<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+									<line x1="12" y1="9" x2="12" y2="13"></line>
+									<line x1="12" y1="17" x2="12.01" y2="17"></line>
+								</svg>
+								<p className={"font-bold" + (presaleScene === 2 ? " text-yellow-600" : " text-red-600")}>Warning!</p>
+							</div>
+							<span className={"font-medium text-sm" + (presaleScene === 2 ? " text-yellow-700" : " text-red-700")}>
+								{presaleScene === 2
+									? "Start trading before the duration ends. All the raised funds can be refunded after the duration ends."
+									: "Start trading now! All the funds can be refunded any moment now."}
+							</span>
+						</div>
+					)}
 					<div className="flex mb-1">
-						{presale?.status !== BigInt(3) && !isTrading && (
-							<h2 className="text-xl text-slate-200 mr-1">Presale management</h2>
-						)}
-						{presale?.status === BigInt(1) && (
+						{presaleScene < 4 && <h2 className="text-xl text-slate-200 mr-1">Presale management</h2>}
+						{presaleScene === 1 && (
 							<svg height="24px" width="24px" version="1.1" viewBox="0 0 611.999 611.999">
 								<defs>
 									<linearGradient id="grad3" gradientTransform="rotate(45)">
@@ -143,17 +208,17 @@ const PresaleDashboard = ({
 							</svg>
 						)}
 					</div>
-					{presale?.status === BigInt(1) && (
+					{presaleScene === 1 && (
 						<>
 							<p className="text-sm text-gray-500 mb-4">You can terminate presale whenever you want.</p>
 							<div className="w-full flex justify-between">
-								<h2 className="text-2xl font-medium text-slate-200">
-									<b className="font-bold text-gray-500">Sold:</b> {presale?.sold ? getNumber(presale?.sold) : "0"}{" "}
-									Tokens
+								<h2 className="text-2xl font-extralight text-slate-200">
+									<b className="font-normal text-gray-400">Sold:</b> {presale?.sold ? getNumber(presale?.sold) : "0"}{" "}
+									{symbol}
 								</h2>
 								<div className="flex justify-center flex-col">
 									<input
-										className="safu-button-primary cursor-pointer"
+										className="safu-button-secondary cursor-pointer"
 										type="submit"
 										value="End Presales"
 										onClick={() => {
@@ -164,7 +229,7 @@ const PresaleDashboard = ({
 							</div>
 						</>
 					)}
-					{presale?.status === BigInt(2) && !isTrading && (
+					{(presaleScene === 2 || presaleScene === 3) && (
 						<>
 							<p className="text-sm text-gray-500 mb-4">
 								You can refund your presale funds to the users if you are not plannig to start the trading.
@@ -172,11 +237,11 @@ const PresaleDashboard = ({
 							<div className="w-full flex justify-between">
 								<h2 className="text-2xl font-medium text-slate-200">
 									<b className="font-bold text-gray-500">Sold:</b> {presale?.sold ? getNumber(presale?.sold) : "0"}{" "}
-									Tokens
+									{symbol}
 								</h2>
 								<div className="flex justify-center flex-col">
 									<input
-										className="safu-button-primary cursor-pointer"
+										className="safu-button-secondary cursor-pointer"
 										type="submit"
 										value="Refund Presales"
 										onClick={() => {
@@ -187,7 +252,7 @@ const PresaleDashboard = ({
 							</div>
 						</>
 					)}
-					{presale?.status === BigInt(2) && isTrading && balance > 0 && (
+					{presaleScene === 4 && (
 						<>
 							<div className="w-full flex flex-wrap justify-center">
 								<h2 className="w-full text-xl text-red-700 font-medium text-center mb-4">
@@ -195,7 +260,7 @@ const PresaleDashboard = ({
 								</h2>
 								<div className="flex justify-center flex-col">
 									<input
-										className="safu-button-primary cursor-pointer"
+										className="safu-button-secondary cursor-pointer"
 										type="submit"
 										value={"Claim " + balance}
 										onClick={() => {
@@ -206,7 +271,7 @@ const PresaleDashboard = ({
 							</div>
 						</>
 					)}
-					{presale?.status === BigInt(3) && (
+					{presaleScene === 5 && (
 						<>
 							<div className="w-full flex flex-wrap justify-between">
 								<h2 className="w-full text-md text-red-700 font-medium text-center">

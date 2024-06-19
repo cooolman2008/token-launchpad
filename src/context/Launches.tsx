@@ -9,7 +9,7 @@ import Details from "@/components/PageModules/Launches/Details";
 import Table from "@/components/elements/Table";
 
 import { getGraphUrl } from "@/utils/utils";
-import { fetchTokens, fetchMyTokens, fetchStealthTokens, Tokens } from "@/api/getTokens";
+import { fetchTokens, fetchMyTokens, fetchStealthTokens, Tokens, fetchPrelaunchTokens } from "@/api/getTokens";
 
 function Launches() {
 	const { data: walletClient } = useWalletClient();
@@ -24,6 +24,7 @@ function Launches() {
 	const [explore, setExplore] = useState<Tokens[]>([]);
 	const [launches, setLaunches] = useState<Tokens[]>([]);
 	const [stealth, setStealth] = useState<Tokens[]>([]);
+	const [prelaunch, setPrelaunch] = useState<Tokens[]>([]);
 
 	useEffect(() => {
 		switch (tab) {
@@ -49,17 +50,28 @@ function Launches() {
 					});
 				}
 				break;
+			case "Prelaunch":
+				if (prelaunch.length > 0) {
+					setTokens(prelaunch);
+				} else {
+					fetchPrelaunchTokens(API_ENDPOINT).then((tokensFetched) => {
+						if (tokensFetched.length === 0) setTokens([]);
+						setPrelaunch(tokensFetched);
+					});
+				}
+				break;
 			default:
 				if (explore.length > 0) {
 					setTokens(explore);
 				} else {
 					fetchTokens(API_ENDPOINT).then((tokensFetched) => {
+						console.log(tokensFetched);
 						if (tokensFetched.length === 0) setTokens([]);
 						setExplore(tokensFetched);
 					});
 				}
 		}
-	}, [API_ENDPOINT, address, explore, launches, stealth, tab]);
+	}, [API_ENDPOINT, address, explore, launches, stealth, prelaunch, tab]);
 
 	useEffect(() => {
 		setIsClient(true);
@@ -101,6 +113,14 @@ function Launches() {
 						>
 							Stealth Launches
 						</h2>
+						<h2
+							className={"text-2xl px-8 cursor-pointer " + (tab === "Prelaunch" ? "safu-grad-text-l" : "text-gray-400")}
+							onClick={() => {
+								setTab("Prelaunch");
+							}}
+						>
+							Prelaunches
+						</h2>
 						<h2 className="w-32 self-end ml-auto pt-2 pb-2.5 pl-3.5 rounded-2xl flex border border-neutral-700">
 							<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
 								<path
@@ -112,7 +132,7 @@ function Launches() {
 					</div>
 					<div className="w-full mb-8 overflow-hidden rounded-2xl shadow-lg border border-neutral-800">
 						<div className="w-full overflow-x-auto">
-							<Table tokens={tokens} />
+							<Table tokens={tokens} type={tab} />
 						</div>
 					</div>
 					<Link href="/launch" className="safu-button-secondary">

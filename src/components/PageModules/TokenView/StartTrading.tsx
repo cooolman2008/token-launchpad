@@ -29,10 +29,9 @@ const StartTrading = ({
 	const [balance, setBalance] = useState(0);
 	const [error, setError] = useState("");
 
-	const { data } = useBalance({
+	useBalance({
 		address: contractAddress,
 		onSuccess(data) {
-			console.log("Success", data);
 			setBalance(Number(data.formatted));
 		},
 		onError(error) {

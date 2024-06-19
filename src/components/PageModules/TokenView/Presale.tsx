@@ -6,11 +6,9 @@ import { parseEther } from "viem";
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
 
-// token & presale abis
-import tokenAbi from "../../../../newtokenabi.json";
 import Presaleabi from "../../../../presaleabi.json";
 
-import { getNumber } from "@/utils/math";
+import { getAbr, getNumber } from "@/utils/math";
 
 interface PresaleForm {
 	amount: number;
@@ -41,8 +39,6 @@ const Presale = ({
 
 	const [error, setError] = useState("");
 	const [presale, setPresale] = useState<Presale>();
-	const [claimable, setClaimable] = useState(BigInt(0));
-	const [claimableDays, setClaimableDays] = useState(BigInt(0));
 	const [bought, setBought] = useState(BigInt(0));
 	const [maxBag, setMaxBag] = useState(0);
 
@@ -66,8 +62,6 @@ const Presale = ({
 		args: [address],
 		onSuccess(data: [bigint, bigint, bigint]) {
 			if (data && data.length > 0) {
-				setClaimable(data[0]);
-				setClaimableDays(data[1]);
 				setBought(data[2]);
 			}
 		},
@@ -129,31 +123,53 @@ const Presale = ({
 			<div className="presale-container mt-12">
 				<div className="flex justify-between mb-2 items-center relative">
 					<h2 className="text-2xl">Presale</h2>
-					<span className="text-sm font-medium text-green-400">
-						Tokens sold: {presale?.sold ? getNumber(presale?.sold) : "0"}
+					<span
+						className={
+							"text-sm font-normal " +
+							(presale?.sold && presale?.softcap && presale?.sold > presale?.softcap
+								? "text-green-400"
+								: "text-amber-400")
+						}
+					>
+						<b className="text-sm font-normal text-gray-400">Sold: </b> {presale?.sold ? getNumber(presale?.sold) : "0"}
 					</span>
 				</div>
 				<form onSubmit={handleSubmit(onSubmit)} className="mb-4">
 					<div className="w-full p-4 rounded-xl border-2 border-transparent hover:border-neutral-800 bg-neutral-900">
 						<div className="flex justify-between mb-2">
-							<span className="text-sm font-medium text-gray-400">
-								<b className="font-bold text-gray-500">Softcap:</b>{" "}
-								{presale?.softcap ? getNumber(presale?.softcap) : "0"}
+							<span className="text-sm font-light text-gray-400">
+								Softcap: {presale?.softcap ? getAbr(getNumber(presale?.softcap)) : "0"}
 							</span>
-							<span
-								className={"text-sm font-medium " + (errors.amount || maxBag === 0 ? "text-red-600" : "text-gray-400")}
-							>
-								<b className="font-bold text-gray-500">Wallet limit:</b> {maxBag}
+							<span className="text-sm font-normal text-gray-400">
+								Hardcap: {presale?.hardcap ? getAbr(getNumber(presale?.hardcap)) : "0"}
 							</span>
 						</div>
+						<div className="flex justify-between mb-2">
+							<div className="w-full h-4 relative rounded-xl bg-neutral-800  border-neutral-700/60">
+								<div
+									className={
+										"absolute top-0 left-0 right-0 bottom-0 rounded-l-xl text-sm text-black pl-2" +
+										(presale?.sold && presale?.softcap && presale?.sold > presale?.softcap
+											? " bg-green-600"
+											: " bg-amber-400")
+									}
+									style={
+										presale?.sold && presale?.sold > 0
+											? {
+													width: (Number(presale?.sold) * 100) / Number(presale?.hardcap) + "%",
+											  }
+											: { visibility: "hidden" }
+									}
+								></div>
+							</div>
+						</div>
 						<div className="flex justify-between mb-4">
-							<span className="text-sm font-medium text-gray-400">
-								<b className="font-bold text-gray-500">Hardcap:</b>{" "}
-								{presale?.hardcap ? getNumber(presale?.hardcap) : "0"}
+							<span
+								className={"text-sm font-normal " + (errors.amount || maxBag === 0 ? "text-red-600" : "text-gray-400")}
+							>
+								<b className="text-sm font-normal text-gray-400">Wallet limit:</b> {maxBag}
 							</span>
-							<span className="text-sm font-medium text-gray-400">
-								<b className="font-bold text-gray-500">You bought:</b> {bought ? getNumber(bought) : "0"}
-							</span>
+							<span className="text-sm font-normal text-gray-400">You Bought: {bought ? getNumber(bought) : "0"}</span>
 						</div>
 						<div className="w-full flex">
 							<input

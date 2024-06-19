@@ -113,18 +113,16 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 									{!isTrading && presale === 0 && (
 										<LaunchPresale
 											contractAddress={params?.slug}
-											callback={clear}
 											setSuccess={setSuccess}
 											presaleAddress={getAddress(token?.presale)}
 										/>
 									)}
 									{presale !== 0 && token?.presale && (
 										<PresaleDashboard
-											contractAddress={params?.slug}
-											callback={clear}
 											setSuccess={setSuccess}
 											presaleAddress={getAddress(token?.presale)}
 											isTrading={isTrading}
+											symbol={token?.symbol ? token?.symbol : ""}
 										/>
 									)}
 									{!isTrading && presale !== 1 && (
@@ -153,13 +151,13 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 							)}
 							{walletClient && (
 								<>
-									{!isTrading && presale > 1 && token?.presale && (
+									{presale > 0 && token?.presale && (
 										<PresaleUser
-											contractAddress={params?.slug}
 											callback={clear}
 											setSuccess={setSuccess}
 											presaleAddress={getAddress(token?.presale)}
-											presaleStatus={presale}
+											isTrading={isTrading}
+											isOwner={isOwner}
 										/>
 									)}
 									<Promote contractAddress={params?.slug} />
