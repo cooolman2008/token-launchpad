@@ -49,8 +49,7 @@ const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>;
 					id="taxSwapThreshold"
 					placeholder="1000"
 					{...register("taxSwapThreshold", {
-						max: 1000,
-						min: 0,
+						required: true,
 					})}
 					isError={errors.taxSwapThreshold ? true : false}
 					error="Please provide a valid limit."
@@ -62,8 +61,7 @@ const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>;
 					id="maxSwap"
 					placeholder="10000"
 					{...register("maxSwap", {
-						max: 10000,
-						min: 0,
+						required: true,
 					})}
 					isError={errors.maxSwap ? true : false}
 					error="Please provide a valid limit."

@@ -8,8 +8,8 @@ import Link from "next/link";
 import Details from "@/components/PageModules/Launches/Details";
 import Table from "@/components/elements/Table";
 
-import { getGraphUrl } from "@/utils/utils";
-import { fetchTokens, fetchMyTokens, fetchStealthTokens, Tokens, fetchPrelaunchTokens } from "@/api/getTokens";
+import { getContractAddress, getGraphUrl } from "@/utils/utils";
+import { fetchTokens, fetchMyTokens, fetchStealthTokens, Tokens, fetchPresalesTokens } from "@/api/getTokens";
 
 function Launches() {
 	const { data: walletClient } = useWalletClient();
@@ -17,6 +17,7 @@ function Launches() {
 
 	const { selectedNetworkId: chainId } = useWeb3ModalState();
 	const API_ENDPOINT = getGraphUrl(Number(chainId));
+	const CONTRACT_ADDRESS = getContractAddress(Number(chainId));
 
 	const [isClient, setIsClient] = useState(false);
 	const [tab, setTab] = useState("Explore");
@@ -24,7 +25,7 @@ function Launches() {
 	const [explore, setExplore] = useState<Tokens[]>([]);
 	const [launches, setLaunches] = useState<Tokens[]>([]);
 	const [stealth, setStealth] = useState<Tokens[]>([]);
-	const [prelaunch, setPrelaunch] = useState<Tokens[]>([]);
+	const [presales, setPresales] = useState<Tokens[]>([]);
 
 	useEffect(() => {
 		switch (tab) {
@@ -50,13 +51,13 @@ function Launches() {
 					});
 				}
 				break;
-			case "Prelaunch":
-				if (prelaunch.length > 0) {
-					setTokens(prelaunch);
+			case "Presales":
+				if (presales.length > 0) {
+					setTokens(presales);
 				} else {
-					fetchPrelaunchTokens(API_ENDPOINT).then((tokensFetched) => {
+					fetchPresalesTokens(API_ENDPOINT).then((tokensFetched) => {
 						if (tokensFetched.length === 0) setTokens([]);
-						setPrelaunch(tokensFetched);
+						setPresales(tokensFetched);
 					});
 				}
 				break;
@@ -64,14 +65,13 @@ function Launches() {
 				if (explore.length > 0) {
 					setTokens(explore);
 				} else {
-					fetchTokens(API_ENDPOINT).then((tokensFetched) => {
-						console.log(tokensFetched);
+					fetchTokens(CONTRACT_ADDRESS, API_ENDPOINT).then((tokensFetched) => {
 						if (tokensFetched.length === 0) setTokens([]);
 						setExplore(tokensFetched);
 					});
 				}
 		}
-	}, [API_ENDPOINT, address, explore, launches, stealth, prelaunch, tab]);
+	}, [API_ENDPOINT, address, explore, launches, stealth, presales, tab, CONTRACT_ADDRESS]);
 
 	useEffect(() => {
 		setIsClient(true);
@@ -114,12 +114,12 @@ function Launches() {
 							Stealth Launches
 						</h2>
 						<h2
-							className={"text-2xl px-8 cursor-pointer " + (tab === "Prelaunch" ? "safu-grad-text-l" : "text-gray-400")}
+							className={"text-2xl px-8 cursor-pointer " + (tab === "Presales" ? "safu-grad-text-l" : "text-gray-400")}
 							onClick={() => {
-								setTab("Prelaunch");
+								setTab("Presales");
 							}}
 						>
-							Prelaunches
+							Presales
 						</h2>
 						<h2 className="w-32 self-end ml-auto pt-2 pb-2.5 pl-3.5 rounded-2xl flex border border-neutral-700">
 							<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -135,7 +135,7 @@ function Launches() {
 							<Table tokens={tokens} type={tab} />
 						</div>
 					</div>
-					<Link href="/launch" className="safu-button-secondary">
+					<Link href="/launch" className="safu-button-secondary" scroll={true}>
 						Launch a token
 					</Link>
 				</>

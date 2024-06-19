@@ -90,7 +90,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 
 	useEffect(() => {
 		if (!isAddress(params?.slug)) {
-			router.push("/");
+			router.push("/", { scroll: true });
 		}
 		fetchTheToken();
 		setIsClient(true);
@@ -101,8 +101,8 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 			{isClient && token && (
 				<>
 					{success && <Modal msg={success} callback={clear} />}
-					<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-12 w-full">
-						<div className="sm:col-span-7 lg:col-span-8">
+					<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-12 w-full">
+						<div className="lg:col-span-8">
 							<Intro address={params?.slug} token={token} isOwner={isOwner} isPresale={presale === 1} />
 							{isTeam && <Claim contractAddress={params?.slug} />}
 							{isOwner && !isTrading && !isTeamSet && (
@@ -164,11 +164,12 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 								</>
 							)}
 						</div>
-						<div className="sm:col-span-5 lg:col-span-4">
+						<div className="lg:col-span-4">
 							<Swap
 								contractAddress={params?.slug}
 								symbol={token?.symbol ? token?.symbol : ""}
 								tradingEnabled={token?.pair ? true : false}
+								setSuccess={setSuccess}
 							/>
 							{presale === 1 && token?.presale && walletClient && (
 								<Presale
@@ -192,6 +193,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 									telegram={token?.telegram ? token?.telegram : ""}
 									twitter={token?.twitter ? token?.twitter : ""}
 									website={token?.website ? token?.website : ""}
+									setSuccess={setSuccess}
 								/>
 							)}
 						</div>

@@ -29,7 +29,7 @@ function Navigation() {
 		<>
 			{isClient && (
 				<nav className="w-full flex px-8 py-5 h-20">
-					<Link href={"/"} className="pr-8">
+					<Link href={"/"} className="pr-8" scroll={true}>
 						<Image id="box" src={logo} className="w-auto h-10" alt="SAFU Launcher Logo" />
 					</Link>
 					<div

@@ -22,12 +22,25 @@ const Modal = ({
 				<div className="fixed top-0 left-0 z-50 flex justify-center items-center h-screen w-screen bg-[rgba(0,0,0,0.75)]">
 					<div
 						className={
-							"relative flex flex-col py-20 px-64 bg-gradient-to-tr backdrop-blur-sm rounded-xl items-center justify-center font-light border" +
+							"relative flex flex-col py-8 md:py-12 xl:py-16 2xl:py-20 px-8 md:px-24 xl:px-48 2xl:px-64 bg-gradient-to-tr backdrop-blur-sm rounded-xl items-center justify-center font-light border" +
 							(error ? " border-red-400/25 from-red-500/15" : " border-emerald-400/25 from-green-500/15")
 						}
 					>
-						<span className={"text-xl font-light " + (error ? "text-slate-200" : "text-slate-200")}>{msg}</span>
-						{des && <span className={"text-lg font-normal " + (error ? "text-red-700" : "text-green-600")}>{des}</span>}
+						<span
+							className={"text-base xl:text-lg 2xl:text-xl font-light " + (error ? "text-slate-200" : "text-slate-200")}
+						>
+							{msg}
+						</span>
+						{des && (
+							<span
+								className={
+									"text-sm xl:text-base 2xl:text-lg text-center font-normal " +
+									(error ? "text-red-700" : "text-green-600")
+								}
+							>
+								{des}
+							</span>
+						)}
 						<svg
 							width={20}
 							height={20}

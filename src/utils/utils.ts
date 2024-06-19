@@ -1,7 +1,7 @@
 export const getContractAddress = ( chainId: number | undefined) => {
     switch(chainId) {
         case 1: return "0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-        default: return "0xe519389f8c262d4301fd2830196fb7d0021daf59"
+        default: return "0xce7e5946c14cdd1f8de4473db9c20fd65ebd47d0"
     }
 }
 

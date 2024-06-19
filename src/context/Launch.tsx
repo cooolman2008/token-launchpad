@@ -22,6 +22,7 @@ import Tax from "@/components/PageModules/Launch/Tax";
 
 import ManagerAbi from "../../managerabi.json";
 import templateOptions from "../static/templates.json";
+import { WriteContractResult } from "wagmi/actions";
 
 function Launch() {
 	const { data: walletClient } = useWalletClient();
@@ -37,6 +38,7 @@ function Launch() {
 	const [premium, setPremium] = useState(false);
 	const [template, setTemplate] = useState(templateOptions.templates[0]);
 	const [error, setError] = useState("");
+	const [response, setResponse] = useState<WriteContractResult>();
 
 	const clear = () => {
 		setError("");
@@ -44,9 +46,9 @@ function Launch() {
 
 	// contract call for token launch.
 	const {
-		data: response,
-		write,
+		writeAsync: launchFree,
 		isLoading,
+		data,
 	} = useContractWrite({
 		address: CONTRACT_ADDRESS,
 		abi: ManagerAbi.abi,
@@ -61,7 +63,11 @@ function Launch() {
 	});
 
 	// get the transaction details by waiting for the transaction.
-	const { data: transaction, isLoading: retrieval } = useWaitForTransaction({
+	const {
+		data: transaction,
+		isLoading: retrieval,
+		refetch,
+	} = useWaitForTransaction({
 		hash: response?.hash,
 		onSuccess(res) {
 			console.log(res);
@@ -77,7 +83,7 @@ function Launch() {
 			console.log(transaction?.logs[0]?.address);
 			// Wait 1 second for the Graph to pick up the event.
 			setTimeout(() => {
-				router.push("/" + transaction?.logs[0]?.address);
+				router.push("/" + transaction?.logs[0]?.address, { scroll: true });
 			}, 1000);
 		}
 	}, [transaction, router]);
@@ -93,7 +99,10 @@ function Launch() {
 		if (address) {
 			const args = getArgs(address, CONTRACT_ADDRESS, formData, template);
 			console.log(args);
-			write({ args: [args] });
+			launchFree({ args: [args] }).then((res) => {
+				setResponse(res);
+				refetch();
+			});
 		}
 	};
 

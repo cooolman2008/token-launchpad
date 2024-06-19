@@ -104,9 +104,11 @@ const StartTrading = ({
 				</div>
 				<div className="flex justify-between items-center">
 					<h2 className="text-xl mb-1 text-slate-200">Start trading!</h2>
-					<span className="text-xl font-medium text-slate-200">
-						<b className="font-bold text-gray-500">Available:</b> {balance} ETH
-					</span>
+					{balance > 0 && (
+						<span className="text-xl font-medium text-slate-200">
+							<b className="font-bold text-gray-500">Available:</b> {balance} ETH
+						</span>
+					)}
 				</div>
 				<p className="text-sm text-gray-500 mb-4">
 					Start trading your tokens by creating a liquidity pool
@@ -134,7 +136,7 @@ const StartTrading = ({
 								width="w-20"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"
-								margin="mb-4 lg:mb-0"
+								margin="mb-4 2xl:mb-0"
 							/>
 							<TextField
 								label="Lock days"
@@ -151,9 +153,10 @@ const StartTrading = ({
 								width="w-20"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"
-								margin="mb-4 lg:mb-0"
+								margin="mb-4 2xl:mb-0"
+								padding=" pr-4 lg:pr-0 xl:pr-4 "
 							/>
-							<div className="flex flex-col mr-4 justify-center">
+							<div className="flex flex-col justify-center mr-4 md:mr-0 mb-4 lg:mb-0 xl:mb-4 2xl:mb-0">
 								<div className="flex items-center">
 									<span className="text-xl text-gray-400 pb-0.5 mr-4">Burn liquidity</span>
 									<label className="switch">
@@ -170,7 +173,7 @@ const StartTrading = ({
 									</label>
 								</div>
 							</div>
-							<div className="flex justify-center flex-col">
+							<div className="flex justify-center flex-col ml-auto 2xl:ml-0">
 								<input type="submit" value="Start" className="safu-button-secondary cursor-pointer" />
 							</div>
 						</div>
