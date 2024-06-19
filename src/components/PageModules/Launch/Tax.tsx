@@ -8,6 +8,8 @@ import { LaunchForm } from "@/utils/launchHelper";
 
 const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; errors: FieldErrors<LaunchForm> }) => {
 	const [isLoaded, setIsLoaded] = useState(false);
+	const [dropStyle, setDropStyle] = useState(1);
+
 	const taxOptions = [
 		{ value: "hybrid", label: "Hybrid" },
 		{ value: "count", label: "Count" },
@@ -95,7 +97,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 						</label>
 						<Select
 							unstyled={true}
-							defaultValue={taxOptions[0]}
+							defaultValue={taxOptions[1]}
 							classNames={{
 								control: (state) => "bg-neutral-900 p-2 rounded-xl border-l border-gray-600 2xl:text-sm",
 								menuList: (state) => "bg-neutral-900 mt-1 rounded-xl 2xl:text-sm",
@@ -103,38 +105,54 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 							}}
 							options={taxOptions}
 							isSearchable={false}
+							onChange={(value) => {
+								switch (value?.value) {
+									case "interval":
+										setDropStyle(1);
+										break;
+									case "count":
+										setDropStyle(2);
+										break;
+									default:
+										setDropStyle(0);
+								}
+							}}
 						/>
 					</div>
-					<TextField
-						label="Interval in Seconds"
-						id="initinterval"
-						defaultValue="60"
-						placeholder="60"
-						{...register("initInterval", {
-							required: true,
-							max: 60,
-							min: 0,
-						})}
-						isError={errors.initInterval ? true : false}
-						error="Interval should be between 0-60."
-						width="w-24"
-						labelWidth="grow"
-					/>
-					<TextField
-						label="Buy count"
-						id="countinterval"
-						defaultValue="60"
-						placeholder="60"
-						{...register("countInterval", {
-							required: true,
-							max: 60,
-							min: 0,
-						})}
-						isError={errors.countInterval ? true : false}
-						error="Interval should be between 0-60."
-						width="w-24"
-						labelWidth="grow"
-					/>
+					{dropStyle < 2 && (
+						<TextField
+							label="Buy count"
+							id="countinterval"
+							defaultValue="60"
+							placeholder="60"
+							{...register("countInterval", {
+								required: true,
+								max: 60,
+								min: 0,
+							})}
+							isError={errors.countInterval ? true : false}
+							error="Interval should be between 0-60."
+							width="w-24"
+							labelWidth="grow"
+						/>
+					)}
+					{dropStyle !== 1 && (
+						<TextField
+							label="Interval in Seconds"
+							id="initinterval"
+							defaultValue="60"
+							placeholder="60"
+							{...register("initInterval", {
+								required: true,
+								max: 60,
+								min: 0,
+							})}
+							isError={errors.initInterval ? true : false}
+							error="Interval should be between 0-60."
+							width="w-24"
+							labelWidth="grow"
+						/>
+					)}
 				</div>
 				<TextField
 					label="Buy back tax"

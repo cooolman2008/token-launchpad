@@ -1,7 +1,25 @@
 {
   "templates": [
-    {
-			"supply": 1000000,
+    	{
+			"supply": 420690000000,
+			"initTaxType": 0,
+			"initInterval": 60,
+			"countInterval": 0,
+			"maxBuyTax": 23,
+			"minBuyTax": 0,
+			"maxSellTax": 23,
+			"minSellTax": 0,
+			"lpTax": 20,
+			"maxWallet": 1,
+			"maxTx": 1,
+			"preventSwap": 10,
+			"maxSwap": 4206900000,
+			"taxSwapThreshold": 420690000,
+			"name": "Trog",
+			"symbol": "TROG"
+		},
+    	{
+			"supply": 1000000000000,
 			"initTaxType": 0,
 			"initInterval": 60,
 			"countInterval": 0,
@@ -10,15 +28,15 @@
 			"maxSellTax": 20,
 			"minSellTax": 5,
 			"lpTax": 20,
-			"maxWallet": 2,
+			"maxWallet": 1,
 			"maxTx": 1,
 			"preventSwap": 10,
-			"maxSwap": 10000,
-			"taxSwapThreshold": 1000,
-			"name": "SAFU",
-			"symbol": "SAFU"
+			"maxSwap": 10000000000,
+			"taxSwapThreshold": 1000000000,
+			"name": "pepe in a memes world",
+			"symbol": "PEW"
 		},
-    {
+    	{
 			"supply": 1000000,
 			"initTaxType": 0,
 			"initInterval": 60,
@@ -33,10 +51,10 @@
 			"preventSwap": 10,
 			"maxSwap": 10000,
 			"taxSwapThreshold": 1000,
-			"name": "Etherium",
-			"symbol": "ETH"
+			"name": "Bird Dog",
+			"symbol": "BIRDDOG"
 		},
-    {
+    	{
 			"supply": 1000000,
 			"initTaxType": 0,
 			"initInterval": 60,
@@ -51,60 +69,24 @@
 			"preventSwap": 10,
 			"maxSwap": 10000,
 			"taxSwapThreshold": 1000,
-			"name": "USD Coin",
-			"symbol": "USDC"
+			"name": "SPURDO ON ETH",
+			"symbol": "SPURDO"
 		},
-    {
-			"supply": 1000000,
+    	{
+			"supply": 420690000000,
 			"initTaxType": 0,
 			"initInterval": 60,
-			"countInterval": 0,
-			"maxBuyTax": 20,
-			"minBuyTax": 5,
-			"maxSellTax": 20,
-			"minSellTax": 5,
+			"countInterval": 23,
+			"maxBuyTax": 23,
+			"minBuyTax": 0,
+			"maxSellTax": 23,
+			"minSellTax": 0,
 			"lpTax": 20,
 			"maxWallet": 1,
 			"maxTx": 1,
-			"preventSwap": 10,
-			"maxSwap": 10000,
-			"taxSwapThreshold": 1000,
-			"name": "Wrapped BTC",
-			"symbol": "WBTC"
-		},
-    {
-			"supply": 1000000,
-			"initTaxType": 0,
-			"initInterval": 60,
-			"countInterval": 0,
-			"maxBuyTax": 20,
-			"minBuyTax": 5,
-			"maxSellTax": 20,
-			"minSellTax": 5,
-			"lpTax": 20,
-			"maxWallet": 1,
-			"maxTx": 1,
-			"preventSwap": 10,
-			"maxSwap": 10000,
-			"taxSwapThreshold": 1000,
-			"name": "Tether USD",
-			"symbol": "USDT"
-		},
-    {
-			"supply": 1000000,
-			"initTaxType": 0,
-			"initInterval": 60,
-			"countInterval": 0,
-			"maxBuyTax": 20,
-			"minBuyTax": 5,
-			"maxSellTax": 20,
-			"minSellTax": 5,
-			"lpTax": 20,
-			"maxWallet": 1,
-			"maxTx": 1,
-			"preventSwap": 10,
-			"maxSwap": 10000,
-			"taxSwapThreshold": 1000,
+			"preventSwap": 20,
+			"maxSwap": 4206900000,
+			"taxSwapThreshold": 420690000,
 			"name": "MAGA",
 			"symbol": "MAGA"
 		},
@@ -141,36 +123,16 @@
 			"preventSwap": 10,
 			"maxSwap": 10000,
 			"taxSwapThreshold": 1000,
-			"name": "Dai Stablecoin",
-			"symbol": "DAI"
-		},
-    {
-			"supply": 1000000,
-			"initTaxType": 0,
-			"initInterval": 60,
-			"countInterval": 0,
-			"maxBuyTax": 20,
-			"minBuyTax": 5,
-			"maxSellTax": 20,
-			"minSellTax": 5,
-			"lpTax": 20,
-			"maxWallet": 1,
-			"maxTx": 1,
-			"preventSwap": 10,
-			"maxSwap": 10000,
-			"taxSwapThreshold": 1000,
 			"name": "Pepe",
 			"symbol": "PEPE"
 		}],
     "options": [
-      { "value": "SAFU", "label": "SAFU" },
-      { "value": "ETH", "label": "Ethereum" },
-      { "value": "USDC", "label": "USD Coin" },
-      { "value": "WBTC", "label": "Wrapped BTC" },
-      { "value": "USDT", "label": "Tether USD" },
+      { "value": "TROG", "label": "Trog" },
+      { "value": "PEW", "label": "pepe in a memes world" },
+      { "value": "BIRDDOG", "label": "Bird Dog" },
+      { "value": "SPURDO", "label": "SPURDO ON ETH" },
       { "value": "MAGA", "label": "MAGA" },
       { "value": "MOG", "label": "Mog Coin" },
-      { "value": "DAI", "label": "Dai Stablecoin" },
       { "value": "PEPE", "label": "Pepe" }
     ]
 }

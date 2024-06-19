@@ -164,10 +164,9 @@ const Presale = ({
 							</div>
 						</div>
 						<div className="flex justify-between mb-4">
-							<span
-								className={"text-sm font-normal " + (errors.amount || maxBag === 0 ? "text-red-600" : "text-gray-400")}
-							>
-								<b className="text-sm font-normal text-gray-400">Wallet limit:</b> {maxBag}
+							<span className={"text-sm font-normal " + (errors.amount ? "text-red-600" : "text-gray-400")}>
+								<b className="text-sm font-normal text-gray-400">Wallet limit:</b>{" "}
+								{presale?.maxBag ? getNumber(presale?.maxBag) : "0"}
 							</span>
 							<span className="text-sm font-normal text-gray-400">You Bought: {bought ? getNumber(bought) : "0"}</span>
 						</div>

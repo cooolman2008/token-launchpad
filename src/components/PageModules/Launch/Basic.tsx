@@ -15,7 +15,6 @@ const Basic = ({ register, errors }: { register: UseFormRegister<LaunchForm>; er
 					placeholder="SAFU"
 					{...register("name", {
 						required: true,
-						maxLength: 20,
 						pattern: /^[A-Za-z. ]+$/i,
 					})}
 					isError={errors.name ? true : false}

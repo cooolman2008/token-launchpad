@@ -1,7 +1,7 @@
 import { useContractWrite, useWalletClient, useBalance, useAccount, useContractRead } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, SetStateAction, Dispatch, useEffect } from "react";
-import { formatEther, parseEther } from "viem";
+import { parseEther } from "viem";
 
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
@@ -42,6 +42,10 @@ const Staking = ({
 	const [error, setError] = useState("");
 	const [balance, setBalance] = useState("");
 	const [user, setUser] = useState<User>();
+
+	const clear = () => {
+		setError("");
+	};
 
 	const { data } = useBalance({
 		address: address,
@@ -185,7 +189,9 @@ const Staking = ({
 			{staking && <Loading msg="Staking..." />}
 			{unstaking && <Loading msg="Unstaking..." />}
 			{withdrawing && <Loading msg="Withdrawing..." />}
-			{error && <Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} />}
+			{error && (
+				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
+			)}
 			<div className="stake-container mt-12">
 				<div className="flex justify-between mb-2 items-center relative">
 					<h2 className="text-2xl">Stake</h2>
