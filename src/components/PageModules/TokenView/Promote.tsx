@@ -111,7 +111,7 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 							onKeyUp={() => {
 								setPrice(Number((getValues("times") * promoCost).toFixed(4)));
 							}}
-							isError={errors.cost ? true : false}
+							isError={errors.times ? true : false}
 							error="Minimum 30 days required"
 							width="w-20"
 							labelWidth="grow lg:grow-0"

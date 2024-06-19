@@ -22,6 +22,7 @@ interface PresaleForm {
 	vestingPeriod: number;
 	maxEth: number;
 	maxBag: number;
+	saftcap: number;
 }
 
 const LaunchPresale = ({
@@ -79,6 +80,8 @@ const LaunchPresale = ({
 	const {
 		register,
 		handleSubmit,
+		setValue,
+		getValues,
 		formState: { errors },
 	} = useForm<PresaleForm>();
 	const onSubmit: SubmitHandler<PresaleForm> = (formData) => {
@@ -117,7 +120,11 @@ const LaunchPresale = ({
 				{presaleAddress !== "0x0000000000000000000000000000000000000000" ? (
 					<>
 						<h2 className="text-xl mb-1">Start your Presales</h2>
-						<p className="text-sm text-gray-500 mb-4">Setup and start presale for your token.</p>
+						<p className="text-sm text-gray-500 mb-4">
+							Setup presale for your token.
+							<br />
+							Softcap will be 25% of your token hardcap.
+						</p>
 						<div className="w-full pb-4 rounded-xl">
 							<form onSubmit={handleSubmit(onSubmit)}>
 								<div className="w-full flex justify-between flex-wrap">
@@ -233,6 +240,28 @@ const LaunchPresale = ({
 										width="w-24"
 										labelWidth="grow"
 										containerWidth="w-full md:w-1/2"
+										onKeyUp={() => {
+											setValue("saftcap", getValues("percent") * 0.25);
+										}}
+									/>
+									<TextField
+										label="Token softcap"
+										id="softcap"
+										defaultValue="2.5"
+										placeholder="0"
+										{...register("saftcap", {
+											required: true,
+											min: 1,
+											max: 100,
+											disabled: true,
+										})}
+										isPercent={true}
+										isError={errors.percent ? true : false}
+										error="Percentage share should be between 1-100%"
+										width="w-24"
+										labelWidth="grow"
+										containerWidth="w-full md:w-1/2 "
+										padding="md:pr-0"
 									/>
 								</div>
 								<div className="flex flex-col items-end">

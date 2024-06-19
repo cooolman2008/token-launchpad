@@ -9,6 +9,8 @@ import XBadge from "@/components/images/XBadge";
 import logo from "../../../../public/coin.svg";
 import { Token } from "@/api/getToken";
 import { getAbr } from "@/utils/math";
+import { useEffect } from "react";
+import { animate } from "motion";
 
 const Intro = ({
 	address,
@@ -21,6 +23,15 @@ const Intro = ({
 	isOwner: boolean;
 	isPresale: boolean;
 }) => {
+	useEffect(() => {
+		if (isPresale) {
+			animate(
+				"#shine",
+				{ left: ["-180px", "150px", "150px"] },
+				{ easing: "ease-in-out", repeat: Infinity, duration: 2 }
+			);
+		}
+	}, [isPresale]);
 	return (
 		<>
 			<span className="text-sm lg:text-md text-gray-400 px-2 border-x border-neutral-400 font-normal rounded-xl">
@@ -32,7 +43,7 @@ const Intro = ({
 					<h2 className="text-xl lg:text-3xl mx-4 text-slate-200">{token?.name}</h2>
 					<h2 className="text-xl lg:text-3xl mr-4 text-gray-400">{token?.symbol}</h2>
 					{isPresale && (
-						<div className="flex border border-emerald-600 rounded-3xl px-3 py-1 bg-gradient-to-r from-emerald-500/25">
+						<div className="flex border-orange-600 rounded-xl px-3 py-1 bg-gradient-to-r from-orange-500/15 relative overflow-hidden">
 							<svg height="18px" width="18px" version="1.1" viewBox="0 0 611.999 611.999">
 								<defs>
 									<linearGradient id="grad2" gradientTransform="rotate(45)">
@@ -47,7 +58,11 @@ const Intro = ({
 									/>
 								</g>
 							</svg>
-							<h3 className="pl-1 text-sm font-normal text-emerald-400">Presale</h3>
+							<h3 className="pl-1 text-sm font-normal text-orange-400">Presale</h3>
+							<div
+								id="shine"
+								className="absolute h-20 w-64 bg-gradient-to-b from-trasparent via-50 via-white/45 via-100 via-transparent -rotate-45 -translate-x-1/3 -left-16"
+							></div>
 						</div>
 					)}
 				</div>
