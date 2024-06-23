@@ -1,9 +1,13 @@
-import { useContractWrite, useWalletClient } from "wagmi";
+import { useContractWrite, useWalletClient, useBalance } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useState, SetStateAction, Dispatch } from "react";
 import { parseEther } from "viem";
 
+import TextField from "@/components/elements/TextField";
+import Loading from "@/components/elements/Loading";
+import Modal from "@/components/elements/Modal";
+
 import Tokenabi from "../../../../newtokenabi.json";
-import { useState } from "react";
 
 interface TradingForm {
 	liq: number;
@@ -11,108 +15,170 @@ interface TradingForm {
 	shouldBurn: boolean;
 }
 
-const StartTrading = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
+const StartTrading = ({
+	contractAddress,
+	callback,
+	setSuccess,
+}: {
+	contractAddress: `0x${string}`;
+	callback: Dispatch<SetStateAction<boolean>>;
+	setSuccess: Dispatch<SetStateAction<string>>;
+}) => {
 	const { data: walletClient } = useWalletClient();
 	const [showLock, setShowLock] = useState(true);
+	const [balance, setBalance] = useState(0);
+	const [error, setError] = useState("");
+
+	useBalance({
+		address: contractAddress,
+		onSuccess(data) {
+			setBalance(Number(data.formatted));
+		},
+		onError(error) {
+			console.log("Error", error);
+		},
+	});
+
+	const clear = () => {
+		setError("");
+	};
 
 	// contract call to start trading of the launched token.
-	const { data, isSuccess, write } = useContractWrite({
+	const { isLoading, write } = useContractWrite({
 		address: contractAddress,
 		abi: Tokenabi.abi,
 		functionName: "startTrading",
 		account: walletClient?.account,
 		onSuccess(res) {
 			console.log(res);
+			callback(true);
+			setSuccess("Trading has been enabled successfully");
 		},
 		onError(error) {
 			console.log(error);
+			setError("Something went wrong!");
 		},
 	});
 
-	// handle extend lock form.
+	// handle trading form.
 	const {
 		register,
 		handleSubmit,
-		watch,
 		setValue,
-		getValues,
 		formState: { errors },
 	} = useForm<TradingForm>();
 	const onSubmit: SubmitHandler<TradingForm> = (formData) => {
 		write({
 			args: [formData.lockPeriod, formData.shouldBurn],
-			value: parseEther("1"),
+			value: parseEther(formData.liq.toString()),
 		});
 	};
 	return (
 		<>
-			<h2 className="block text-2xl mb-1">Start trading</h2>
-			<p className="text-sm text-gray-400 mb-4 font-thin">
-				Start trading your tokens by creating a liquidity pool
-				<br />
-				You can either <b className="font-bold">Burn</b> the LP tokens or <b className="font-bold">Lock</b> them for a
-				period of time.
-			</p>
-			<div className="w-full pb-4 rounded-xl mb-2">
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<div className="w-full flex justify-between">
-						<div className="flex mr-4 items-center">
-							<span className="text-xl text-gray-400 pr-4">Liquidity in ETH</span>
-							<input
-								type="text"
+			{isLoading && <Loading msg="Enabling trading..." />}
+			{error && (
+				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
+			)}
+			<div className="w-full py-8 border-b border-gray-700">
+				<div className="bg-gradient-to-r from-red-800/20 mb-2 p-4 rounded-xl border border-red-900/50">
+					<div className="flex items-center">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="18px"
+							height="18px"
+							viewBox="0 0 24 24"
+							className="stroke-red-600 mr-1"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+							<line x1="12" y1="9" x2="12" y2="13"></line>
+							<line x1="12" y1="17" x2="12.01" y2="17"></line>
+						</svg>
+						<p className="font-bold text-red-600">Warning!</p>
+					</div>
+					<span className=" font-medium text-red-700 text-sm">
+						Make sure you have set your team wallet details before enabling the trade.
+					</span>
+				</div>
+				<div className="flex justify-between items-center">
+					<h2 className="text-xl mb-1 text-slate-200">Start trading!</h2>
+					{balance > 0 && (
+						<span className="text-xl font-medium text-slate-200">
+							<b className="font-bold text-gray-500">Available:</b> {balance} ETH
+						</span>
+					)}
+				</div>
+				<p className="text-sm text-gray-500 mb-4">
+					Start trading your tokens by creating a liquidity pool
+					<br />
+					You can either Burn the LP tokens or Lock them for a period of time.
+				</p>
+				<div className="w-full pb-4 rounded-xl">
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<div className="w-full flex justify-between flex-wrap items-center">
+							<TextField
+								label="Liquidity in ETH"
 								id="liq"
-								defaultValue="0"
+								defaultValue="0.1"
 								placeholder="0"
-								className={
-									"block w-20 rounded-xl ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-2xl " +
-									(errors.liq ? "border-x border-pink-500" : "border-l border-gray-400")
-								}
 								{...register("liq", {
-									required: true,
-									min: 1,
+									valueAsNumber: true,
+									required: {
+										value: true,
+										message: "Value needed",
+									},
+									validate: (value) => value + balance > 0.1 || "Min liq needed",
 								})}
+								isError={errors.liq ? true : false}
+								error={errors.liq?.message ? errors.liq?.message : "Some error"}
+								width="w-20"
+								labelWidth="grow lg:grow-0"
+								containerWidth="w-full md:w-auto"
+								margin="mb-4 2xl:mb-0"
 							/>
-						</div>
-						<div className="flex mr-4 items-center">
-							<span className="text-xl text-gray-400 pr-4">Lock days {errors.lockPeriod ? "> 30" : ""}</span>
-							<input
-								type="text"
+							<TextField
+								label="Lock days"
 								id="days"
 								{...register("lockPeriod", {
 									required: showLock,
 									min: !showLock ? 0 : 30,
 								})}
+								defaultValue={30}
 								disabled={!showLock}
 								placeholder="0"
-								className={
-									"block w-20 rounded-xl ps-3 pe-3 py-1.5 shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-2xl " +
-									(showLock
-										? "text-white " + (errors.lockPeriod ? "border-x border-pink-500" : "border-l border-gray-400")
-										: "text-gray-400")
-								}
+								isError={errors.lockPeriod ? true : false}
+								error="Minimum 30 days required"
+								width="w-20"
+								labelWidth="grow lg:grow-0"
+								containerWidth="w-full md:w-auto"
+								margin="mb-4 2xl:mb-0"
+								padding=" pr-4 lg:pr-0 xl:pr-4 "
 							/>
-						</div>
-						<div className="flex flex-col mr-4 justify-center">
-							<div className="flex items-center">
-								<input
-									type="checkbox"
-									id="burn"
-									{...register("shouldBurn")}
-									onChange={() => {
-										setShowLock((showLock) => !showLock);
-										setValue("lockPeriod", 0);
-									}}
-									defaultChecked={false}
-									className="focus:outline focus-visible:outline outline-offset-2 outline-2"
-								/>
-								<span className="text-xl text-gray-400 pl-2 pb-0.5">Burn Liquidity</span>
+							<div className="flex flex-col justify-center mr-4 md:mr-0 mb-4 lg:mb-0 xl:mb-4 2xl:mb-0">
+								<div className="flex items-center">
+									<span className="text-xl text-gray-400 pb-0.5 mr-4">Burn liquidity</span>
+									<label className="switch">
+										<input
+											type="checkbox"
+											{...register("shouldBurn")}
+											onChange={() => {
+												setShowLock((showLock) => !showLock);
+												setValue("lockPeriod", 0);
+											}}
+											defaultChecked={false}
+										/>
+										<span className="slider round"></span>
+									</label>
+								</div>
+							</div>
+							<div className="flex justify-center flex-col ml-auto 2xl:ml-0">
+								<input type="submit" value="Start" className="safu-button-secondary cursor-pointer" />
 							</div>
 						</div>
-						<div className="flex justify-center flex-col">
-							<input type="submit" value="Start" className="safu-button-secondary cursor-pointer" />
-						</div>
-					</div>
-				</form>
+					</form>
+				</div>
 			</div>
 		</>
 	);

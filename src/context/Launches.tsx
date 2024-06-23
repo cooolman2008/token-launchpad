@@ -1,66 +1,125 @@
 "use client";
 
-import { useWalletClient } from "wagmi";
+import { useWalletClient, useAccount } from "wagmi";
+import { useWeb3ModalState } from "@web3modal/wagmi/react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import { animate } from "motion";
-import Explore from "@/components/PageModules/Launches/Explore";
-import MyTokens from "@/components/PageModules/Launches/MyTokens";
-import Stealth from "@/components/PageModules/Launches/Stealth";
 import Details from "@/components/PageModules/Launches/Details";
+import Table from "@/components/elements/Table";
+
+import { getContractAddress, getGraphUrl } from "@/utils/utils";
+import { fetchTokens, fetchMyTokens, fetchStealthTokens, Tokens, fetchPresalesTokens } from "@/api/getTokens";
 
 function Launches() {
 	const { data: walletClient } = useWalletClient();
+	const { address } = useAccount();
+
+	const { selectedNetworkId: chainId } = useWeb3ModalState();
+	const API_ENDPOINT = getGraphUrl(Number(chainId));
+	const CONTRACT_ADDRESS = getContractAddress(Number(chainId));
+
 	const [isClient, setIsClient] = useState(false);
 	const [tab, setTab] = useState("Explore");
+	const [tokens, setTokens] = useState<Tokens[]>([]);
+	const [explore, setExplore] = useState<Tokens[]>([]);
+	const [launches, setLaunches] = useState<Tokens[]>([]);
+	const [stealth, setStealth] = useState<Tokens[]>([]);
+	const [presales, setPresales] = useState<Tokens[]>([]);
 
 	useEffect(() => {
-		animate(
-			"#box",
-			{ rotate: [0, 35, -35, 0] },
-			{
-				duration: 0.5,
-				offset: [0, 0.25, 0.75],
-			}
-		);
+		switch (tab) {
+			case "Launches":
+				if (launches.length > 0) {
+					setTokens(launches);
+				} else {
+					if (address) {
+						fetchMyTokens(address?.toString(), API_ENDPOINT).then((tokensFetched) => {
+							if (tokensFetched.length === 0) setTokens([]);
+							setLaunches(tokensFetched);
+						});
+					}
+				}
+				break;
+			case "Stealth":
+				if (stealth.length > 0) {
+					setTokens(stealth);
+				} else {
+					fetchStealthTokens(API_ENDPOINT).then((tokensFetched) => {
+						if (tokensFetched.length === 0) setTokens([]);
+						setStealth(tokensFetched);
+					});
+				}
+				break;
+			case "Presales":
+				if (presales.length > 0) {
+					setTokens(presales);
+				} else {
+					fetchPresalesTokens(API_ENDPOINT).then((tokensFetched) => {
+						if (tokensFetched.length === 0) setTokens([]);
+						setPresales(tokensFetched);
+					});
+				}
+				break;
+			default:
+				if (explore.length > 0) {
+					setTokens(explore);
+				} else {
+					fetchTokens(CONTRACT_ADDRESS, API_ENDPOINT).then((tokensFetched) => {
+						if (tokensFetched.length === 0) setTokens([]);
+						setExplore(tokensFetched);
+					});
+				}
+		}
+	}, [API_ENDPOINT, address, explore, launches, stealth, presales, tab, CONTRACT_ADDRESS]);
+
+	useEffect(() => {
 		setIsClient(true);
 	}, []);
 
 	return (
 		<>
-			{isClient && walletClient && (
+			{isClient && (
 				<>
 					<div className="w-full flex my-12 justify-between">
 						<Details />
 					</div>
 					<div className="flex self-start my-4 min-w-full px-3">
 						<h2
-							className={
-								"transition-colors duration-200 ease-in text-2xl pr-8 cursor-pointer " +
-								(tab === "Explore" ? "text-pink-600" : "text-gray-400")
-							}
-							onClick={() => setTab("Explore")}
+							className={"text-2xl pr-8 cursor-pointer " + (tab === "Explore" ? "safu-grad-text-l" : "text-gray-400")}
+							onClick={() => {
+								setTab("Explore");
+							}}
 						>
 							Explore
 						</h2>
+						{walletClient && (
+							<h2
+								className={
+									"text-2xl px-8 cursor-pointer " + (tab === "Launches" ? "safu-grad-text-l" : "text-gray-400")
+								}
+								onClick={() => {
+									setTab("Launches");
+								}}
+							>
+								My Launches
+							</h2>
+						)}
 						<h2
-							className={
-								"transition-colors duration-200 ease-in text-2xl px-8 cursor-pointer " +
-								(tab === "Launches" ? "text-pink-600" : "text-gray-400")
-							}
-							onClick={() => setTab("Launches")}
-						>
-							My Launches
-						</h2>
-						<h2
-							className={
-								"transition-colors duration-200 ease-in text-2xl px-8 cursor-pointer " +
-								(tab === "Stealth" ? "text-pink-600" : "text-gray-400")
-							}
-							onClick={() => setTab("Stealth")}
+							className={"text-2xl px-8 cursor-pointer " + (tab === "Stealth" ? "safu-grad-text-l" : "text-gray-400")}
+							onClick={() => {
+								setTab("Stealth");
+							}}
 						>
 							Stealth Launches
+						</h2>
+						<h2
+							className={"text-2xl px-8 cursor-pointer " + (tab === "Presales" ? "safu-grad-text-l" : "text-gray-400")}
+							onClick={() => {
+								setTab("Presales");
+							}}
+						>
+							Presales
 						</h2>
 						<h2 className="w-32 self-end ml-auto pt-2 pb-2.5 pl-3.5 rounded-2xl flex border border-neutral-700">
 							<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -73,12 +132,10 @@ function Launches() {
 					</div>
 					<div className="w-full mb-8 overflow-hidden rounded-2xl shadow-lg border border-neutral-800">
 						<div className="w-full overflow-x-auto">
-							{tab === "Explore" && <Explore />}
-							{tab === "Launches" && <MyTokens />}
-							{tab === "Stealth" && <Stealth />}
+							<Table tokens={tokens} type={tab} />
 						</div>
 					</div>
-					<Link href="/launch" className="safu-button-secondary">
+					<Link href="/launch" className="safu-button-secondary" scroll={true}>
 						Launch a token
 					</Link>
 				</>
