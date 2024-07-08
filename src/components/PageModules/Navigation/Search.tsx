@@ -2,7 +2,7 @@
 
 function Search() {
 	return (
-		<div className="w-full mb-8 lg:w-1/4 lg:mb-0 flex mx-auto rounded-3xl border border-neutral-700 hover:border-neutral-600">
+		<div className="w-full mb-8 xl:w-1/4 lg:mb-0 flex mx-auto rounded-3xl border border-neutral-700 hover:border-neutral-600">
 			<div className="inset-y-0 right-0 flex items-center pl-3">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"

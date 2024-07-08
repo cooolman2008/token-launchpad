@@ -19,7 +19,7 @@ const Basic = ({ register, errors }: { register: UseFormRegister<LaunchForm>; er
 					})}
 					isError={errors.name ? true : false}
 					error="We need an alphabets only name to deploy the token."
-					width="w-56 lg:grow"
+					width="w-48 lg:grow"
 					labelWidth="grow lg:grow-0"
 				/>
 				<TextField
@@ -32,8 +32,8 @@ const Basic = ({ register, errors }: { register: UseFormRegister<LaunchForm>; er
 						pattern: /^[A-Za-z]+$/i,
 					})}
 					isError={errors.symbol ? true : false}
-					error="We need a 4 letter alphabets only symbol."
-					width="w-48 lg:grow"
+					error="Symbol needs to be all alphabetic * below 8 chars."
+					width="w-40 lg:grow"
 					labelWidth="grow lg:grow-0"
 				/>
 				<TextField
@@ -43,10 +43,11 @@ const Basic = ({ register, errors }: { register: UseFormRegister<LaunchForm>; er
 					{...register("supply", {
 						required: true,
 						min: 1000000,
+						pattern: /^[0-9]+$/i,
 					})}
 					isError={errors.supply ? true : false}
 					error="Supply should be minimum 1Million."
-					width="w-64 lg:grow"
+					width="w-48 lg:grow"
 					labelWidth="grow lg:grow-0"
 				/>
 				<TextField
@@ -61,7 +62,7 @@ const Basic = ({ register, errors }: { register: UseFormRegister<LaunchForm>; er
 					})}
 					isError={errors.taxWallet ? true : false}
 					error="Tax wallet should be a valid wallet."
-					width="w-64 md:w-56 lg:grow"
+					width="w-48 md:w-56 lg:grow"
 					labelWidth="grow lg:grow-0"
 				/>
 			</div>

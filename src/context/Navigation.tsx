@@ -35,7 +35,7 @@ function Navigation() {
 					<div
 						className="menu-button w-10 h-10 rounded-full flex flex-col items-center justify-center ml-auto lg:hidden"
 						onClick={() => {
-							animate("#menu", { x: [-320] }, { easing: spring({ stiffness: 300, damping: 16, mass: 0.4 }) });
+							animate("#menu", { x: [-288] }, { easing: spring({ stiffness: 300, damping: 16, mass: 0.4 }) });
 							document.addEventListener("mouseup", handleClickOutside);
 							document.addEventListener("touchend", handleClickOutside);
 						}}
@@ -45,14 +45,14 @@ function Navigation() {
 						<div></div>
 					</div>
 					<div id="menu" className="menu" ref={wrapperRef}>
-						<div className="flex flex-col">
+						<div className="flex flex-col p-8">
 							<Search />
-							<div className="flex flex-col mb-8">
+							<div className="flex flex-col">
 								<Links />
 							</div>
-							<div className="flex justify-center">
-								<w3m-button />
-							</div>
+						</div>
+						<div className="flex justify-center">
+							<w3m-button />
 						</div>
 					</div>
 					<div className="hidden lg:flex w-full">

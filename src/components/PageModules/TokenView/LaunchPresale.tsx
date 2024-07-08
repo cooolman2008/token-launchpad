@@ -271,14 +271,14 @@ const LaunchPresale = ({
 						</div>
 					</>
 				) : (
-					<div className="flex justify-between">
+					<div className="flex flex-wrap justify-between">
 						<div className="">
 							<h2 className="text-xl mb-1">Do you want to launch a presale?</h2>
 							<p className="text-sm text-gray-500 mb-4">
 								You wil be able to setup a presale once you launch a presale contract for your token.
 							</p>
 						</div>
-						<div className="flex justify-center flex-col">
+						<div className="flex justify-center flex-col max-md:w-full">
 							<input
 								type="button"
 								value="Launch presale"

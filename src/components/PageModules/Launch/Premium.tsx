@@ -26,12 +26,13 @@ const Premium = ({ register, errors }: { register: UseFormRegister<LaunchForm>; 
 		<>
 			<div id="premium" className={"flex flex-wrap max-h-0" + (!isLoaded && " overflow-hidden")}>
 				<div className="w-full md:w-1/2 2xl:w-1/3 flex md:pr-4 2xl:pr-12 items-center flex-wrap mb-4">
-					<label htmlFor="" className="text-xl text-gray-400 pr-4 grow">
+					<label htmlFor="pay" className="text-xl text-gray-400 pr-4 grow">
 						Currency
 					</label>
 					<Select
 						unstyled={true}
 						defaultValue={payOptions[0]}
+						inputId="pay"
 						classNames={{
 							control: (state) => "bg-neutral-900 p-2 rounded-xl border-l border-gray-600 2xl:text-sm",
 							menuList: (state) => "bg-neutral-900 mt-1 rounded-xl 2xl:text-sm",
@@ -49,6 +50,7 @@ const Premium = ({ register, errors }: { register: UseFormRegister<LaunchForm>; 
 					{...register("amount", {
 						max: 10,
 						min: 0,
+						pattern: /^[0-9]+$/i,
 					})}
 					isError={errors.preventSwap ? true : false}
 					error="Please provide a valid limit."

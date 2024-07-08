@@ -22,7 +22,8 @@ const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>;
 					isPercent={true}
 					placeholder="0"
 					{...register("maxTx", {
-						max: 1,
+						pattern: /^[0-9]+$/i,
+						max: 100,
 						min: 0,
 					})}
 					isError={errors.maxTx ? true : false}
@@ -36,7 +37,8 @@ const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>;
 					isPercent={true}
 					placeholder="0"
 					{...register("maxWallet", {
-						max: 1,
+						pattern: /^[0-9]+$/i,
+						max: 100,
 						min: 0,
 					})}
 					isError={errors.maxWallet ? true : false}
@@ -50,6 +52,9 @@ const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>;
 					placeholder="1000"
 					{...register("taxSwapThreshold", {
 						required: true,
+						pattern: /^[0-9]+$/i,
+						max: 50,
+						min: 0,
 					})}
 					isError={errors.taxSwapThreshold ? true : false}
 					error="Please provide a valid limit."
@@ -62,6 +67,7 @@ const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>;
 					placeholder="10000"
 					{...register("maxSwap", {
 						required: true,
+						pattern: /^[0-9]+$/i,
 					})}
 					isError={errors.maxSwap ? true : false}
 					error="Please provide a valid limit."
@@ -73,6 +79,7 @@ const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>;
 					id="preventSwap"
 					placeholder="10"
 					{...register("preventSwap", {
+						pattern: /^[0-9]+$/i,
 						max: 10,
 						min: 0,
 					})}

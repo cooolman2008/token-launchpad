@@ -9,10 +9,10 @@ import Select from "react-select";
 import { animate } from "motion";
 
 import { LaunchForm, getArgs, updateFields } from "@/utils/launchHelper";
-import { getContractAddress } from "@/utils/utils";
+import { getContractAddress, getRouterAddress } from "@/utils/utils";
 
 import Loading from "@/components/elements/Loading";
-import Switch from "@/components/elements/Switch";
+import Arrow from "@/components/elements/Arrow";
 import Modal from "@/components/elements/Modal";
 
 import Advanced from "@/components/PageModules/Launch/Advanced";
@@ -31,6 +31,7 @@ function Launch() {
 
 	const { selectedNetworkId: chainId } = useWeb3ModalState();
 	const CONTRACT_ADDRESS = getContractAddress(Number(chainId));
+	const ROUTER_ADDRESS = getRouterAddress(Number(chainId));
 
 	const [isClient, setIsClient] = useState(false);
 	const [tax, setTax] = useState(false);
@@ -42,6 +43,15 @@ function Launch() {
 
 	const clear = () => {
 		setError("");
+	};
+
+	const scrollTo = (id: string) => {
+		const ele = document.getElementById(id);
+		if (ele) {
+			ele.scrollIntoView({
+				behavior: "smooth",
+			});
+		}
 	};
 
 	// contract call for token launch.
@@ -96,8 +106,9 @@ function Launch() {
 		formState: { errors },
 	} = useForm<LaunchForm>();
 	const onSubmit: SubmitHandler<LaunchForm> = (formData) => {
+		console.log(CONTRACT_ADDRESS);
 		if (address) {
-			const args = getArgs(address, CONTRACT_ADDRESS, formData, template);
+			const args = getArgs(address, CONTRACT_ADDRESS, formData, template, ROUTER_ADDRESS);
 			console.log(args);
 			launchFree({ args: [args] }).then((res) => {
 				setResponse(res);
@@ -126,7 +137,7 @@ function Launch() {
 							callback={clear}
 						/>
 					)}
-					<form onSubmit={handleSubmit(onSubmit)} className="w-full">
+					<form onSubmit={handleSubmit(onSubmit)} className="w-full mb-48">
 						<h2 className="block text-4xl lg:text-5xl font-thin safu-grad-text text-center uppercase py-8 lg:py-24">
 							Launch your token in 60 seconds
 						</h2>
@@ -160,16 +171,27 @@ function Launch() {
 							</p>
 							<Basic register={register} errors={errors} />
 						</div>
-						<div className="border-b border-gray-700 py-8">
+						<div id="tax_container" className="border-b border-gray-700 py-8">
 							<div className="flex mb-1">
-								<Switch
-									onChange={() => {
+								<Arrow
+									onClick={(event) => {
 										if (tax) {
+											animate(
+												event.currentTarget,
+												{ rotate: 0 },
+												{ easing: "ease-in-out", duration: 0.5, direction: "alternate" }
+											);
 											animate("#tax", { maxHeight: 0 }, { easing: "ease-in-out" });
 											setTimeout(() => {
 												setTax(!tax);
 											}, 300);
 										} else {
+											scrollTo("tax_container");
+											animate(
+												event.currentTarget,
+												{ rotate: [0, -180] },
+												{ easing: "ease-in-out", duration: 0.5, direction: "alternate" }
+											);
 											setTax(!tax);
 										}
 									}}
@@ -182,16 +204,27 @@ function Launch() {
 							</p>
 							{tax && <Tax register={register} errors={errors} />}
 						</div>
-						<div className="border-b border-gray-700 py-8">
+						<div id="advanced_container" className="border-b border-gray-700 py-8">
 							<div className="flex mb-1">
-								<Switch
-									onChange={() => {
+								<Arrow
+									onClick={(event) => {
 										if (advanced) {
+											animate(
+												event.currentTarget,
+												{ rotate: 0 },
+												{ easing: "ease-in-out", duration: 0.5, direction: "alternate" }
+											);
 											animate("#advanced", { maxHeight: 0 }, { easing: "ease-in-out" });
 											setTimeout(() => {
 												setAdvanced(!advanced);
 											}, 200);
 										} else {
+											scrollTo("advanced_container");
+											animate(
+												event.currentTarget,
+												{ rotate: [0, -180] },
+												{ easing: "ease-in-out", duration: 0.5, direction: "alternate" }
+											);
 											setAdvanced(!advanced);
 										}
 									}}
@@ -205,16 +238,27 @@ function Launch() {
 							</p>
 							{advanced && <Advanced register={register} errors={errors} />}
 						</div>
-						<div className="border-b border-gray-700 py-8">
+						<div id="premium_container" className="py-8">
 							<div className="flex mb-1">
-								<Switch
-									onChange={() => {
+								<Arrow
+									onClick={(event) => {
 										if (premium) {
+											animate(
+												event.currentTarget,
+												{ rotate: 0 },
+												{ easing: "ease-in-out", duration: 0.5, direction: "alternate" }
+											);
 											animate("#premium", { maxHeight: 0 }, { easing: "ease-in-out" });
 											setTimeout(() => {
 												setPremium(!premium);
 											}, 300);
 										} else {
+											scrollTo("premium_container");
+											animate(
+												event.currentTarget,
+												{ rotate: [0, -180] },
+												{ easing: "ease-in-out", duration: 0.5, direction: "alternate" }
+											);
 											setPremium(!premium);
 										}
 									}}

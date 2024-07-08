@@ -4,6 +4,11 @@ interface DayData {
   dailyVolumeUSD: bigint;
 }
 
+export interface TeamMember {
+  id: string;
+  percent: string;
+}
+
 export interface Token {
     name: string;
     totalSupply: number;
@@ -11,6 +16,8 @@ export interface Token {
     staking: string;
     presale: string;
     presaleStatus: string;
+    cliffPeriod:number; 
+    vestingPeriod: number;
     lplockDays: number;
     isLpRetrieved: boolean;
     isLpBurnt: boolean;
@@ -19,16 +26,12 @@ export interface Token {
     walletLimit: number;
     symbol: string;
     owner: string;
-    team1: string;
-    team2: string;
-    team3: string;
-    team4: string;
-    team5: string;
     telegram: string;
     website: string;
     twitter: string;
     totalLiquidity: number;
     tokenDayData:  DayData[];
+    teamMembers: TeamMember[];
 }
 
 interface tokenResponse {
@@ -45,6 +48,8 @@ export async function fetchToken(id: string, api_endpoint: string) {
             staking
             presale
             presaleStatus
+            cliffPeriod
+            vestingPeriod
             lplockDays
             isLpRetrieved
             isLpBurnt
@@ -53,17 +58,16 @@ export async function fetchToken(id: string, api_endpoint: string) {
             walletLimit
             symbol
             owner
-            team1
-            team2
-            team3
-            team4
-            team5
             telegram
             website
             twitter
             totalLiquidity
             tokenDayData {
               dailyVolumeUSD
+            }
+            teamMembers {
+              id
+              percent
             }
           }
         }`;

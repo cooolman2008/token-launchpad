@@ -186,7 +186,7 @@ const PresaleUser = ({
 				<div className="w-full py-8 border-b border-gray-700">
 					{presaleScene !== 1 && presaleScene !== 2 && presaleScene !== 4 && (
 						<div className="flex mb-1">
-							<h2 className="text-xl text-slate-200 mr-1">Presale</h2>
+							<h2 className="text-xl mr-1">Presale</h2>
 						</div>
 					)}
 					{presaleScene === 1 && !isOwner && (
@@ -227,7 +227,7 @@ const PresaleUser = ({
 								contract after this.
 							</p>
 							<div className="w-full flex justify-between">
-								<h2 className="text-2xl font-medium text-slate-200">
+								<h2 className="text-2xl font-medium">
 									<b className="font-bold text-gray-500">You bought:</b> {bought} Tokens
 								</h2>
 								<div className="flex justify-center flex-col">
@@ -262,7 +262,7 @@ const PresaleUser = ({
 								Presale has failed to break the softcap. Do not worry, you can get your refund here.
 							</p>
 							<div className="w-full flex justify-between">
-								<h2 className="text-2xl font-medium text-slate-200">
+								<h2 className="text-2xl font-medium">
 									<b className="font-bold text-gray-500">Bought:</b> {bought} Tokens
 								</h2>
 								<div className="flex justify-center flex-col">

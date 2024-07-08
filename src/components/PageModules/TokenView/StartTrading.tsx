@@ -1,13 +1,16 @@
 import { useContractWrite, useWalletClient, useBalance } from "wagmi";
+import { useWeb3ModalState } from "@web3modal/wagmi/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, SetStateAction, Dispatch } from "react";
-import { parseEther } from "viem";
+import { getAddress, parseEther } from "viem";
+import Select from "react-select";
 
 import TextField from "@/components/elements/TextField";
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
 
 import Tokenabi from "../../../../newtokenabi.json";
+import { getRouters } from "@/utils/utils";
 
 interface TradingForm {
 	liq: number;
@@ -28,6 +31,11 @@ const StartTrading = ({
 	const [showLock, setShowLock] = useState(true);
 	const [balance, setBalance] = useState(0);
 	const [error, setError] = useState("");
+
+	const { selectedNetworkId: chainId } = useWeb3ModalState();
+	const routers = getRouters(Number(chainId));
+
+	const [router, setRouter] = useState(routers[0].value);
 
 	useBalance({
 		address: contractAddress,
@@ -68,8 +76,9 @@ const StartTrading = ({
 		formState: { errors },
 	} = useForm<TradingForm>();
 	const onSubmit: SubmitHandler<TradingForm> = (formData) => {
+		const routerAddr = getAddress(router);
 		write({
-			args: [formData.lockPeriod, formData.shouldBurn],
+			args: [formData.lockPeriod, formData.shouldBurn, routerAddr],
 			value: parseEther(formData.liq.toString()),
 		});
 	};
@@ -103,7 +112,7 @@ const StartTrading = ({
 					</span>
 				</div>
 				<div className="flex justify-between items-center">
-					<h2 className="text-xl mb-1 text-slate-200">Start trading!</h2>
+					<h2 className="text-xl mb-1">Start trading!</h2>
 					{balance > 0 && (
 						<span className="text-xl font-medium text-slate-200">
 							<b className="font-bold text-gray-500">Available:</b> {balance} ETH
@@ -136,7 +145,7 @@ const StartTrading = ({
 								width="w-20"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"
-								margin="mb-4 2xl:mb-0"
+								margin="mb-4"
 							/>
 							<TextField
 								label="Lock days"
@@ -153,10 +162,10 @@ const StartTrading = ({
 								width="w-20"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"
-								margin="mb-4 2xl:mb-0"
+								margin="mb-4"
 								padding=" pr-4 lg:pr-0 xl:pr-4 "
 							/>
-							<div className="flex flex-col justify-center mr-4 md:mr-0 mb-4 lg:mb-0 xl:mb-4 2xl:mb-0">
+							<div className="flex flex-col justify-center mr-4 md:mr-0 mb-4 lg:mb-0 xl:mb-4">
 								<div className="flex items-center">
 									<span className="text-xl text-gray-400 pb-0.5 mr-4">Burn liquidity</span>
 									<label className="switch">
@@ -172,6 +181,30 @@ const StartTrading = ({
 										<span className="slider round"></span>
 									</label>
 								</div>
+							</div>
+							<div className="w-full md:w-auto flex md:pr-4 2xl:pr-12 items-center flex-wrap mb-4">
+								<label htmlFor="type" className="text-xl text-gray-400 pr-4 grow">
+									Router
+								</label>
+								<Select
+									unstyled={true}
+									defaultValue={routers[0]}
+									inputId="type"
+									minMenuHeight={0}
+									classNames={{
+										control: (state) =>
+											"select-control bg-neutral-900 ps-3 pe-3 py-1.5 rounded-xl border-l border-gray-600 2xl:text-sm",
+										menuList: (state) => "bg-neutral-900 mt-1 rounded-xl 2xl:text-sm  border-l border-gray-600",
+										option: (state) => " flex flex-col justify-center px-4 py-2 cursor-pointer select-options",
+									}}
+									options={routers}
+									isSearchable={false}
+									onChange={(value) => {
+										if (value?.value) {
+											setRouter(value?.value);
+										}
+									}}
+								/>
 							</div>
 							<div className="flex justify-center flex-col ml-auto 2xl:ml-0">
 								<input type="submit" value="Start" className="safu-button-secondary cursor-pointer" />

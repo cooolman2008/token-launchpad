@@ -27,10 +27,11 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 				<TextField
 					label="Initial buy tax"
 					id="maxbtax"
-					defaultValue="40.44"
+					defaultValue="40"
 					placeholder="40"
 					{...register("maxBuyTax", {
 						required: true,
+						pattern: /^[0-9]+$/i,
 						max: 40,
 						min: 0,
 					})}
@@ -47,6 +48,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 					placeholder="40"
 					{...register("maxSellTax", {
 						required: true,
+						pattern: /^[0-9]+$/i,
 						max: 40,
 						min: 0,
 					})}
@@ -64,7 +66,8 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 						placeholder="0"
 						{...register("minBuyTax", {
 							required: true,
-							max: 40,
+							pattern: /^[0-9]+$/i,
+							max: 6,
 							min: 0,
 						})}
 						isPercent={true}
@@ -80,7 +83,8 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 						placeholder="0"
 						{...register("minSellTax", {
 							required: true,
-							max: 40,
+							pattern: /^[0-9]+$/i,
+							max: 6,
 							min: 0,
 						})}
 						isPercent={true}
@@ -92,12 +96,13 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 				</div>
 				<div className="w-full flex flex-wrap">
 					<div className="w-full md:w-1/2 2xl:w-1/3 flex md:pr-4 2xl:pr-12 items-center flex-wrap mb-4">
-						<label htmlFor="" className="text-xl text-gray-400 pr-4 grow">
+						<label htmlFor="type" className="text-xl text-gray-400 pr-4 grow">
 							Tax drop
 						</label>
 						<Select
 							unstyled={true}
 							defaultValue={taxOptions[1]}
+							inputId="type"
 							classNames={{
 								control: (state) => "bg-neutral-900 p-2 rounded-xl border-l border-gray-600 2xl:text-sm",
 								menuList: (state) => "bg-neutral-900 mt-1 rounded-xl 2xl:text-sm",
@@ -127,7 +132,8 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 							placeholder="60"
 							{...register("countInterval", {
 								required: true,
-								max: 60,
+								pattern: /^[0-9]+$/i,
+								max: 7200,
 								min: 0,
 							})}
 							isError={errors.countInterval ? true : false}
@@ -144,7 +150,8 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 							placeholder="60"
 							{...register("initInterval", {
 								required: true,
-								max: 60,
+								pattern: /^[0-9]+$/i,
+								max: 100,
 								min: 0,
 							})}
 							isError={errors.initInterval ? true : false}
@@ -161,7 +168,8 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 					placeholder="0"
 					{...register("lpTax", {
 						required: true,
-						max: 20,
+						pattern: /^[0-9]+$/i,
+						max: 50,
 						min: 0,
 					})}
 					isPercent={true}

@@ -190,7 +190,7 @@ const PresaleDashboard = ({
 						</div>
 					)}
 					<div className="flex mb-1">
-						{presaleScene < 4 && <h2 className="text-xl text-slate-200 mr-1">Presale management</h2>}
+						{presaleScene < 4 && <h2 className="text-xl mr-1">Presale management</h2>}
 						{presaleScene === 1 && (
 							<svg height="24px" width="24px" version="1.1" viewBox="0 0 611.999 611.999">
 								<defs>
@@ -212,7 +212,7 @@ const PresaleDashboard = ({
 						<>
 							<p className="text-sm text-gray-500 mb-4">You can terminate presale whenever you want.</p>
 							<div className="w-full flex justify-between">
-								<h2 className="text-2xl font-extralight text-slate-200">
+								<h2 className="text-2xl font-extralight">
 									<b className="font-normal text-gray-400">Sold:</b> {presale?.sold ? getNumber(presale?.sold) : "0"}{" "}
 									{symbol}
 								</h2>
@@ -235,7 +235,7 @@ const PresaleDashboard = ({
 								You can refund your presale funds to the users if you are not plannig to start the trading.
 							</p>
 							<div className="w-full flex justify-between">
-								<h2 className="text-2xl font-medium text-slate-200">
+								<h2 className="text-2xl font-medium">
 									<b className="font-bold text-gray-500">Sold:</b> {presale?.sold ? getNumber(presale?.sold) : "0"}{" "}
 									{symbol}
 								</h2>

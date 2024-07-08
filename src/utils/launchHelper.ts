@@ -62,12 +62,12 @@ export const updateFields = (
   setValue('symbol', template.symbol);
 }
 
-export const getArgs = ( address: `0x${string}`, staking_address: `0x${string}`, formData: LaunchForm, template: Template) => {
+export const getArgs = ( address: `0x${string}`, staking_address: `0x${string}`, formData: LaunchForm, template: Template, router: `0x${string}`) => {
   return {
     owner: address,
     taxWallet: formData.taxWallet,
     stakingFacet: staking_address,
-    v2router: staking_address,
+    v2router: router,
     isFreeTier: true,
     minLiq: 0,
     supply: BigInt( formData.supply ),

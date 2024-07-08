@@ -30,7 +30,7 @@ const Table = ({ tokens, type }: { tokens: Tokens[]; type: string }) => {
 			<tbody className="bg-black">
 				{tokens.length > 0 ? (
 					Object.values(tokens).map((token) => (
-						<tr key={token.id} className="text-slate-200 text-base">
+						<tr key={token.id} className="text-base">
 							<td className="px-4 py-3">
 								<Link href={"/" + token.id} scroll={true}>
 									<div>

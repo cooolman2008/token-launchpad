@@ -4,7 +4,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { parseEther, formatEther } from "viem";
 import { useEffect, useState } from "react";
 
-import { getContractAddress } from "@/utils/utils";
+import { getContractAddress, getGraphUrl } from "@/utils/utils";
 import { fetchPromoCost } from "@/api/getSafu";
 
 import TextField from "@/components/elements/TextField";
@@ -24,6 +24,7 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 
 	const { selectedNetworkId: chainId } = useWeb3ModalState();
 	const CONTRACT_ADDRESS = getContractAddress(Number(chainId));
+	const API_ENDPOINT = getGraphUrl(Number(chainId));
 
 	// contract call to start trading of the launched token.
 	const {
@@ -62,14 +63,14 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 
 	useEffect(() => {
 		async function fetchTheCost() {
-			const data = await fetchPromoCost(CONTRACT_ADDRESS);
+			const data = await fetchPromoCost(CONTRACT_ADDRESS, API_ENDPOINT);
 			if (data) {
 				setPromoCost(Number(formatEther(data)));
 				setValue("cost", Number(formatEther(data)));
 			}
 		}
-		fetchTheCost();
-	}, [CONTRACT_ADDRESS, setValue]);
+		if (chainId) fetchTheCost();
+	}, [API_ENDPOINT, CONTRACT_ADDRESS, chainId, setValue]);
 
 	return (
 		<div className="w-full py-8 border-b border-gray-700">
@@ -98,7 +99,7 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 							width="w-20"
 							labelWidth="grow lg:grow-0"
 							containerWidth="w-full md:w-auto"
-							margin="mb-4 lg:mb-0"
+							margin="mb-4 md:mb-0"
 						/>
 						<TextField
 							label="Times"
@@ -116,9 +117,9 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 							width="w-20"
 							labelWidth="grow lg:grow-0"
 							containerWidth="w-full md:w-auto"
-							margin="mb-4 lg:mb-0"
+							margin="mb-4 md:mb-0"
 						/>
-						<div className="w-full lg:w-auto flex justify-center flex-col">
+						<div className="w-full md:w-auto flex justify-center flex-col">
 							<input
 								type="submit"
 								value={"Promote for " + price + " ETH"}

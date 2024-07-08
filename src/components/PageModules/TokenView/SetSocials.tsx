@@ -79,7 +79,7 @@ const SetSocials = memo(
 				)}
 				<div className="socials-container mt-12">
 					<div className="flex mb-2">
-						<h2 className="text-2xl">The socials</h2>
+						<h2 className="text-2xl">Socials</h2>
 						<InformationTip msg="Set your socials & get a boost to your token" />
 					</div>
 					<form onSubmit={handleSubmit(onSubmit)}>
@@ -91,13 +91,14 @@ const SetSocials = memo(
 									placeholder="x.com/SAFUlauncher"
 									{...register("twitter", {
 										required: true,
+										pattern: /^[A-Za-z]+$/i,
 									})}
 									defaultValue={twitter}
-									className="block w-full rounded-xl pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-xl"
+									className="block w-full rounded-xl pe-3 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-lg"
 								/>
-								<span className="block sm:text-4xl leading-6 text-gray-400 pt-1.5">
+								<span className="block sm:text-4xl leading-6 text-gray-400">
 									<svg
-										width="40px"
+										width="32px"
 										height="40px"
 										viewBox="0 0 18 18"
 										xmlns="http://www.w3.org/2000/svg"
@@ -116,14 +117,15 @@ const SetSocials = memo(
 									id="site"
 									{...register("website", {
 										required: true,
+										pattern: /^[A-Za-z]+$/i,
 									})}
 									defaultValue={website}
 									placeholder="safulauncher.com"
-									className="block w-full rounded-xl pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-xl"
+									className="block w-full rounded-xl pe-3 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-lg"
 								/>
 								<span className="block sm:text-4xl leading-6 text-gray-400 pt-1.5">
 									<svg
-										width="40px"
+										width="32px"
 										height="40px"
 										viewBox="0 0 18 18"
 										xmlns="http://www.w3.org/2000/svg"
@@ -143,13 +145,14 @@ const SetSocials = memo(
 									placeholder="t.me/SAFULauncherPortal"
 									{...register("telegram", {
 										required: true,
+										pattern: /^[A-Za-z]+$/i,
 									})}
 									defaultValue={telegram}
-									className="block w-full rounded-xl pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-xl"
+									className="block w-full rounded-xl pe-3 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-lg"
 								/>
 								<span className="block sm:text-4xl leading-6 text-gray-400 pt-1.5">
 									<svg
-										width="40px"
+										width="32px"
 										height="40px"
 										viewBox="0 0 24 24"
 										role="img"

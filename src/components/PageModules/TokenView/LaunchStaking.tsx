@@ -85,7 +85,7 @@ const LaunchStaking = ({
 								width="w-24"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"
-								margin="mb-4 lg:mb-0"
+								margin="mb-4 md:mb-0"
 							/>
 							<TextField
 								label="Timeout"
@@ -102,9 +102,9 @@ const LaunchStaking = ({
 								width="w-20"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"
-								margin="mb-4 lg:mb-0"
+								margin="mb-4 md:mb-0"
 							/>
-							<div className="w-full lg:w-auto flex justify-center flex-col">
+							<div className="w-full md:w-auto flex justify-center flex-col">
 								<input type="submit" value="Launch Staking" className="safu-button-secondary cursor-pointer" />
 							</div>
 						</div>

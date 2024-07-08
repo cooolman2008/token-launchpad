@@ -133,48 +133,8 @@
               "type":"address"
             },
             {
-              "internalType":"address",
-              "name":"team2",
-              "type":"address"
-            },
-            {
-              "internalType":"address",
-              "name":"team3",
-              "type":"address"
-            },
-            {
-              "internalType":"address",
-              "name":"team4",
-              "type":"address"
-            },
-            {
-              "internalType":"address",
-              "name":"team5",
-              "type":"address"
-            },
-            {
               "internalType":"uint256",
               "name":"team1p",
-              "type":"uint256"
-            },
-            {
-              "internalType":"uint256",
-              "name":"team2p",
-              "type":"uint256"
-            },
-            {
-              "internalType":"uint256",
-              "name":"team3p",
-              "type":"uint256"
-            },
-            {
-              "internalType":"uint256",
-              "name":"team4p",
-              "type":"uint256"
-            },
-            {
-              "internalType":"uint256",
-              "name":"team5p",
               "type":"uint256"
             },
             {
@@ -186,6 +146,11 @@
               "internalType":"uint256",
               "name":"vestingPeriod",
               "type":"uint256"
+            },
+            {
+              "internalType":"bool",
+              "name":"isAdd",
+              "type":"bool"
             }
           ],
           "indexed":false,
@@ -223,6 +188,12 @@
           "internalType":"bool",
           "name":"isBurnt",
           "type":"bool"
+        },
+        {
+          "indexed":false,
+          "internalType":"address",
+          "name":"router",
+          "type":"address"
         }
       ],
       "name":"TradingEnabled",
@@ -365,48 +336,8 @@
               "type":"address"
             },
             {
-              "internalType":"address",
-              "name":"team2",
-              "type":"address"
-            },
-            {
-              "internalType":"address",
-              "name":"team3",
-              "type":"address"
-            },
-            {
-              "internalType":"address",
-              "name":"team4",
-              "type":"address"
-            },
-            {
-              "internalType":"address",
-              "name":"team5",
-              "type":"address"
-            },
-            {
               "internalType":"uint256",
               "name":"team1p",
-              "type":"uint256"
-            },
-            {
-              "internalType":"uint256",
-              "name":"team2p",
-              "type":"uint256"
-            },
-            {
-              "internalType":"uint256",
-              "name":"team3p",
-              "type":"uint256"
-            },
-            {
-              "internalType":"uint256",
-              "name":"team4p",
-              "type":"uint256"
-            },
-            {
-              "internalType":"uint256",
-              "name":"team5p",
               "type":"uint256"
             },
             {
@@ -418,6 +349,11 @@
               "internalType":"uint256",
               "name":"vestingPeriod",
               "type":"uint256"
+            },
+            {
+              "internalType":"bool",
+              "name":"isAdd",
+              "type":"bool"
             }
           ],
           "internalType":"struct INewToken.TeamParams",
@@ -597,6 +533,11 @@
           "internalType":"bool",
           "name":"shouldBurn",
           "type":"bool"
+        },
+        {
+          "internalType":"address",
+          "name":"router",
+          "type":"address"
         }
       ],
       "name":"startTrading",

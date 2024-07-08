@@ -302,6 +302,11 @@
               "internalType":"uint256",
               "name":"maxWallet",
               "type":"uint256"
+            },
+            {
+              "internalType":"address",
+              "name":"router",
+              "type":"address"
             }
           ],
           "internalType":"struct IOwnership.LPDetails",

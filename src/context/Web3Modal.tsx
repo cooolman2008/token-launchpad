@@ -3,7 +3,7 @@
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
 
 import { WagmiConfig } from "wagmi";
-import { arbitrum, mainnet, sepolia } from "viem/chains";
+import { arbitrum, mainnet, sepolia, holesky } from "viem/chains";
 import { defineChain } from "viem";
 
 export const local = defineChain({
@@ -39,7 +39,7 @@ const metadata = {
 	icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 
-const chains = [mainnet, arbitrum, sepolia, local];
+const chains = [mainnet, arbitrum, sepolia, holesky, local];
 const wagmiConfig = defaultWagmiConfig({ projectId, chains, metadata });
 
 // 3. Create modal
