@@ -63,10 +63,12 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 
 	useEffect(() => {
 		async function fetchTheCost() {
-			const data = await fetchPromoCost(CONTRACT_ADDRESS, API_ENDPOINT);
-			if (data) {
-				setPromoCost(Number(formatEther(data)));
-				setValue("cost", Number(formatEther(data)));
+			if (CONTRACT_ADDRESS && API_ENDPOINT) {
+				const data = await fetchPromoCost(CONTRACT_ADDRESS, API_ENDPOINT);
+				if (data) {
+					setPromoCost(Number(formatEther(data)));
+					setValue("cost", Number(formatEther(data)));
+				}
 			}
 		}
 		if (chainId) fetchTheCost();
@@ -107,6 +109,7 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 							placeholder="0"
 							{...register("times", {
 								required: true,
+								pattern: /^[0-9]+$/i,
 								min: 1,
 							})}
 							onKeyUp={() => {

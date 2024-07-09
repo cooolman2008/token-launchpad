@@ -76,34 +76,34 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	}, []);
 
 	const fetchTheToken = useCallback(async () => {
-		const data = await fetchToken(params?.slug?.toString(), API_ENDPOINT);
-		if (data) {
-			const address_0 = "0x0000000000000000000000000000000000000000";
-			if (data?.presaleStatus) {
-				setPresale(Number(data?.presaleStatus));
+		if (API_ENDPOINT) {
+			const data = await fetchToken(params?.slug?.toString(), API_ENDPOINT);
+			if (data) {
+				const address_0 = "0x0000000000000000000000000000000000000000";
+				if (data?.presaleStatus) {
+					setPresale(Number(data?.presaleStatus));
+				}
+				if (data?.staking === address_0) {
+					data.staking = "";
+					setIsStaking(false);
+				}
+				if (data?.pair === address_0) {
+					data.pair = "";
+					setIsTrading(false);
+				}
+				if (data?.owner.toLowerCase() === address?.toLowerCase()) {
+					setIsOwner(true);
+				} else {
+					setIsOwner(false);
+				}
+				if (data?.teamMembers && data?.teamMembers.length > 0) {
+					if (address) checkIfTeam(data?.teamMembers, address);
+				}
+				if (data?.cliffPeriod && Number(data?.cliffPeriod) !== 0) {
+					setIsTeamSet(true);
+				}
+				setToken(data);
 			}
-			if (data?.staking === address_0) {
-				data.staking = "";
-				setIsStaking(false);
-			}
-			if (data?.pair === address_0) {
-				data.pair = "";
-				setIsTrading(false);
-			}
-			if (data?.owner.toLowerCase() === address?.toLowerCase()) {
-				setIsOwner(true);
-			} else {
-				setIsOwner(false);
-			}
-			if (data?.teamMembers && data?.teamMembers.length > 0) {
-				if (address) checkIfTeam(data?.teamMembers, address);
-			}
-			if (data?.cliffPeriod && Number(data?.cliffPeriod) !== 0) {
-				setIsTeamSet(true);
-			}
-			setToken(data);
-		} else {
-			setTokenFound(false);
 		}
 		setLoading(false);
 	}, [API_ENDPOINT, address, checkIfTeam, params?.slug]);
@@ -113,6 +113,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 		if (!isAddress(params?.slug)) {
 			router.push("/", { scroll: true });
 		}
+		console.log(chainId);
 		if (chainId) {
 			fetchTheToken();
 		}
@@ -124,129 +125,121 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 			{isClient && (
 				<>
 					{loading && <Loading msg="Loading your token.." />}
-					{tokenFound ? (
-						token && (
-							<>
-								{success && <Modal msg={success} callback={clear} />}
-								<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-12 w-full">
-									<div className="lg:col-span-8">
-										<Intro address={params?.slug} token={token} isOwner={isOwner} isPresale={presale === 1} />
-										{isTeam && <Claim contractAddress={params?.slug} />}
-										{isOwner && !isTrading && presale === 0 && (
-											<Team
-												contractAddress={params?.slug}
-												teamSet={isTeamSet}
-												teamMembers={teamMembers}
-												setSuccess={setSuccess}
-											/>
-										)}
-										{isOwner && (
-											<>
-												{!isTrading && presale === 0 && (
-													<LaunchPresale
-														contractAddress={params?.slug}
-														setSuccess={setSuccess}
-														presaleAddress={getAddress(token?.presale)}
-													/>
-												)}
-												{presale !== 0 && token?.presale && (
-													<PresaleDashboard
-														setSuccess={setSuccess}
-														presaleAddress={getAddress(token?.presale)}
-														isTrading={isTrading}
-														symbol={token?.symbol ? token?.symbol : ""}
-													/>
-												)}
-												{!isTrading && presale !== 1 && (
-													<StartTrading
-														contractAddress={params?.slug}
-														callback={setIsTrading}
-														setSuccess={setSuccess}
-													/>
-												)}
-												{!isStaking && (
-													<LaunchStaking
-														contractAddress={params?.slug}
-														callback={setIsStaking}
-														setSuccess={setSuccess}
-													/>
-												)}
-												{isTrading && !token?.isLpRetrieved && !token?.isLpBurnt && (
-													<LPChanges
-														contractAddress={params?.slug}
-														setSuccess={setSuccess}
-														lplockDays={token?.lplockDays}
-														lplockStart={Number(token?.lplockStart)}
-													/>
-												)}
-												{isTrading && (
-													<Limits
-														contractAddress={params?.slug}
-														setSuccess={setSuccess}
-														txLimit={token?.txLimit}
-														walletLimit={token?.walletLimit}
-													/>
-												)}
-											</>
-										)}
-										{walletClient && (
-											<>
-												{presale > 0 && token?.presale && (
-													<PresaleUser
-														callback={clear}
-														setSuccess={setSuccess}
-														presaleAddress={getAddress(token?.presale)}
-														isTrading={isTrading}
-														isOwner={isOwner}
-													/>
-												)}
-												<Promote contractAddress={params?.slug} />
-											</>
-										)}
-									</div>
-									<div className="lg:col-span-4">
-										<Swap
+					{token ? (
+						<>
+							{success && <Modal msg={success} callback={clear} />}
+							<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-12 w-full">
+								<div className="lg:col-span-8">
+									<Intro address={params?.slug} token={token} isOwner={isOwner} isPresale={presale === 1} />
+									{isTeam && <Claim contractAddress={params?.slug} />}
+									{isOwner && !isTrading && presale === 0 && (
+										<Team
 											contractAddress={params?.slug}
-											symbol={token?.symbol ? token?.symbol : ""}
-											tradingEnabled={token?.pair ? true : false}
+											teamSet={isTeamSet}
+											teamMembers={teamMembers}
 											setSuccess={setSuccess}
 										/>
-										{presale === 1 && token?.presale && walletClient && (
-											<Presale
-												contractAddress={params?.slug}
-												presaleAddress={getAddress(token?.presale)}
-												symbol={token?.symbol ? token?.symbol : ""}
-												setSuccess={setSuccess}
-											/>
-										)}
-										{isStaking && token?.staking && walletClient && (
-											<Staking
-												contractAddress={params?.slug}
-												stakingAddress={getAddress(token?.staking)}
-												symbol={token?.symbol ? token?.symbol : ""}
-												setSuccess={setSuccess}
-											/>
-										)}
-										{isOwner && walletClient && (
-											<SetSocials
-												contractAddress={params?.slug}
-												telegram={token?.telegram ? token?.telegram : ""}
-												twitter={token?.twitter ? token?.twitter : ""}
-												website={token?.website ? token?.website : ""}
-												setSuccess={setSuccess}
-											/>
-										)}
-									</div>
+									)}
+									{isOwner && (
+										<>
+											{!isTrading && presale === 0 && (
+												<LaunchPresale
+													contractAddress={params?.slug}
+													setSuccess={setSuccess}
+													presaleAddress={getAddress(token?.presale)}
+												/>
+											)}
+											{presale !== 0 && token?.presale && (
+												<PresaleDashboard
+													setSuccess={setSuccess}
+													presaleAddress={getAddress(token?.presale)}
+													isTrading={isTrading}
+													symbol={token?.symbol ? token?.symbol : ""}
+												/>
+											)}
+											{!isTrading && presale !== 1 && (
+												<StartTrading contractAddress={params?.slug} callback={setIsTrading} setSuccess={setSuccess} />
+											)}
+											{!isStaking && (
+												<LaunchStaking contractAddress={params?.slug} callback={setIsStaking} setSuccess={setSuccess} />
+											)}
+											{isTrading && !token?.isLpRetrieved && !token?.isLpBurnt && (
+												<LPChanges
+													contractAddress={params?.slug}
+													setSuccess={setSuccess}
+													lplockDays={token?.lplockDays}
+													lplockStart={Number(token?.lplockStart)}
+												/>
+											)}
+											{!(token?.txLimit === 100 && token?.txLimit === 100) && (
+												<Limits
+													contractAddress={params?.slug}
+													setSuccess={setSuccess}
+													txLimit={token?.txLimit}
+													walletLimit={token?.walletLimit}
+												/>
+											)}
+										</>
+									)}
+									{walletClient && (
+										<>
+											{presale > 0 && token?.presale && (
+												<PresaleUser
+													callback={clear}
+													setSuccess={setSuccess}
+													presaleAddress={getAddress(token?.presale)}
+													isTrading={isTrading}
+													isOwner={isOwner}
+												/>
+											)}
+											<Promote contractAddress={params?.slug} />
+										</>
+									)}
 								</div>
-							</>
-						)
+								<div className="lg:col-span-4">
+									<Swap
+										contractAddress={params?.slug}
+										symbol={token?.symbol ? token?.symbol : ""}
+										tradingEnabled={token?.pair ? true : false}
+										setSuccess={setSuccess}
+									/>
+									{presale === 1 && token?.presale && walletClient && (
+										<Presale
+											contractAddress={params?.slug}
+											presaleAddress={getAddress(token?.presale)}
+											symbol={token?.symbol ? token?.symbol : ""}
+											setSuccess={setSuccess}
+										/>
+									)}
+									{isStaking && token?.staking && walletClient && (
+										<Staking
+											contractAddress={params?.slug}
+											stakingAddress={getAddress(token?.staking)}
+											symbol={token?.symbol ? token?.symbol : ""}
+											setSuccess={setSuccess}
+										/>
+									)}
+									{isOwner && walletClient && (
+										<SetSocials
+											contractAddress={params?.slug}
+											telegram={token?.telegram ? token?.telegram : ""}
+											twitter={token?.twitter ? token?.twitter : ""}
+											website={token?.website ? token?.website : ""}
+											setSuccess={setSuccess}
+										/>
+									)}
+								</div>
+							</div>
+						</>
 					) : (
-						<div className="min-h-[90vh] flex flex-col justify-center text-center">
-							<h2 className="max-md:text-sm text-2xl text-red-500">Sorry, there was no contract on this address!</h2>
-							<p className="max-md:text-xs text-xl text-gray-400">
-								Try refreshing the page or searching the address of the contract in the above search bar
-							</p>
-						</div>
+						!loading && (
+							<div className="min-h-[90vh] flex flex-col justify-center text-center">
+								<h2 className="max-md:text-sm text-2xl text-red-500">Sorry, there was no data on this address!</h2>
+								<p className="max-md:text-xs text-xl text-gray-400">
+									Try refreshing the page or searching the address of the contract in the above search bar
+								</p>
+							</div>
+						)
 					)}
 				</>
 			)}

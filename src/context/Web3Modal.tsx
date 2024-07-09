@@ -43,7 +43,7 @@ const chains = [mainnet, arbitrum, sepolia, holesky, local];
 const wagmiConfig = defaultWagmiConfig({ projectId, chains, metadata });
 
 // 3. Create modal
-createWeb3Modal({ wagmiConfig, projectId, chains });
+createWeb3Modal({ wagmiConfig, projectId, chains, defaultChain: holesky });
 
 function Web3Modal({ children }: { children: React.ReactNode }) {
 	return <WagmiConfig config={wagmiConfig}>{children}</WagmiConfig>;

@@ -76,6 +76,7 @@ const LaunchStaking = ({
 								placeholder="0"
 								{...register("share", {
 									required: true,
+									pattern: /^[0-9]+$/i,
 									min: 0,
 									max: 20,
 								})}
@@ -92,6 +93,7 @@ const LaunchStaking = ({
 								id="days"
 								{...register("withdraw", {
 									required: true,
+									pattern: /^[0-9]+$/i,
 									min: 2,
 									max: 10,
 								})}

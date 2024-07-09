@@ -1,10 +1,6 @@
 import { useContractWrite, useWalletClient } from "wagmi";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { parseEther } from "viem";
 
-import TextField from "@/components/elements/TextField";
 import Tokenabi from "../../../../newtokenabi.json";
-import { useState } from "react";
 
 const Claim = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 	const { data: walletClient } = useWalletClient();

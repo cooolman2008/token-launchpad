@@ -135,6 +135,7 @@ const LaunchPresale = ({
 										placeholder="0"
 										{...register("liqPercent", {
 											required: true,
+											pattern: /^[0-9]+$/i,
 											min: 80,
 											max: 100,
 										})}
@@ -150,6 +151,7 @@ const LaunchPresale = ({
 										id="duration"
 										{...register("duration", {
 											required: true,
+											pattern: /^[0-9]+$/i,
 											min: 1,
 											max: 30,
 										})}
@@ -169,6 +171,7 @@ const LaunchPresale = ({
 										defaultValue={2}
 										{...register("cliffPeriod", {
 											required: true,
+											pattern: /^[0-9]+$/i,
 											min: 1,
 											max: 30,
 										})}
@@ -185,6 +188,7 @@ const LaunchPresale = ({
 										defaultValue={7}
 										{...register("vestingPeriod", {
 											required: true,
+											pattern: /^[0-9]+$/i,
 											min: 7,
 											max: 30,
 										})}
@@ -202,6 +206,7 @@ const LaunchPresale = ({
 										placeholder="0"
 										{...register("maxEth", {
 											required: true,
+											pattern: /^[0-9]+$/i,
 										})}
 										isError={errors.maxEth ? true : false}
 										error="Maximum ETH is needed"
@@ -216,6 +221,7 @@ const LaunchPresale = ({
 										placeholder="0"
 										{...register("maxBag", {
 											required: true,
+											pattern: /^[0-9]+$/i,
 										})}
 										isError={errors.maxBag ? true : false}
 										error="Max bag should be less than 10% of hardcap"
@@ -231,6 +237,7 @@ const LaunchPresale = ({
 										placeholder="0"
 										{...register("percent", {
 											required: true,
+											pattern: /^[0-9]+$/i,
 											min: 1,
 											max: 100,
 										})}

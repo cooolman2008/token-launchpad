@@ -61,6 +61,7 @@ function Navigation() {
 						<div>
 							<w3m-button />
 						</div>
+						<w3m-network-button />
 					</div>
 				</nav>
 			)}

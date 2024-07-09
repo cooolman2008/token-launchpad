@@ -107,7 +107,7 @@ function Launch() {
 	} = useForm<LaunchForm>();
 	const onSubmit: SubmitHandler<LaunchForm> = (formData) => {
 		console.log(CONTRACT_ADDRESS);
-		if (address) {
+		if (address && CONTRACT_ADDRESS && ROUTER_ADDRESS) {
 			const args = getArgs(address, CONTRACT_ADDRESS, formData, template, ROUTER_ADDRESS);
 			console.log(args);
 			launchFree({ args: [args] }).then((res) => {

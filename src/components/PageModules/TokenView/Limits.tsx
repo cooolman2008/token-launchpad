@@ -78,6 +78,7 @@ const Limits = ({
 								defaultValue={txLimit}
 								{...register("maxtx", {
 									required: true,
+									pattern: /^[0-9]+$/i,
 									min: txLimit,
 									max: 100,
 								})}
@@ -96,6 +97,7 @@ const Limits = ({
 								defaultValue={walletLimit}
 								{...register("maxwallet", {
 									required: true,
+									pattern: /^[0-9]+$/i,
 									min: walletLimit,
 									max: 100,
 								})}

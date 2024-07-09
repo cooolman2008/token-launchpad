@@ -36,7 +36,7 @@ function Launches() {
 		if (!address) {
 			setTab("Explore");
 		}
-		if (chainId) {
+		if (chainId && API_ENDPOINT && CONTRACT_ADDRESS) {
 			switch (tab) {
 				case "Launches":
 					if (launches.length > 0) {

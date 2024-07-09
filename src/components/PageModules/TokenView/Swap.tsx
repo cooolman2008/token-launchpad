@@ -250,6 +250,7 @@ const Swap = ({
 										defaultValue="6"
 										{...register("slippage", {
 											required: true,
+											pattern: /^[0-9.]+$/i,
 											min: 0.005,
 											max: 6,
 										})}
@@ -270,6 +271,7 @@ const Swap = ({
 									defaultValue={10}
 									{...register("deadline", {
 										required: true,
+										pattern: /^[0-9]+$/i,
 										min: 10,
 										max: 20,
 									})}
@@ -291,13 +293,16 @@ const Swap = ({
 								placeholder="0"
 								{...register("pay", {
 									required: true,
+									pattern: /^[0-9.]+$/i,
 									min: 0.0001,
 								})}
 								disabled={!tradingEnabled}
 								className="block w-full rounded-xl pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-3xl"
 								onBlur={setAmounts}
 							/>
-							<span className="block sm:text-3xl leading-6 text-gray-400 pt-1.5">
+							<span
+								className={"block sm:text-3xl leading-6 pt-1.5" + (errors.pay ? " text-red-500" : " text-gray-400")}
+							>
 								{tokenIn.address.toUpperCase() === WETH_ADDRESS.toUpperCase() ? "ETH" : symbol}
 							</span>
 						</div>

@@ -218,6 +218,7 @@ const Staking = ({
 								placeholder="0"
 								{...register("amount", {
 									required: true,
+									pattern: /^[0-9.]+$/i,
 									min: 0.0001,
 								})}
 								className="block w-full rounded-xl pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-3xl"

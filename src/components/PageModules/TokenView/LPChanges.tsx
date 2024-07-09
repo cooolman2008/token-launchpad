@@ -114,6 +114,7 @@ const LPChanges = ({
 							id="lock"
 							{...register("ldays", {
 								required: true,
+								pattern: /^[0-9]+$/i,
 								min: 30,
 							})}
 							placeholder="30"

@@ -150,6 +150,7 @@ const Team = ({
 									placeholder="0"
 									{...register("team1p", {
 										required: true,
+										pattern: /^[0-9]+$/i,
 										max: 20,
 										min: 0,
 									})}

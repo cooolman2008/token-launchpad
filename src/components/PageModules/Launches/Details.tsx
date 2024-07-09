@@ -15,10 +15,12 @@ const Details = memo(() => {
 
 	useEffect(() => {
 		async function fetchSafuDetails() {
-			const safuDetails = await fetchSafu(CONTRACT_ADDRESS, API_ENDPOINT);
-			setSafuTVL(safuDetails?.totalLiquidityUSD ? safuDetails?.totalLiquidityUSD : 0);
-			setSafuVolume(safuDetails?.totalVolumeUSD ? safuDetails?.totalVolumeUSD : 0);
-			setSafuLaunches(safuDetails?.launchCount ? safuDetails?.launchCount : 0);
+			if (CONTRACT_ADDRESS && API_ENDPOINT) {
+				const safuDetails = await fetchSafu(CONTRACT_ADDRESS, API_ENDPOINT);
+				setSafuTVL(safuDetails?.totalLiquidityUSD ? safuDetails?.totalLiquidityUSD : 0);
+				setSafuVolume(safuDetails?.totalVolumeUSD ? safuDetails?.totalVolumeUSD : 0);
+				setSafuLaunches(safuDetails?.launchCount ? safuDetails?.launchCount : 0);
+			}
 		}
 		fetchSafuDetails();
 	}, [CONTRACT_ADDRESS, API_ENDPOINT]);

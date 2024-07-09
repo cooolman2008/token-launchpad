@@ -177,6 +177,7 @@ const Presale = ({
 								placeholder="0"
 								{...register("amount", {
 									required: true,
+									pattern: /^[0-9]+$/i,
 									min: 1,
 									max: maxBag,
 								})}

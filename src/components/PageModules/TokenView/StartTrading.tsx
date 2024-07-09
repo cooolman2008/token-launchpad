@@ -152,6 +152,7 @@ const StartTrading = ({
 								id="days"
 								{...register("lockPeriod", {
 									required: showLock,
+									pattern: /^[0-9]+$/i,
 									min: !showLock ? 0 : 30,
 								})}
 								defaultValue={30}
