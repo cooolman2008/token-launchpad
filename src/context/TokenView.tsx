@@ -46,7 +46,6 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	const [presale, setPresale] = useState(0);
 	const [token, setToken] = useState<Token>();
 	const [success, setSuccess] = useState("");
-	const [tokenFound, setTokenFound] = useState(true);
 	const [loading, setLoading] = useState(false);
 
 	const clear = () => {

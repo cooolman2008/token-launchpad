@@ -120,9 +120,9 @@ const StartTrading = ({
 					)}
 				</div>
 				<p className="text-sm text-gray-500 mb-4">
-					Start trading your tokens by creating a liquidity pool
+					Create a liquidity pool to begin trading your tokens.
 					<br />
-					You can either Burn the LP tokens or Lock them for a period of time.
+					You can either burn the LP tokens or lock them for a set duration.
 				</p>
 				<div className="w-full pb-4 rounded-xl">
 					<form onSubmit={handleSubmit(onSubmit)}>
@@ -148,7 +148,7 @@ const StartTrading = ({
 								margin="mb-4"
 							/>
 							<TextField
-								label="Lock days"
+								label="Lock Days"
 								id="days"
 								{...register("lockPeriod", {
 									required: showLock,
@@ -168,7 +168,7 @@ const StartTrading = ({
 							/>
 							<div className="flex flex-col justify-center mr-4 md:mr-0 mb-4 lg:mb-0 xl:mb-4">
 								<div className="flex items-center">
-									<span className="text-xl text-gray-400 pb-0.5 mr-4">Burn liquidity</span>
+									<span className="text-xl text-gray-400 pb-0.5 mr-4">Burn Liquidity</span>
 									<label className="switch">
 										<input
 											type="checkbox"

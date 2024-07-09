@@ -17,10 +17,7 @@ function Launches() {
 
 	const { selectedNetworkId: chainId } = useWeb3ModalState();
 	const API_ENDPOINT = getGraphUrl(Number(chainId));
-	console.log(chainId);
-	console.log(API_ENDPOINT);
 	const CONTRACT_ADDRESS = getContractAddress(Number(chainId));
-	console.log(CONTRACT_ADDRESS);
 
 	const [isClient, setIsClient] = useState(false);
 	const [tab, setTab] = useState("Explore");
@@ -29,6 +26,7 @@ function Launches() {
 	const [launches, setLaunches] = useState<Tokens[]>([]);
 	const [stealth, setStealth] = useState<Tokens[]>([]);
 	const [presales, setPresales] = useState<Tokens[]>([]);
+	const [chain, setChain] = useState(0);
 
 	const heading_classes = "text-lg xl:text-2xl pr-8 cursor-pointer ";
 
@@ -39,11 +37,12 @@ function Launches() {
 		if (chainId && API_ENDPOINT && CONTRACT_ADDRESS) {
 			switch (tab) {
 				case "Launches":
-					if (launches.length > 0) {
+					if (launches.length > 0 && chain === Number(chainId)) {
 						setTokens(launches);
 					} else {
 						if (address) {
 							fetchMyTokens(address?.toString(), API_ENDPOINT).then((tokensFetched) => {
+								setChain(Number(chainId));
 								if (tokensFetched.length === 0) {
 									setTokens([]);
 								} else {
@@ -54,10 +53,11 @@ function Launches() {
 					}
 					break;
 				case "Stealth":
-					if (stealth.length > 0) {
+					if (stealth.length > 0 && chain === Number(chainId)) {
 						setTokens(stealth);
 					} else {
 						fetchStealthTokens(API_ENDPOINT).then((tokensFetched) => {
+							setChain(Number(chainId));
 							if (tokensFetched.length === 0) {
 								setTokens([]);
 							} else {
@@ -67,10 +67,11 @@ function Launches() {
 					}
 					break;
 				case "Presales":
-					if (presales.length > 0) {
+					if (presales.length > 0 && chain === Number(chainId)) {
 						setTokens(presales);
 					} else {
 						fetchPresalesTokens(API_ENDPOINT).then((tokensFetched) => {
+							setChain(Number(chainId));
 							if (tokensFetched.length === 0) {
 								setTokens([]);
 							} else {
@@ -80,10 +81,11 @@ function Launches() {
 					}
 					break;
 				default:
-					if (explore.length > 0) {
+					if (explore.length > 0 && chain === Number(chainId)) {
 						setTokens(explore);
 					} else {
 						fetchTokens(CONTRACT_ADDRESS, API_ENDPOINT).then((tokensFetched) => {
+							setChain(Number(chainId));
 							if (tokensFetched.length === 0) {
 								setTokens([]);
 							} else {
@@ -93,7 +95,7 @@ function Launches() {
 					}
 			}
 		}
-	}, [API_ENDPOINT, CONTRACT_ADDRESS, address, explore, launches, stealth, presales, tab, chainId]);
+	}, [API_ENDPOINT, CONTRACT_ADDRESS, address, explore, launches, stealth, presales, tab, chainId, chain]);
 
 	useEffect(() => {
 		setIsClient(true);

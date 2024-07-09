@@ -54,6 +54,9 @@ function Navigation() {
 						<div className="flex justify-center">
 							<w3m-button />
 						</div>
+						<div className="flex justify-center">
+							<w3m-network-button />
+						</div>
 					</div>
 					<div className="hidden lg:flex w-full">
 						<Links />

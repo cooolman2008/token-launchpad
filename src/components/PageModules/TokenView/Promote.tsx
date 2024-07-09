@@ -26,12 +26,8 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 	const CONTRACT_ADDRESS = getContractAddress(Number(chainId));
 	const API_ENDPOINT = getGraphUrl(Number(chainId));
 
-	// contract call to start trading of the launched token.
-	const {
-		data,
-		isSuccess,
-		write: promote,
-	} = useContractWrite({
+	// contract call to promote the token.
+	const { write: promote } = useContractWrite({
 		address: CONTRACT_ADDRESS,
 		abi: Helperabi.abi,
 		functionName: "promoteToken",
@@ -78,13 +74,9 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 		<div className="w-full py-8 border-b border-gray-700">
 			<div className="flex mb-1">
 				<h2 className="text-xl">Promote this token</h2>
-				<InformationTip msg="Your token will be displayed in our twitter account as many times as you say" />
+				<InformationTip msg="The token will be highlighted on our X account for the selected frequency" />
 			</div>
-			<p className="text-sm text-gray-500 mb-4">
-				Start promoting this token to raise the noice!
-				<br />
-				Just enter the number of times you want to display, we will populate the cost for you.
-			</p>
+			<p className="text-sm text-gray-500 mb-4">Enter the frequency for displaying the ad to know the total cost.</p>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="w-full pb-4 rounded-xl mb-2">
 					<div className="w-full flex flex-wrap justify-between">

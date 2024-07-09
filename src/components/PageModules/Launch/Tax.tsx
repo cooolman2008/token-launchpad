@@ -25,7 +25,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 		<>
 			<div id="tax" className={"flex flex-wrap max-h-0" + (!isLoaded && " overflow-hidden")}>
 				<TextField
-					label="Initial buy tax"
+					label="Initial Buy Tax"
 					id="maxbtax"
 					defaultValue="40"
 					placeholder="40"
@@ -42,7 +42,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 					labelWidth="grow"
 				/>
 				<TextField
-					label="Initial sell tax"
+					label="Initial Sell Tax"
 					id="maxstax"
 					defaultValue="40"
 					placeholder="40"
@@ -60,7 +60,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 				/>
 				<div className="w-full flex flex-wrap">
 					<TextField
-						label="Final buy tax"
+						label="Final Buy Tax"
 						id="minbtax"
 						defaultValue="0"
 						placeholder="0"
@@ -77,7 +77,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 						labelWidth="grow"
 					/>
 					<TextField
-						label="Final sell tax"
+						label="Final Sell Tax"
 						id="minstax"
 						defaultValue="0"
 						placeholder="0"
@@ -97,7 +97,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 				<div className="w-full flex flex-wrap">
 					<div className="w-full md:w-1/2 2xl:w-1/3 flex md:pr-4 2xl:pr-12 items-center flex-wrap mb-4">
 						<label htmlFor="type" className="text-xl text-gray-400 pr-4 grow">
-							Tax drop
+							Tax Drop
 						</label>
 						<Select
 							unstyled={true}
@@ -126,7 +126,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 					</div>
 					{dropStyle < 2 && (
 						<TextField
-							label="Buy count"
+							label="Buy Count"
 							id="countinterval"
 							defaultValue="60"
 							placeholder="60"
@@ -162,7 +162,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 					)}
 				</div>
 				<TextField
-					label="Buy back tax"
+					label="Buy Back Tax"
 					id="lptax"
 					defaultValue="0"
 					placeholder="0"

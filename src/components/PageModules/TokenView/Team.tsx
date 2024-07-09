@@ -74,28 +74,32 @@ const Team = ({
 			<div className="w-full py-8 border-b border-gray-700">
 				<h2 className="text-xl mb-1">Add your team</h2>
 				<p className="text-sm text-gray-500 mb-4">
-					Add your team members before starting the a presale or the trade
+					Add team members before launching the presale or trade.
 					<br />
-					You can only add the team information once. So, be aware of the details.
+					Once added, team details cannot be changed.
 				</p>
-				{teamMembers &&
-					Object.values(teamMembers).map((member) => (
-						<div key={member.id} className="w-full pb-4 rounded-xl">
-							<div className="w-full flex justify-between flex-wrap border-y border-neutral-700 py-4">
-								<div className="w-full flex flex-wrap justify-between">
-									<span className="text-xs md:text-sm">Wallet: {member.id}</span>
-									<span className="text-xs md:text-sm">Share: {member.percent}%</span>
+				{teamMembers && (
+					<div className="w-full mb-8 rounded-xl text-gray-400">
+						{Object.values(teamMembers).map((member) => (
+							<div
+								key={member.id}
+								className="w-full flex justify-between flex-wrap border-b last:border-0 border-neutral-700 py-4"
+							>
+								<div className="w-full flex flex-wrap justify-between font-medium uppercase">
+									<span className="text-xs md:text-sm">{member.id}</span>
+									<span className="text-xs md:text-sm">{member.percent} %</span>
 								</div>
 							</div>
-						</div>
-					))}
+						))}
+					</div>
+				)}
 				<div className="w-full pb-4 rounded-xl">
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<div className="w-full flex justify-between flex-wrap">
 							{!teamSet && (
 								<>
 									<TextField
-										label="Cliff period"
+										label="Cliff Period"
 										id="cliffPeriod"
 										placeholder="30"
 										defaultValue={30}
@@ -110,7 +114,7 @@ const Team = ({
 										containerWidth="w-full md:w-1/2"
 									/>
 									<TextField
-										label="Vesting period"
+										label="Vesting Period"
 										id="vestingPeriod"
 										placeholder="30"
 										defaultValue={30}
@@ -165,7 +169,7 @@ const Team = ({
 							</div>
 							<div className="w-full flex justify-end">
 								<div className="flex justify-center flex-col">
-									<input type="submit" value="Add wallet" className="safu-button-secondary cursor-pointer" />
+									<input type="submit" value="Add Wallet" className="safu-button-secondary cursor-pointer" />
 								</div>
 							</div>
 						</div>

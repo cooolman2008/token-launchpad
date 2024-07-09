@@ -71,7 +71,7 @@ const Limits = ({
 					<div className="w-full pb-4 rounded-xl mb-2">
 						<div className="w-full flex flex-wrap justify-between">
 							<TextField
-								label="Max transactions"
+								label="Max Transactions"
 								id="maxtx"
 								isPercent={true}
 								placeholder="30"
@@ -90,7 +90,7 @@ const Limits = ({
 								margin="mb-4 lg:mb-0"
 							/>
 							<TextField
-								label="Max wallet"
+								label="Max Wallet"
 								id="maxwallet"
 								isPercent={true}
 								placeholder="30"

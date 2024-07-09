@@ -164,7 +164,7 @@ function Launch() {
 							</div>
 						</div>
 						<div className="border-b border-gray-700 py-8">
-							<h3 className="text-2xl mb-1">Customise token</h3>
+							<h3 className="text-2xl mb-1">Customise Token</h3>
 							<p className="text-sm text-gray-500 mb-4">
 								Enter wallet address or <b className="font-bold text-gray-400"> splitter contract </b> address as your
 								tax wallet.
@@ -230,11 +230,10 @@ function Launch() {
 									}}
 									checked={advanced}
 								/>
-								<h3 className="text-2xl mb-1">I know this</h3>
+								<h3 className="text-2xl mb-1">Advanced Settings</h3>
 							</div>
 							<p className="text-sm text-gray-500 mb-4">
-								You can configure <b className="font-bold text-gray-400">advanced settings</b> if you know what you are
-								doing.
+								If you <b className="font-bold text-gray-400">know</b> what you are doing, configure the settings.
 							</p>
 							{advanced && <Advanced register={register} errors={errors} />}
 						</div>
@@ -264,7 +263,7 @@ function Launch() {
 									}}
 									checked={premium}
 								/>
-								<h3 className="text-2xl mb-1">Go premium</h3>
+								<h3 className="text-2xl mb-1">Go Premium</h3>
 							</div>
 							<p className="text-sm text-gray-500 mb-4">
 								Pay once and access <b className="font-bold text-gray-400">premium features</b>.

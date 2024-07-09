@@ -10,7 +10,7 @@ const Basic = ({ register, errors }: { register: UseFormRegister<LaunchForm>; er
 		<>
 			<div className="flex flex-wrap">
 				<TextField
-					label="Coin name"
+					label="Coin Name"
 					id="name"
 					placeholder="SAFU"
 					{...register("name", {
@@ -51,7 +51,7 @@ const Basic = ({ register, errors }: { register: UseFormRegister<LaunchForm>; er
 					labelWidth="grow lg:grow-0"
 				/>
 				<TextField
-					label="Tax wallet"
+					label="Tax Wallet"
 					id="taxWallet"
 					defaultValue={address}
 					placeholder="0xXXXXXXXXXXXXXXXXXXXXXXXXX"
