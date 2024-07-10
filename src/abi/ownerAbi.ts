@@ -1,5 +1,4 @@
-{
-  "abi":[
+export const ownerAbi = [
     {
       "anonymous":false,
       "inputs":[
@@ -415,5 +414,4 @@
       "stateMutability":"nonpayable",
       "type":"function"
     }
-  ]
-}
+  ] as const;

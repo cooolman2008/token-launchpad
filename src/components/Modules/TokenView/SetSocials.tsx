@@ -40,7 +40,7 @@ const SetSocials = memo(
 			data,
 			isSuccess,
 			isLoading: setting,
-			write: set,
+			writeContract: set,
 		} = useContractWrite({
 			address: contractAddress,
 			abi: Ownerabi.abi,

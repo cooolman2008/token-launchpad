@@ -1,11 +1,10 @@
 "use client";
 
-import { useWalletClient, useAccount } from "wagmi";
-import { useWeb3ModalState } from "@web3modal/wagmi/react";
+import { useWalletClient, useAccount, useChainId } from "wagmi";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import Details from "@/components/PageModules/Launches/Details";
+import Details from "@/components/Modules/Launches/Details";
 import Table from "@/components/elements/Table";
 
 import { getContractAddress, getGraphUrl } from "@/utils/utils";
@@ -15,9 +14,10 @@ function Launches() {
 	const { data: walletClient } = useWalletClient();
 	const { address } = useAccount();
 
-	const { selectedNetworkId: chainId } = useWeb3ModalState();
-	const API_ENDPOINT = getGraphUrl(Number(chainId));
-	const CONTRACT_ADDRESS = getContractAddress(Number(chainId));
+	const chainId = useChainId();
+	const API_ENDPOINT = getGraphUrl(chainId);
+	const CONTRACT_ADDRESS = getContractAddress(chainId);
+	console.log(chainId);
 
 	const [isClient, setIsClient] = useState(false);
 	const [tab, setTab] = useState("Explore");
@@ -31,6 +31,7 @@ function Launches() {
 	const heading_classes = "text-lg xl:text-2xl pr-8 cursor-pointer ";
 
 	useEffect(() => {
+		console.log(chainId);
 		if (!address) {
 			setTab("Explore");
 		}
@@ -101,6 +102,10 @@ function Launches() {
 		setIsClient(true);
 	}, []);
 
+	function handleClick() {
+		console.log(chainId);
+	}
+
 	return (
 		<>
 			{isClient && (
@@ -160,6 +165,7 @@ function Launches() {
 					<Link href="/launch" className="safu-button-secondary" scroll={true}>
 						Launch a token
 					</Link>
+					<button onClick={handleClick}>SEEEE</button>
 				</>
 			)}
 		</>

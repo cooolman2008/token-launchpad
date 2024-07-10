@@ -3,14 +3,17 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import logo from "../../public/safu.svg";
-import Links from "@/components/PageModules/Navigation/Links";
-import Search from "@/components/PageModules/Navigation/Search";
+import logo from "../../../public/safu.svg";
+import Links from "@/components/Modules/Navigation/Links";
+import Search from "@/components/Modules/Navigation/Search";
 import { animate, spring } from "motion";
+import { useWeb3Modal, useWeb3ModalEvents, useWeb3ModalState, useWeb3ModalTheme } from "@web3modal/wagmi/react";
 
 function Navigation() {
 	const [isClient, setIsClient] = useState(false);
 	const wrapperRef = useRef<HTMLDivElement>(null);
+	const { open } = useWeb3Modal();
+	const state = useWeb3ModalState();
 
 	useEffect(() => {
 		setIsClient(true);
@@ -28,7 +31,7 @@ function Navigation() {
 	return (
 		<>
 			{isClient && (
-				<nav className="w-full flex px-8 py-5 h-20">
+				<nav className="w-full flex px-4 lg:px-8 py-5 h-20">
 					<Link href={"/"} className="pr-8" scroll={true}>
 						<Image id="box" src={logo} className="w-auto h-10" alt="SAFU Launcher Logo" />
 					</Link>
@@ -51,7 +54,7 @@ function Navigation() {
 								<Links />
 							</div>
 						</div>
-						<div className="flex justify-center">
+						<div className="flex justify-center mb-8">
 							<w3m-button />
 						</div>
 						<div className="flex justify-center">
@@ -61,10 +64,14 @@ function Navigation() {
 					<div className="hidden lg:flex w-full">
 						<Links />
 						<Search />
-						<div>
+						<button onClick={() => open()}>Connect Wallet</button>
+						<button onClick={() => open({ view: "Networks" })}>Choose Network</button>
+						<button onClick={() => open({ view: "Networks" })}>Choose Network</button>
+						{/* <div>
 							<w3m-button />
-						</div>
-						<w3m-network-button />
+						</div> */}
+						{/* <w3m-network-button /> */}
+						<pre>{JSON.stringify(state, null, 2)}</pre>
 					</div>
 				</nav>
 			)}

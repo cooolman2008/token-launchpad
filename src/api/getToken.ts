@@ -12,8 +12,6 @@ export interface TeamMember {
 export interface Token {
     name: string;
     totalSupply: number;
-    pair: string;
-    staking: string;
     presale: string;
     presaleStatus: string;
     cliffPeriod:number; 
@@ -38,14 +36,28 @@ interface tokenResponse {
     token: Token
 }
 
+export interface LPDetails {
+	buycount: bigint;
+	isBurnt: boolean;
+	lockDays: bigint;
+	maxTx: bigint;
+	maxWallet: bigint;
+	pair: string;
+	router: string;
+	stakingContract: string;
+	stakingShare: bigint;
+	taxBuy: bigint;
+	taxSell: bigint;
+	tradingOpened: bigint;
+	walletLimited: boolean;
+}
+
 export async function fetchToken(id: string, api_endpoint: string) {
     if (id) {
         const query = `query MyQuery {
           token(id: "${id}") {
             name
             totalSupply
-            pair
-            staking
             presale
             presaleStatus
             cliffPeriod

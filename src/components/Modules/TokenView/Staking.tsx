@@ -79,7 +79,7 @@ const Staking = ({
 	});
 
 	// contract call to stake tokens.
-	const { isLoading: staking, write: stake } = useContractWrite({
+	const { isLoading: staking, writeContract: stake } = useContractWrite({
 		address: stakingAddress,
 		abi: stakingabi.abi,
 		functionName: "stake",
@@ -97,7 +97,7 @@ const Staking = ({
 	});
 
 	// contract call to unstake tokens.
-	const { isLoading: unstaking, write: unstake } = useContractWrite({
+	const { isLoading: unstaking, writeContract: unstake } = useContractWrite({
 		address: stakingAddress,
 		abi: stakingabi.abi,
 		functionName: "unstake",
@@ -115,7 +115,7 @@ const Staking = ({
 	});
 
 	// contract call to withdraw unstaked tokens.
-	const { isLoading: withdrawing, write: withdraw } = useContractWrite({
+	const { isLoading: withdrawing, writeContract: withdraw } = useContractWrite({
 		address: stakingAddress,
 		abi: stakingabi.abi,
 		functionName: "withdraw",

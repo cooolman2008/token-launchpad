@@ -65,7 +65,7 @@ const PresaleDashboard = ({
 	};
 
 	// contract call to end presale.
-	const { isLoading: finishing, write: finish } = useContractWrite({
+	const { isLoading: finishing, writeContract: finish } = useContractWrite({
 		address: presaleAddress,
 		abi: Presaleabi.abi,
 		functionName: "finishPresale",
@@ -82,7 +82,7 @@ const PresaleDashboard = ({
 	});
 
 	// contract call to refund the liquidity from the token contract to presale contract.
-	const { isLoading: refunding, write: refund } = useContractWrite({
+	const { isLoading: refunding, writeContract: refund } = useContractWrite({
 		address: presaleAddress,
 		abi: Presaleabi.abi,
 		functionName: "refundPresale",
@@ -99,7 +99,7 @@ const PresaleDashboard = ({
 	});
 
 	// contract call for the owner to claim ETH from presales after trading begins.
-	const { isLoading: claiming, write: claim } = useContractWrite({
+	const { isLoading: claiming, writeContract: claim } = useContractWrite({
 		address: presaleAddress,
 		abi: Presaleabi.abi,
 		functionName: "claimEth",

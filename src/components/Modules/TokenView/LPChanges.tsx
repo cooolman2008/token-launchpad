@@ -38,7 +38,7 @@ const LPChanges = ({
 	const {
 		isLoading,
 		isSuccess,
-		write: extend,
+		writeContract: extend,
 	} = useContractWrite({
 		address: contractAddress,
 		abi: Ownerabi.abi,
@@ -55,7 +55,7 @@ const LPChanges = ({
 	});
 
 	// contract call to burn the LP tokens.
-	const { isSuccess: isBurnt, write: burn } = useContractWrite({
+	const { isSuccess: isBurnt, writeContract: burn } = useContractWrite({
 		address: contractAddress,
 		abi: Ownerabi.abi,
 		functionName: "burnLP",

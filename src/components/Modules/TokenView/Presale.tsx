@@ -68,7 +68,7 @@ const Presale = ({
 	});
 
 	// contract call to buy presale tokens.
-	const { isLoading: buying, write: buyTokens } = useContractWrite({
+	const { isLoading: buying, writeContract: buyTokens } = useContractWrite({
 		address: presaleAddress,
 		abi: Presaleabi.abi,
 		functionName: "buyTokens",

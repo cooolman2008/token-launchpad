@@ -27,7 +27,7 @@ const Promote = ({ contractAddress }: { contractAddress: `0x${string}` }) => {
 	const API_ENDPOINT = getGraphUrl(Number(chainId));
 
 	// contract call to promote the token.
-	const { write: promote } = useContractWrite({
+	const { writeContract: promote } = useContractWrite({
 		address: CONTRACT_ADDRESS,
 		abi: Helperabi.abi,
 		functionName: "promoteToken",

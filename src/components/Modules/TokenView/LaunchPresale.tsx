@@ -1,4 +1,4 @@
-import { useContractWrite, useWalletClient } from "wagmi";
+import { useWriteContract, useWalletClient, useChainId } from "wagmi";
 import { useWeb3ModalState } from "@web3modal/wagmi/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, SetStateAction, Dispatch } from "react";
@@ -10,9 +10,10 @@ import Modal from "@/components/elements/Modal";
 
 // Token & helper ABIs.
 import Helperabi from "../../../../helperabi.json";
-import Tokenabi from "../../../../newtokenabi.json";
 
 import { getContractAddress } from "@/utils/utils";
+import { tokenAbi } from "@/abi/tokenAbi";
+import { helperAbi } from "@/abi/helperAbi";
 
 interface PresaleForm {
 	percent: number;
@@ -37,42 +38,38 @@ const LaunchPresale = ({
 	const { data: walletClient } = useWalletClient();
 	const [error, setError] = useState("");
 
-	const { selectedNetworkId: chainId } = useWeb3ModalState();
-	const CONTRACT_ADDRESS = getContractAddress(Number(chainId));
+	const chainId = useChainId();
+	const CONTRACT_ADDRESS = getContractAddress(chainId);
 
 	const clear = () => {
 		setError("");
 	};
 
 	// contract call to launch presale contract.
-	const { isLoading: launching, write: launch } = useContractWrite({
-		address: CONTRACT_ADDRESS,
-		abi: Helperabi.abi,
-		functionName: "launchPresale",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			setSuccess("Presale contract was launched successfully");
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending: launching, writeContract: launch } = useWriteContract({
+		mutation: {
+			onSuccess: (res) => {
+				console.log(res);
+				setSuccess("Presale contract was launched successfully");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
 	// contract call to setup & start presale.
-	const { isLoading: setting, write: setup } = useContractWrite({
-		address: contractAddress,
-		abi: Tokenabi.abi,
-		functionName: "addPresale",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			setSuccess("Presale setup was successful");
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending: setting, writeContract: setup } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				setSuccess("Presale setup was successful");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
@@ -85,34 +82,40 @@ const LaunchPresale = ({
 		formState: { errors },
 	} = useForm<PresaleForm>();
 	const onSubmit: SubmitHandler<PresaleForm> = (formData) => {
-		setup({
-			args: [
-				presaleAddress,
-				formData.percent * 100,
-				{
-					owner: walletClient?.account.address,
-					token: contractAddress,
-					softcap: parseEther("1"),
-					hardcap: parseEther("2"),
-					startTs: 1718276705,
-					finishTs: 1718276705,
-					duration: formData.duration,
-					liqPercent: formData.liqPercent,
-					cliffPeriod: formData.cliffPeriod,
-					vestingPeriod: formData.vestingPeriod,
-					status: parseEther("0.01"),
-					sold: parseEther("0.01"),
-					maxEth: parseEther(formData.maxEth.toString()),
-					maxBag: parseEther(formData.maxBag.toString()), // supply * percent /10
-					fee: parseEther("0.01"),
-				},
-			],
-		});
+		if (presaleAddress && walletClient?.account.address) {
+			setup({
+				address: contractAddress,
+				abi: tokenAbi,
+				functionName: "addPresale",
+				account: walletClient?.account,
+				args: [
+					presaleAddress,
+					BigInt(formData.percent * 100),
+					{
+						owner: walletClient?.account.address,
+						token: contractAddress,
+						softcap: parseEther("1"),
+						hardcap: parseEther("2"),
+						startTs: BigInt(1718276705),
+						finishTs: BigInt(1718276705),
+						duration: BigInt(formData.duration),
+						liqPercent: BigInt(formData.liqPercent),
+						cliffPeriod: BigInt(formData.cliffPeriod),
+						vestingPeriod: BigInt(formData.vestingPeriod),
+						status: parseEther("0.01"),
+						sold: parseEther("0.01"),
+						maxEth: parseEther(formData.maxEth.toString()),
+						maxBag: parseEther(formData.maxBag.toString()), // supply * percent /10
+						fee: parseEther("0.01"),
+					},
+				],
+			});
+		}
 	};
 	return (
 		<>
 			{launching && <Loading msg="Launching a presale contract..." />}
-			{setting && <Loading msg="Setting & starting your presales..." />}
+			{/* {setting && <Loading msg="Setting & starting your presales..." />} */}
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
 			)}
@@ -291,7 +294,15 @@ const LaunchPresale = ({
 								value="Launch Presale"
 								className="safu-button-secondary cursor-pointer"
 								onClick={() => {
-									launch({ args: [contractAddress] });
+									if (CONTRACT_ADDRESS) {
+										launch({
+											address: CONTRACT_ADDRESS,
+											abi: helperAbi,
+											account: walletClient?.account,
+											functionName: "launchPresale",
+											args: [contractAddress],
+										});
+									}
 								}}
 							/>
 						</div>

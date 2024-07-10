@@ -6,7 +6,7 @@ import Website from "@/components/images/Website";
 import Telegram from "@/components/images/Telegram";
 import XBadge from "@/components/images/XBadge";
 
-import logo from "../../../../public/coin.svg";
+import coin from "../../../../public/coin.svg";
 import { Token } from "@/api/getToken";
 import { getAbr } from "@/utils/math";
 import { useEffect } from "react";
@@ -39,7 +39,7 @@ const Intro = ({
 			</span>
 			<div className="w-full flex flex-wrap mb-8 mt-2">
 				<div className="w-full xl:w-auto flex flex-1 mb-4 xl:mb-0 items-center">
-					<Image id="box" src={logo} style={{ width: "auto", height: "40px" }} alt="SAFU Launcher Logo" />
+					<Image id="box" src={coin} style={{ width: "auto", height: "40px" }} alt="SAFU Launcher Logo" />
 					<h2 className="text-xl lg:text-3xl mx-4">{token?.name}</h2>
 					<h2 className="text-xl lg:text-3xl mr-4 text-gray-400">{token?.symbol}</h2>
 					{isPresale && (

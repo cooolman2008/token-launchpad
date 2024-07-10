@@ -77,7 +77,7 @@ const PresaleUser = ({
 	});
 
 	// contract call for the user to get the refund.
-	const { isLoading: getting, write: getrefund } = useContractWrite({
+	const { isLoading: getting, writeContract: getrefund } = useContractWrite({
 		address: presaleAddress,
 		abi: Presaleabi.abi,
 		functionName: "getRefund",
@@ -95,7 +95,7 @@ const PresaleUser = ({
 	});
 
 	// contract call to end presale after the owner of token doesn't start trading under the duration.
-	const { isLoading: finishing, write: finish } = useContractWrite({
+	const { isLoading: finishing, writeContract: finish } = useContractWrite({
 		address: presaleAddress,
 		abi: Presaleabi.abi,
 		functionName: "finishPresale",
@@ -113,7 +113,7 @@ const PresaleUser = ({
 	});
 
 	// contract call to refund the liquidity from the token contract to presale contract.
-	const { isLoading: refunding, write: refund } = useContractWrite({
+	const { isLoading: refunding, writeContract: refund } = useContractWrite({
 		address: presaleAddress,
 		abi: Presaleabi.abi,
 		functionName: "refundPresale",

@@ -28,7 +28,7 @@ const Limits = ({
 	const [error, setError] = useState("");
 
 	// contract call to Increase Limits.
-	const { isLoading, write: increase } = useContractWrite({
+	const { isLoading, writeContract: increase } = useContractWrite({
 		address: contractAddress,
 		abi: Tokenabi.abi,
 		functionName: "increaseLimits",

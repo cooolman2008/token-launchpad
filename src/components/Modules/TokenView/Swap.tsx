@@ -87,7 +87,7 @@ const Swap = ({
 	});
 
 	// router function to swap ETH for tokens
-	const { isLoading: loadingSwap, write: swap } = useContractWrite({
+	const { isLoading: loadingSwap, writeContract: swap } = useContractWrite({
 		address: UNISWAP_ROUTER_ADDRESS,
 		abi: routerAbi.abi,
 		functionName: "swapExactETHForTokens",
@@ -101,7 +101,7 @@ const Swap = ({
 	});
 
 	// swap function for ETH to tokens
-	const { isLoading: loadingTokenSwap, write: tokenSwap } = useContractWrite({
+	const { isLoading: loadingTokenSwap, writeContract: tokenSwap } = useContractWrite({
 		address: UNISWAP_ROUTER_ADDRESS,
 		abi: routerAbi.abi,
 		functionName: "swapExactTokensForETH",

@@ -15,13 +15,13 @@ import Loading from "@/components/elements/Loading";
 import Arrow from "@/components/elements/Arrow";
 import Modal from "@/components/elements/Modal";
 
-import Advanced from "@/components/PageModules/Launch/Advanced";
-import Premium from "@/components/PageModules/Launch/Premium";
-import Basic from "@/components/PageModules/Launch/Basic";
-import Tax from "@/components/PageModules/Launch/Tax";
+import Advanced from "@/components/Modules/Launch/Advanced";
+import Premium from "@/components/Modules/Launch/Premium";
+import Basic from "@/components/Modules/Launch/Basic";
+import Tax from "@/components/Modules/Launch/Tax";
 
-import ManagerAbi from "../../managerabi.json";
-import templateOptions from "../static/templates.json";
+import ManagerAbi from "../../../managerabi.json";
+import templateOptions from "../../static/templates.json";
 import { WriteContractResult } from "wagmi/actions";
 
 function Launch() {

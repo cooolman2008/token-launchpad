@@ -1,5 +1,4 @@
-{
-  "abi":[
+export const helperAbi = [
     {
       "inputs":[
         
@@ -82,5 +81,4 @@
       "stateMutability":"payable",
       "type":"function"
     }
-  ]
-}
+  ] as const;

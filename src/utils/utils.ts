@@ -1,8 +1,10 @@
+import { getAddress } from "viem"
+
 export const getContractAddress = ( chainId: number | undefined) => {
     switch(chainId) {
-        case 1: return "0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-        case 17000: return "0xe400683894f1835974a671886aca3525d0a4e59f"
-        case 1337: return "0x26df0ea798971a97ae121514b32999dfdb220e1f"
+        case 1: return getAddress("0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+        case 17000: return getAddress("0xe400683894f1835974a671886aca3525d0a4e59f")
+        case 1337: return getAddress("0x26df0ea798971a97ae121514b32999dfdb220e1f")
         default: return undefined;
     }
 }

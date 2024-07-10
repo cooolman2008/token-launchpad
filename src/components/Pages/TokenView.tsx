@@ -1,40 +1,43 @@
 "use client";
 
-import { useWalletClient, useAccount } from "wagmi";
-import { useWeb3ModalState } from "@web3modal/wagmi/react";
+import { useWalletClient, useAccount, useReadContract, useChainId } from "wagmi";
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { isAddress, getAddress } from "viem";
 
-import { fetchToken, Token, TeamMember } from "@/api/getToken";
+import { fetchToken, Token, TeamMember, LPDetails } from "@/api/getToken";
 
-import Intro from "@/components/PageModules/TokenView/Intro";
-import StartTrading from "@/components/PageModules/TokenView/StartTrading";
-import LaunchStaking from "@/components/PageModules/TokenView/LaunchStaking";
-import SetSocials from "@/components/PageModules/TokenView/SetSocials";
-import Swap from "@/components/PageModules/TokenView/Swap";
-import Staking from "@/components/PageModules/TokenView/Staking";
-import Promote from "@/components/PageModules/TokenView/Promote";
-import LPChanges from "@/components/PageModules/TokenView/LPChanges";
-import Team from "@/components/PageModules/TokenView/Team";
-import Claim from "@/components/PageModules/TokenView/Claim";
+import Intro from "@/components/Modules/TokenView/Intro";
+import StartTrading from "@/components/Modules/TokenView/StartTrading";
+import LaunchStaking from "@/components/Modules/TokenView/LaunchStaking";
+import SetSocials from "@/components/Modules/TokenView/SetSocials";
+import Swap from "@/components/Modules/TokenView/Swap";
+import Staking from "@/components/Modules/TokenView/Staking";
+import Promote from "@/components/Modules/TokenView/Promote";
+import LPChanges from "@/components/Modules/TokenView/LPChanges";
+import Team from "@/components/Modules/TokenView/Team";
+import Claim from "@/components/Modules/TokenView/Claim";
 import Modal from "@/components/elements/Modal";
-import Limits from "@/components/PageModules/TokenView/Limits";
+import Limits from "@/components/Modules/TokenView/Limits";
 
 import { getGraphUrl } from "@/utils/utils";
-import LaunchPresale from "@/components/PageModules/TokenView/LaunchPresale";
-import Presale from "@/components/PageModules/TokenView/Presale";
-import PresaleDashboard from "@/components/PageModules/TokenView/PresaleDashboard";
-import PresaleUser from "@/components/PageModules/TokenView/PresaleUser";
+import LaunchPresale from "@/components/Modules/TokenView/LaunchPresale";
+import Presale from "@/components/Modules/TokenView/Presale";
+import PresaleDashboard from "@/components/Modules/TokenView/PresaleDashboard";
+import PresaleUser from "@/components/Modules/TokenView/PresaleUser";
 import Loading from "@/components/elements/Loading";
 
+import { ownerAbi } from "@/abi/ownerAbi";
+
 function TokenView({ params }: { params: { slug: `0x${string}` } }) {
+	const address_0 = "0x0000000000000000000000000000000000000000";
+
 	const { data: walletClient } = useWalletClient();
 	const { address } = useAccount();
 	const router = useRouter();
 
-	const { selectedNetworkId: chainId } = useWeb3ModalState();
-	const API_ENDPOINT = getGraphUrl(Number(chainId));
+	const chainId = useChainId();
+	const API_ENDPOINT = getGraphUrl(chainId);
 
 	const [isClient, setIsClient] = useState(false);
 	const [isOwner, setIsOwner] = useState(false);
@@ -42,21 +45,53 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	const [isTeam, setIsTeam] = useState(false);
 	const [teamMembers, setTeamMembers] = useState<TeamMember[]>();
 	const [isTrading, setIsTrading] = useState(true);
+	const [isLimited, setIsLimited] = useState(true);
 	const [isStaking, setIsStaking] = useState(true);
 	const [presale, setPresale] = useState(0);
 	const [token, setToken] = useState<Token>();
+	const [lp, setLp] = useState<LPDetails>();
 	const [success, setSuccess] = useState("");
 	const [loading, setLoading] = useState(false);
 
 	const clear = () => {
 		setSuccess("");
 		fetchTheToken();
+		refetch();
 	};
 
 	// function you can use:
 	function getSecondPart(str: string) {
 		return str.split("-")[1];
 	}
+
+	// get LP details.
+	const {
+		data: LPData,
+		refetch,
+		isSuccess,
+	} = useReadContract({
+		address: getAddress(params?.slug?.toString()),
+		abi: ownerAbi,
+		functionName: "getLPDetails",
+	});
+
+	useEffect(() => {
+		if (LPData) {
+			console.log(LPData);
+			if (LPData) {
+				if (LPData?.stakingContract === address_0) {
+					setIsStaking(false);
+				}
+				if (LPData?.pair === address_0) {
+					setIsTrading(false);
+				}
+				if (!LPData?.walletLimited) {
+					setIsLimited(false);
+				}
+				setLp(LPData);
+			}
+		}
+	}, [LPData]);
 
 	const checkIfTeam = useCallback((team: TeamMember[], address: `0x${string}`) => {
 		let members = [] as TeamMember[];
@@ -78,17 +113,8 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 		if (API_ENDPOINT) {
 			const data = await fetchToken(params?.slug?.toString(), API_ENDPOINT);
 			if (data) {
-				const address_0 = "0x0000000000000000000000000000000000000000";
 				if (data?.presaleStatus) {
 					setPresale(Number(data?.presaleStatus));
-				}
-				if (data?.staking === address_0) {
-					data.staking = "";
-					setIsStaking(false);
-				}
-				if (data?.pair === address_0) {
-					data.pair = "";
-					setIsTrading(false);
 				}
 				if (data?.owner.toLowerCase() === address?.toLowerCase()) {
 					setIsOwner(true);
@@ -170,7 +196,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 													lplockStart={Number(token?.lplockStart)}
 												/>
 											)}
-											{!(token?.txLimit === 100 && token?.txLimit === 100) && (
+											{isLimited && (
 												<Limits
 													contractAddress={params?.slug}
 													setSuccess={setSuccess}
@@ -199,7 +225,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 									<Swap
 										contractAddress={params?.slug}
 										symbol={token?.symbol ? token?.symbol : ""}
-										tradingEnabled={token?.pair ? true : false}
+										tradingEnabled={lp?.pair ? true : false}
 										setSuccess={setSuccess}
 									/>
 									{presale === 1 && token?.presale && walletClient && (
@@ -210,10 +236,10 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 											setSuccess={setSuccess}
 										/>
 									)}
-									{isStaking && token?.staking && walletClient && (
+									{isStaking && lp?.stakingContract && lp.stakingContract !== address_0 && walletClient && (
 										<Staking
 											contractAddress={params?.slug}
-											stakingAddress={getAddress(token?.staking)}
+											stakingAddress={getAddress(lp?.stakingContract)}
 											symbol={token?.symbol ? token?.symbol : ""}
 											setSuccess={setSuccess}
 										/>
