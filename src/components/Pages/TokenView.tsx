@@ -20,7 +20,7 @@ import Claim from "@/components/Modules/TokenView/Claim";
 import Modal from "@/components/elements/Modal";
 import Limits from "@/components/Modules/TokenView/Limits";
 
-import { getGraphUrl } from "@/utils/utils";
+import { getContractAddress, getGraphUrl } from "@/utils/utils";
 import LaunchPresale from "@/components/Modules/TokenView/LaunchPresale";
 import Presale from "@/components/Modules/TokenView/Presale";
 import PresaleDashboard from "@/components/Modules/TokenView/PresaleDashboard";
@@ -38,6 +38,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 
 	const chainId = useChainId();
 	const API_ENDPOINT = getGraphUrl(chainId);
+	const CONTRACT_ADDRESS = getContractAddress(chainId);
 
 	const [isClient, setIsClient] = useState(false);
 	const [isOwner, setIsOwner] = useState(false);
@@ -59,17 +60,22 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 		refetch();
 	};
 
+	const scrollTo = (id: string) => {
+		const ele = document.getElementById(id);
+		if (ele) {
+			ele.scrollIntoView({
+				behavior: "smooth",
+			});
+		}
+	};
+
 	// function you can use:
 	function getSecondPart(str: string) {
 		return str.split("-")[1];
 	}
 
 	// get LP details.
-	const {
-		data: LPData,
-		refetch,
-		isSuccess,
-	} = useReadContract({
+	const { data: LPData, refetch } = useReadContract({
 		address: getAddress(params?.slug?.toString()),
 		abi: ownerAbi,
 		functionName: "getLPDetails",
@@ -109,20 +115,20 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 		setTeamMembers(members);
 	}, []);
 
+	const checkIfOwner = useCallback((tokenOwner: string, wallet: `0x${string}`) => {
+		if (tokenOwner.toLocaleLowerCase() === wallet?.toLocaleLowerCase()) {
+			setIsOwner(true);
+		} else {
+			setIsOwner(false);
+		}
+	}, []);
+
 	const fetchTheToken = useCallback(async () => {
 		if (API_ENDPOINT) {
 			const data = await fetchToken(params?.slug?.toString(), API_ENDPOINT);
 			if (data) {
 				if (data?.presaleStatus) {
 					setPresale(Number(data?.presaleStatus));
-				}
-				if (data?.owner.toLowerCase() === address?.toLowerCase()) {
-					setIsOwner(true);
-				} else {
-					setIsOwner(false);
-				}
-				if (data?.teamMembers && data?.teamMembers.length > 0) {
-					if (address) checkIfTeam(data?.teamMembers, address);
 				}
 				if (data?.cliffPeriod && Number(data?.cliffPeriod) !== 0) {
 					setIsTeamSet(true);
@@ -131,19 +137,28 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 			}
 		}
 		setLoading(false);
-	}, [API_ENDPOINT, address, checkIfTeam, params?.slug]);
+	}, [API_ENDPOINT, params?.slug]);
+
+	useEffect(() => {
+		if (token?.owner && address) {
+			if (address) checkIfOwner(token?.owner, address);
+		}
+		if (token?.teamMembers && token?.teamMembers.length > 0 && address) {
+			checkIfTeam(token?.teamMembers, address);
+		}
+	}, [address, checkIfOwner, checkIfTeam, token?.owner, token?.teamMembers]);
 
 	useEffect(() => {
 		setLoading(true);
 		if (!isAddress(params?.slug)) {
 			router.push("/", { scroll: true });
 		}
-		console.log(chainId);
 		if (chainId) {
 			fetchTheToken();
 		}
+		scrollTo("#body");
 		setIsClient(true);
-	}, [router, address, params?.slug, fetchTheToken, chainId]);
+	}, [router, params?.slug, fetchTheToken, chainId]);
 
 	return (
 		<>
@@ -206,7 +221,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 											)}
 										</>
 									)}
-									{walletClient && (
+									{address && (
 										<>
 											{presale > 0 && token?.presale && (
 												<PresaleUser
@@ -215,31 +230,37 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 													presaleAddress={getAddress(token?.presale)}
 													isTrading={isTrading}
 													isOwner={isOwner}
+													address={address}
 												/>
 											)}
-											<Promote contractAddress={params?.slug} />
+											{CONTRACT_ADDRESS && <Promote contractAddress={params?.slug} safuAddress={CONTRACT_ADDRESS} />}
 										</>
 									)}
 								</div>
 								<div className="lg:col-span-4">
 									<Swap
 										contractAddress={params?.slug}
+										routerAddress={lp?.router && lp?.router !== address_0 ? getAddress(lp?.router) : address_0}
+										pairAddress={lp?.pair && lp?.pair !== address_0 ? getAddress(lp?.pair) : address_0}
 										symbol={token?.symbol ? token?.symbol : ""}
 										tradingEnabled={lp?.pair ? true : false}
 										setSuccess={setSuccess}
+										address={address ? address : address_0}
 									/>
-									{presale === 1 && token?.presale && walletClient && (
+									{presale === 1 && token?.presale && address && (
 										<Presale
 											contractAddress={params?.slug}
 											presaleAddress={getAddress(token?.presale)}
+											address={address}
 											symbol={token?.symbol ? token?.symbol : ""}
 											setSuccess={setSuccess}
 										/>
 									)}
-									{isStaking && lp?.stakingContract && lp.stakingContract !== address_0 && walletClient && (
+									{isStaking && lp?.stakingContract && lp.stakingContract !== address_0 && address && (
 										<Staking
 											contractAddress={params?.slug}
 											stakingAddress={getAddress(lp?.stakingContract)}
+											address={address}
 											symbol={token?.symbol ? token?.symbol : ""}
 											setSuccess={setSuccess}
 										/>

@@ -1,4 +1,4 @@
-import { useContractWrite, useWalletClient, useAccount, useContractRead } from "wagmi";
+import { useWalletClient, useAccount, useReadContract, useWriteContract } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, SetStateAction, Dispatch, useEffect } from "react";
 import { parseEther } from "viem";
@@ -6,9 +6,8 @@ import { parseEther } from "viem";
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
 
-import Presaleabi from "../../../../presaleabi.json";
-
 import { getAbr, getNumber } from "@/utils/math";
+import { presaleAbi } from "@/abi/presaleAbi";
 
 interface PresaleForm {
 	amount: number;
@@ -28,14 +27,15 @@ const Presale = ({
 	symbol,
 	presaleAddress,
 	setSuccess,
+	address,
 }: {
 	symbol: string;
 	contractAddress: `0x${string}`;
 	presaleAddress: `0x${string}`;
+	address: `0x${string}`;
 	setSuccess: Dispatch<SetStateAction<string>>;
 }) => {
 	const { data: walletClient } = useWalletClient();
-	const { address } = useAccount();
 
 	const [error, setError] = useState("");
 	const [presale, setPresale] = useState<Presale>();
@@ -43,46 +43,46 @@ const Presale = ({
 	const [maxBag, setMaxBag] = useState(0);
 
 	// get presale details.
-	const { refetch } = useContractRead({
+	const { data: presaleData, refetch } = useReadContract({
 		address: presaleAddress,
-		abi: Presaleabi.abi,
+		abi: presaleAbi,
 		functionName: "getPresaleDetails",
-		onSuccess(data: Presale) {
-			if (data) {
-				setPresale(data);
-			}
-		},
 	});
+
+	useEffect(() => {
+		if (presaleData) {
+			setPresale(presaleData);
+		}
+	}, [presaleData]);
 
 	// get user claimable token details.
-	const { refetch: getBought } = useContractRead({
+	const { data: clamables, refetch: getBought } = useReadContract({
 		address: presaleAddress,
-		abi: Presaleabi.abi,
+		abi: presaleAbi,
 		functionName: "getClaimableTokens",
 		args: [address],
-		onSuccess(data: [bigint, bigint, bigint]) {
-			if (data && data.length > 0) {
-				setBought(data[2]);
-			}
-		},
 	});
 
+	useEffect(() => {
+		if (clamables && clamables?.length > 0) {
+			setBought(clamables[2]);
+		}
+	}, [clamables]);
+
 	// contract call to buy presale tokens.
-	const { isLoading: buying, writeContract: buyTokens } = useContractWrite({
-		address: presaleAddress,
-		abi: Presaleabi.abi,
-		functionName: "buyTokens",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			setSuccess("Presale tokens bought successfully!");
-			setValue("amount", 0);
-			getBought();
-			refetch();
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending: buying, writeContract: buyTokens } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				setSuccess("Presale tokens bought successfully!");
+				setValue("amount", 0);
+				getBought();
+				refetch();
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
@@ -110,6 +110,10 @@ const Presale = ({
 			const amount = parseEther(formData.amount.toString());
 			const pay = (amount * presale?.maxEth) / presale?.hardcap;
 			buyTokens({
+				address: presaleAddress,
+				abi: presaleAbi,
+				functionName: "buyTokens",
+				account: walletClient?.account,
 				args: [amount],
 				value: pay,
 			});

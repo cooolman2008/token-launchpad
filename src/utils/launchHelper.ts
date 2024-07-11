@@ -61,30 +61,3 @@ export const updateFields = (
   setValue('name', template.name);
   setValue('symbol', template.symbol);
 }
-
-export const getArgs = ( address: `0x${string}`, staking_address: `0x${string}`, formData: LaunchForm, template: Template, router: `0x${string}`) => {
-  return {
-    owner: address,
-    taxWallet: formData.taxWallet,
-    stakingFacet: staking_address,
-    v2router: router,
-    isFreeTier: true,
-    minLiq: 0,
-    supply: BigInt( formData.supply ),
-    initTaxType: 0,
-    initInterval: formData.initInterval ? formData.initInterval : template.initInterval,
-    countInterval: formData.countInterval ? formData.countInterval : template.initInterval,
-    maxBuyTax: formData.maxBuyTax ? formData.maxBuyTax : template.maxBuyTax,
-    minBuyTax: formData.minBuyTax ? formData.minBuyTax : template.minBuyTax,
-    maxSellTax: formData.maxSellTax ? formData.maxSellTax : template.maxSellTax,
-    minSellTax: formData.minSellTax ? formData.minSellTax : template.minSellTax,
-    lpTax: formData.lpTax ? formData.lpTax : template.lpTax,
-    maxWallet: formData.maxWallet ? formData.maxWallet : template.maxWallet,
-    maxTx: formData.maxTx ? formData.maxTx : template.maxTx,
-    preventSwap: formData.preventSwap ? formData.preventSwap : template.preventSwap,
-    maxSwap: BigInt( formData.maxSwap ? formData.maxSwap : template.maxSwap ),
-    taxSwapThreshold: BigInt( formData.taxSwapThreshold ? formData.taxSwapThreshold : template.taxSwapThreshold ),
-    name: formData.name,
-    symbol: formData.symbol,
-  };
-}

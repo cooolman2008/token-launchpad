@@ -1,12 +1,11 @@
-import { useContractWrite, useWalletClient } from "wagmi";
+import { useWriteContract, useWalletClient } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, SetStateAction, Dispatch, memo } from "react";
 
 import InformationTip from "@/components/elements/InformationTip";
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
-
-import Ownerabi from "../../../../ownerabi.json";
+import { ownerAbi } from "@/abi/ownerAbi";
 
 interface SocialsForm {
 	telegram: string;
@@ -36,22 +35,15 @@ const SetSocials = memo(
 		};
 
 		// contract call to start trading of the launched token.
-		const {
-			data,
-			isSuccess,
-			isLoading: setting,
-			writeContract: set,
-		} = useContractWrite({
-			address: contractAddress,
-			abi: Ownerabi.abi,
-			functionName: "setSocials",
-			account: walletClient?.account,
-			onSuccess(res) {
-				setSuccess("Socials are set successfully!");
-				console.log(res);
-			},
-			onError(error) {
-				console.log(error);
+		const { isPending: setting, writeContract: set } = useWriteContract({
+			mutation: {
+				onSuccess(res) {
+					setSuccess("Socials are set successfully!");
+					console.log(res);
+				},
+				onError(error) {
+					console.log(error);
+				},
 			},
 		});
 
@@ -63,6 +55,10 @@ const SetSocials = memo(
 		} = useForm<SocialsForm>();
 		const onSubmit: SubmitHandler<SocialsForm> = (formData) => {
 			set({
+				address: contractAddress,
+				abi: ownerAbi,
+				functionName: "setSocials",
+				account: walletClient?.account,
 				args: [formData.telegram, formData.twitter, formData.website],
 			});
 		};

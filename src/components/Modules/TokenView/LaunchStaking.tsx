@@ -1,4 +1,4 @@
-import { useContractWrite, useWalletClient } from "wagmi";
+import { useWriteContract, useWalletClient } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, SetStateAction, Dispatch } from "react";
 
@@ -6,7 +6,7 @@ import TextField from "@/components/elements/TextField";
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
 
-import Ownerabi from "../../../../ownerabi.json";
+import { ownerAbi } from "@/abi/ownerAbi";
 
 interface StakingForm {
 	share: number;
@@ -30,19 +30,17 @@ const LaunchStaking = ({
 	};
 
 	// contract call to launch staking.
-	const { isLoading, write } = useContractWrite({
-		address: contractAddress,
-		abi: Ownerabi.abi,
-		functionName: "launchStaking",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			callback(true);
-			setSuccess("Staking was launched successfully");
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending, writeContract } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				callback(true);
+				setSuccess("Staking was launched successfully");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
@@ -53,13 +51,22 @@ const LaunchStaking = ({
 		formState: { errors },
 	} = useForm<StakingForm>();
 	const onSubmit: SubmitHandler<StakingForm> = (formData) => {
-		write({
-			args: [formData.share, { owner: walletClient?.account.address, withdrawTimeout: formData.withdraw * 86400 }],
-		});
+		if (walletClient?.account.address) {
+			writeContract({
+				address: contractAddress,
+				abi: ownerAbi,
+				functionName: "launchStaking",
+				account: walletClient?.account,
+				args: [
+					BigInt(formData.share),
+					{ owner: walletClient?.account.address, withdrawTimeout: BigInt(formData.withdraw * 86400) },
+				],
+			});
+		}
 	};
 	return (
 		<>
-			{isLoading && <Loading msg="Launching staking..." />}
+			{isPending && <Loading msg="Launching staking..." />}
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
 			)}

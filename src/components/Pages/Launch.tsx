@@ -1,14 +1,14 @@
 "use client";
 
-import { useAccount, useContractWrite, useWalletClient, useWaitForTransaction } from "wagmi";
-import { useWeb3ModalState } from "@web3modal/wagmi/react";
+import { useAccount, useWriteContract, useWalletClient, useWaitForTransactionReceipt, useChainId } from "wagmi";
+import { useWeb3Modal, useWeb3ModalState } from "@web3modal/wagmi/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Select from "react-select";
 import { animate } from "motion";
 
-import { LaunchForm, getArgs, updateFields } from "@/utils/launchHelper";
+import { LaunchForm, updateFields } from "@/utils/launchHelper";
 import { getContractAddress, getRouterAddress } from "@/utils/utils";
 
 import Loading from "@/components/elements/Loading";
@@ -20,26 +20,27 @@ import Premium from "@/components/Modules/Launch/Premium";
 import Basic from "@/components/Modules/Launch/Basic";
 import Tax from "@/components/Modules/Launch/Tax";
 
-import ManagerAbi from "../../../managerabi.json";
 import templateOptions from "../../static/templates.json";
-import { WriteContractResult } from "wagmi/actions";
+import { managerAbi } from "@/abi/managerAbi";
+import { getAddress } from "viem";
 
 function Launch() {
 	const { data: walletClient } = useWalletClient();
 	const { address } = useAccount();
 	const router = useRouter();
+	const { open } = useWeb3Modal();
 
-	const { selectedNetworkId: chainId } = useWeb3ModalState();
-	const CONTRACT_ADDRESS = getContractAddress(Number(chainId));
-	const ROUTER_ADDRESS = getRouterAddress(Number(chainId));
+	const chainId = useChainId();
+	const ROUTER_ADDRESS = getRouterAddress(chainId);
+	const CONTRACT_ADDRESS = getContractAddress(chainId);
 
 	const [isClient, setIsClient] = useState(false);
 	const [tax, setTax] = useState(false);
 	const [advanced, setAdvanced] = useState(false);
 	const [premium, setPremium] = useState(false);
 	const [template, setTemplate] = useState(templateOptions.templates[0]);
+	const [setting, setSetting] = useState(false);
 	const [error, setError] = useState("");
-	const [response, setResponse] = useState<WriteContractResult>();
 
 	const clear = () => {
 		setError("");
@@ -56,44 +57,36 @@ function Launch() {
 
 	// contract call for token launch.
 	const {
-		writeAsync: launchFree,
-		isLoading,
+		writeContract: launchFree,
+		isPending,
 		data,
-	} = useContractWrite({
-		address: CONTRACT_ADDRESS,
-		abi: ManagerAbi.abi,
-		functionName: "launchTokenFree",
-		onSuccess(res) {
-			console.log(res);
-		},
-		onError(error) {
-			setError("Launch failed with an unknown reason!");
-			console.log(error);
+	} = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+			},
+			onError(error) {
+				setError("Launch failed with an unknown reason!");
+				console.log(error);
+			},
 		},
 	});
 
 	// get the transaction details by waiting for the transaction.
-	const {
-		data: transaction,
-		isLoading: retrieval,
-		refetch,
-	} = useWaitForTransaction({
-		hash: response?.hash,
-		onSuccess(res) {
-			console.log(res);
-		},
-		onError(error) {
-			console.log(error);
-		},
+	const { data: transaction, isLoading: retrieval } = useWaitForTransactionReceipt({
+		hash: data,
 	});
 
 	// redirect to the token page once the address is aquired from the waitForTransaction hook.
 	useEffect(() => {
 		if (transaction?.logs[0]?.address) {
 			console.log(transaction?.logs[0]?.address);
-			// Wait 1 second for the Graph to pick up the event.
+
+			// Wait 1 second for the Graph to handle the event.
+			setSetting(true);
 			setTimeout(() => {
-				router.push("/" + transaction?.logs[0]?.address, { scroll: true });
+				setSetting(false);
+				router.push("/" + transaction?.logs[0]?.address);
 			}, 1000);
 		}
 	}, [transaction, router]);
@@ -108,11 +101,36 @@ function Launch() {
 	const onSubmit: SubmitHandler<LaunchForm> = (formData) => {
 		console.log(CONTRACT_ADDRESS);
 		if (address && CONTRACT_ADDRESS && ROUTER_ADDRESS) {
-			const args = getArgs(address, CONTRACT_ADDRESS, formData, template, ROUTER_ADDRESS);
-			console.log(args);
-			launchFree({ args: [args] }).then((res) => {
-				setResponse(res);
-				refetch();
+			launchFree({
+				address: CONTRACT_ADDRESS,
+				abi: managerAbi,
+				functionName: "launchTokenFree",
+				args: [
+					{
+						owner: address,
+						taxWallet: getAddress(formData.taxWallet),
+						stakingFacet: CONTRACT_ADDRESS,
+						v2router: ROUTER_ADDRESS,
+						isFreeTier: true,
+						minLiq: BigInt(0),
+						supply: BigInt(formData.supply),
+						initTaxType: BigInt(0),
+						initInterval: BigInt(formData.initInterval ? formData.initInterval : template.initInterval),
+						countInterval: BigInt(formData.countInterval ? formData.countInterval : template.initInterval),
+						maxBuyTax: BigInt(formData.maxBuyTax ? formData.maxBuyTax : template.maxBuyTax),
+						minBuyTax: BigInt(formData.minBuyTax ? formData.minBuyTax : template.minBuyTax),
+						maxSellTax: BigInt(formData.maxSellTax ? formData.maxSellTax : template.maxSellTax),
+						minSellTax: BigInt(formData.minSellTax ? formData.minSellTax : template.minSellTax),
+						lpTax: BigInt(formData.lpTax ? formData.lpTax : template.lpTax),
+						maxWallet: BigInt(formData.maxWallet ? formData.maxWallet : template.maxWallet),
+						maxTx: BigInt(formData.maxTx ? formData.maxTx : template.maxTx),
+						preventSwap: BigInt(formData.preventSwap ? formData.preventSwap : template.preventSwap),
+						maxSwap: BigInt(formData.maxSwap ? formData.maxSwap : template.maxSwap),
+						taxSwapThreshold: BigInt(formData.taxSwapThreshold ? formData.taxSwapThreshold : template.taxSwapThreshold),
+						name: formData.name,
+						symbol: formData.symbol,
+					},
+				],
 			});
 		}
 	};
@@ -128,7 +146,8 @@ function Launch() {
 		<>
 			{isClient && (
 				<>
-					{(isLoading || retrieval) && <Loading msg="Launching..." />}
+					{(isPending || retrieval) && <Loading msg="Launching..." />}
+					{setting && <Loading msg="We're building a dashboard for your token..." />}
 					{error && (
 						<Modal
 							msg={error}
@@ -276,7 +295,9 @@ function Launch() {
 							</div>
 						) : (
 							<div className="w-full flex justify-center mt-4">
-								<w3m-button />
+								<button className="mr-8 safu-soft-button" onClick={() => open()}>
+									Connect Wallet
+								</button>
 							</div>
 						)}
 					</form>

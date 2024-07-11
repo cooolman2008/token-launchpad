@@ -1,7 +1,6 @@
-import { useContractWrite, useWalletClient, useBalance } from "wagmi";
-import { useWeb3ModalState } from "@web3modal/wagmi/react";
+import { useWriteContract, useWalletClient, useBalance, useChainId } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useState, SetStateAction, Dispatch } from "react";
+import { useState, useEffect, SetStateAction, Dispatch } from "react";
 import { getAddress, parseEther } from "viem";
 import Select from "react-select";
 
@@ -9,12 +8,12 @@ import TextField from "@/components/elements/TextField";
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
 
-import Tokenabi from "../../../../newtokenabi.json";
 import { getRouters } from "@/utils/utils";
+import { tokenAbi } from "@/abi/tokenAbi";
 
 interface TradingForm {
 	liq: number;
-	lockPeriod: number;
+	lockPeriod: bigint;
 	shouldBurn: boolean;
 }
 
@@ -29,42 +28,40 @@ const StartTrading = ({
 }) => {
 	const { data: walletClient } = useWalletClient();
 	const [showLock, setShowLock] = useState(true);
-	const [balance, setBalance] = useState(0);
+	const [balance, setBalance] = useState(BigInt(0));
 	const [error, setError] = useState("");
 
-	const { selectedNetworkId: chainId } = useWeb3ModalState();
-	const routers = getRouters(Number(chainId));
+	const chainId = useChainId();
+	const routers = getRouters(chainId);
 
 	const [router, setRouter] = useState(routers[0].value);
 
-	useBalance({
+	const { data: balanceData } = useBalance({
 		address: contractAddress,
-		onSuccess(data) {
-			setBalance(Number(data.formatted));
-		},
-		onError(error) {
-			console.log("Error", error);
-		},
 	});
+
+	useEffect(() => {
+		if (balanceData) {
+			setBalance(balanceData.value);
+		}
+	}, [balanceData]);
 
 	const clear = () => {
 		setError("");
 	};
 
 	// contract call to start trading of the launched token.
-	const { isLoading, write } = useContractWrite({
-		address: contractAddress,
-		abi: Tokenabi.abi,
-		functionName: "startTrading",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			callback(true);
-			setSuccess("Trading has been enabled successfully");
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending, writeContract: write } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				callback(true);
+				setSuccess("Trading has been enabled successfully");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
@@ -78,13 +75,17 @@ const StartTrading = ({
 	const onSubmit: SubmitHandler<TradingForm> = (formData) => {
 		const routerAddr = getAddress(router);
 		write({
+			address: contractAddress,
+			abi: tokenAbi,
+			functionName: "startTrading",
+			account: walletClient?.account,
 			args: [formData.lockPeriod, formData.shouldBurn, routerAddr],
 			value: parseEther(formData.liq.toString()),
 		});
 	};
 	return (
 		<>
-			{isLoading && <Loading msg="Enabling trading..." />}
+			{isPending && <Loading msg="Enabling trading..." />}
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
 			)}
@@ -115,7 +116,7 @@ const StartTrading = ({
 					<h2 className="text-xl mb-1">Start trading!</h2>
 					{balance > 0 && (
 						<span className="text-xl font-medium text-slate-200">
-							<b className="font-bold text-gray-500">Available:</b> {balance} ETH
+							<b className="font-bold text-gray-500">Available:</b> {Number(balance)} ETH
 						</span>
 					)}
 				</div>
@@ -138,7 +139,7 @@ const StartTrading = ({
 										value: true,
 										message: "Value needed",
 									},
-									validate: (value) => value + balance > 0.1 || "Min liq needed",
+									validate: (value) => value + Number(balance) > 0.1 || "Min liq needed",
 								})}
 								isError={errors.liq ? true : false}
 								error={errors.liq?.message ? errors.liq?.message : "Some error"}
@@ -175,7 +176,7 @@ const StartTrading = ({
 											{...register("shouldBurn")}
 											onChange={() => {
 												setShowLock((showLock) => !showLock);
-												setValue("lockPeriod", 0);
+												setValue("lockPeriod", BigInt(0));
 											}}
 											defaultChecked={false}
 										/>

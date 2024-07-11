@@ -1,15 +1,14 @@
-import { useContractWrite, useWalletClient, useBalance, useAccount, useContractRead } from "wagmi";
+import { useWriteContract, useWalletClient, useBalance, useAccount, useReadContract } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, SetStateAction, Dispatch, useEffect } from "react";
-import { parseEther } from "viem";
+import { formatEther, parseEther } from "viem";
 
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
 
-// token & staking abis
-import tokenAbi from "../../../../newtokenabi.json";
-import stakingabi from "../../../../stakingabi.json";
 import { getNumber } from "@/utils/math";
+import { stakingAbi } from "@/abi/stakingAbi";
+import { tokenAbi } from "@/abi/tokenAbi";
 
 interface StakingForm {
 	amount: number;
@@ -28,15 +27,16 @@ const Staking = ({
 	symbol,
 	contractAddress,
 	stakingAddress,
+	address,
 	setSuccess,
 }: {
 	symbol: string;
 	contractAddress: `0x${string}`;
 	stakingAddress: `0x${string}`;
+	address: `0x${string}`;
 	setSuccess: Dispatch<SetStateAction<string>>;
 }) => {
 	const { data: walletClient } = useWalletClient();
-	const { address } = useAccount();
 
 	const [allowance, setAllowance] = useState(BigInt("0"));
 	const [error, setError] = useState("");
@@ -53,93 +53,88 @@ const Staking = ({
 	});
 
 	// get user details
-	const { refetch } = useContractRead({
+	const { data: userData, refetch } = useReadContract({
 		address: stakingAddress,
-		abi: stakingabi.abi,
+		abi: stakingAbi,
 		functionName: "getUserDetails",
 		args: [address],
-		onSuccess(data: User) {
-			if (data) {
-				setUser(data);
-			}
-		},
 	});
+
+	useEffect(() => {
+		if (userData) {
+			setUser(userData);
+		}
+	}, [userData]);
 
 	// get the allowance of the user
-	useContractRead({
+	const { data: allowanceData, refetch: check } = useReadContract({
 		address: contractAddress,
-		abi: tokenAbi.abi,
+		abi: tokenAbi,
 		functionName: "allowance",
 		args: [address, stakingAddress],
-		onSuccess(data) {
-			if (data && typeof data === "bigint") {
-				setAllowance(data);
-			}
-		},
 	});
 
+	useEffect(() => {
+		if (allowanceData) {
+			setAllowance(allowanceData);
+		}
+	}, [allowanceData]);
+
 	// contract call to stake tokens.
-	const { isLoading: staking, writeContract: stake } = useContractWrite({
-		address: stakingAddress,
-		abi: stakingabi.abi,
-		functionName: "stake",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			setSuccess("Staking successfull!");
-			setValue("amount", 0);
-			refetch();
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending: staking, writeContract: stake } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				setSuccess("Staking successfull!");
+				setValue("amount", 0);
+				refetch();
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
 	// contract call to unstake tokens.
-	const { isLoading: unstaking, writeContract: unstake } = useContractWrite({
-		address: stakingAddress,
-		abi: stakingabi.abi,
-		functionName: "unstake",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			setSuccess("Unstaking successfull!");
-			setValue("amount", 0);
-			refetch();
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending: unstaking, writeContract: unstake } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				setSuccess("Unstaking successfull!");
+				setValue("amount", 0);
+				refetch();
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
 	// contract call to withdraw unstaked tokens.
-	const { isLoading: withdrawing, writeContract: withdraw } = useContractWrite({
-		address: stakingAddress,
-		abi: stakingabi.abi,
-		functionName: "withdraw",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			setSuccess("Withdraw successfull!");
-			refetch();
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending: withdrawing, writeContract: withdraw } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				setSuccess("Withdraw successfull!");
+				refetch();
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
-	const { writeAsync: approve } = useContractWrite({
-		address: contractAddress,
-		abi: tokenAbi.abi,
-		functionName: "approve",
-		onSuccess(res) {
-			console.log(res);
-		},
-		onError(error) {
-			console.log(error);
+	const { writeContractAsync: approve } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+			},
+			onError(error) {
+				console.log(error);
+			},
 		},
 	});
 
@@ -156,11 +151,24 @@ const Staking = ({
 
 		if (allowance >= amount) {
 			stake({
+				address: stakingAddress,
+				abi: stakingAbi,
+				functionName: "stake",
+				account: walletClient?.account,
 				args: [amount],
 			});
 		} else {
-			approve({ args: [stakingAddress, amount] }).then(() => {
+			approve({
+				address: contractAddress,
+				abi: tokenAbi,
+				functionName: "approve",
+				args: [stakingAddress, amount],
+			}).then(() => {
 				stake({
+					address: stakingAddress,
+					abi: stakingAbi,
+					functionName: "stake",
+					account: walletClient?.account,
 					args: [amount],
 				});
 			});
@@ -168,20 +176,29 @@ const Staking = ({
 	};
 
 	useEffect(() => {
-		if (data?.formatted) {
-			setBalance(data?.formatted);
+		if (data?.value) {
+			setBalance(formatEther(data?.value));
 		}
 	}, [data]);
 
 	const handleUnstake = () => {
 		const amount = parseEther(getValues("amount").toString());
 		unstake({
+			address: stakingAddress,
+			abi: stakingAbi,
+			functionName: "unstake",
+			account: walletClient?.account,
 			args: [amount],
 		});
 	};
 
 	const handleWithdraw = () => {
-		withdraw();
+		withdraw({
+			address: stakingAddress,
+			abi: stakingAbi,
+			functionName: "withdraw",
+			account: walletClient?.account,
+		});
 	};
 
 	return (

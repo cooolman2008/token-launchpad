@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 const InformationTip = ({ msg }: { msg: string }) => {
 	const [isOpen, setIsOpen] = useState(false);

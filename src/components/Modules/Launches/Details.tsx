@@ -3,11 +3,12 @@ import { useEffect, useState, memo } from "react";
 import { fetchSafu } from "@/api/getSafu";
 import { getAbr } from "@/utils/math";
 import { getContractAddress, getGraphUrl } from "@/utils/utils";
+import { useChainId } from "wagmi";
 
 const Details = memo(() => {
-	const { selectedNetworkId: chainId } = useWeb3ModalState();
-	const CONTRACT_ADDRESS = getContractAddress(Number(chainId));
-	const API_ENDPOINT = getGraphUrl(Number(chainId));
+	const chainId = useChainId();
+	const API_ENDPOINT = getGraphUrl(chainId);
+	const CONTRACT_ADDRESS = getContractAddress(chainId);
 
 	const [safuTVL, setSafuTVL] = useState(0);
 	const [safuVolume, setSafuVolume] = useState(0);

@@ -1,16 +1,15 @@
-import { useContractWrite, useWalletClient } from "wagmi";
+import { useWriteContract, useWalletClient } from "wagmi";
 import { useState, SetStateAction, Dispatch } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import TextField from "@/components/elements/TextField";
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
-
-import Tokenabi from "../../../../newtokenabi.json";
+import { tokenAbi } from "@/abi/tokenAbi";
 
 interface LimitsForm {
-	maxwallet: number;
-	maxtx: number;
+	maxwallet: bigint;
+	maxtx: bigint;
 }
 
 const Limits = ({
@@ -28,18 +27,16 @@ const Limits = ({
 	const [error, setError] = useState("");
 
 	// contract call to Increase Limits.
-	const { isLoading, writeContract: increase } = useContractWrite({
-		address: contractAddress,
-		abi: Tokenabi.abi,
-		functionName: "increaseLimits",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			setSuccess("Limits have been increased successfully!");
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending, writeContract: increase } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				setSuccess("Limits have been increased successfully!");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
@@ -55,12 +52,16 @@ const Limits = ({
 	} = useForm<LimitsForm>();
 	const onSubmit: SubmitHandler<LimitsForm> = (formData) => {
 		increase({
+			address: contractAddress,
+			abi: tokenAbi,
+			functionName: "increaseLimits",
+			account: walletClient?.account,
 			args: [formData.maxtx, formData.maxwallet],
 		});
 	};
 	return (
 		<>
-			{isLoading && <Loading msg="Increasing Limits..." />}
+			{isPending && <Loading msg="Increasing Limits..." />}
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
 			)}

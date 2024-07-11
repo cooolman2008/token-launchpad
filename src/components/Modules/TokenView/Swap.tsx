@@ -1,25 +1,23 @@
-import { mainnet, useAccount, useNetwork, useContractWrite, useContractRead } from "wagmi";
+import { useWriteContract, useReadContract, useChainId, usePublicClient } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useEffect, useState, useRef, SetStateAction, Dispatch, useCallback } from "react";
 import { animate, spring } from "motion";
-import { Token } from "@uniswap/sdk-core";
+import { ChainId, Token } from "@uniswap/sdk-core";
 import { Pair } from "@uniswap/v2-sdk";
-import { parseEther } from "viem";
+import { getAddress, parseEther } from "viem";
 
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
 
-// token & router abis
-import tokenAbi from "../../../../newtokenabi.json";
-import routerAbi from "../../../../routerabi.json";
-
 // internal utils
 import { createPair, getExchangeRate, getMinAmountOut, getReserves } from "@/utils/swapHelper";
+import { tokenAbi } from "@/abi/tokenAbi";
+import { routerAbi } from "@/abi/routerAbi";
+import { getBaseCoin } from "@/utils/utils";
+import SwapSettings from "./SwapSettings";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
 
-const WETH_ADDRESS = process.env.WETH_ADDRESS;
-const UNISWAP_ROUTER_ADDRESS = process.env.UNISWAP_ROUTER_ADDRESS;
-
-interface SwapForm {
+export interface SwapForm {
 	pay: number;
 	slippage: number;
 	deadline: number;
@@ -27,102 +25,117 @@ interface SwapForm {
 
 const Swap = ({
 	contractAddress,
+	routerAddress,
+	pairAddress,
+	address,
 	symbol,
 	tradingEnabled,
 	setSuccess,
 }: {
 	contractAddress: `0x${string}`;
+	routerAddress: `0x${string}`;
+	pairAddress: `0x${string}`;
+	address: `0x${string}`;
 	symbol: string;
 	tradingEnabled: boolean;
 	setSuccess: Dispatch<SetStateAction<string>>;
 }) => {
+	const address_0 = "0x0000000000000000000000000000000000000000";
 	// Current chain & wallet address
-	const { chain } = useNetwork();
-	const { address } = useAccount();
+	const chain = useChainId();
+	const client = usePublicClient({
+		chainId: chain,
+	});
+	const { open } = useWeb3Modal();
 
 	const [allowance, setAllowance] = useState(BigInt("0"));
 	const [worstPrice, setWorstPrice] = useState("0");
 	const [reserves, setReserves] = useState<bigint[]>();
 	const [pair, setPair] = useState<Pair>();
-	const [isOpen, setIsOpen] = useState(false);
-	const wrapperRef = useRef<HTMLDivElement>(null);
-	const settingRef = useRef<SVGSVGElement>(null);
 	const [error, setError] = useState("");
 
 	const clear = () => {
 		setError("");
 	};
 
+	const base = getBaseCoin(chain);
+	const WETH_ADDRESS = base ? base : getAddress("0xcd12ed11c27c1fa611bbc814178f7ea8be25402c");
+
 	// states to dictate the
-	const [tokenIn, setTokenIn] = useState(new Token(31337, WETH_ADDRESS, 18));
-	const [tokenOut, setTokenOut] = useState(new Token(31337, contractAddress, 18));
+	const [tokenIn, setTokenIn] = useState(new Token(chain, WETH_ADDRESS, 18));
+	const [tokenOut, setTokenOut] = useState(new Token(chain, contractAddress, 18));
 
 	// sort tokens by hex value
 	const token0 = tokenIn.sortsBefore(tokenOut) ? tokenIn : tokenOut;
 	const token1 = tokenIn.sortsBefore(tokenOut) ? tokenOut : tokenIn;
 
 	useEffect(() => {
-		if (tradingEnabled) {
-			getReserves(token0, token1, chain ? chain : mainnet).then((data) => {
-				setReserves(data);
-				if (data) {
-					const newPair = createPair(token0, token1, data);
-					setPair(newPair);
-				}
-			});
+		if (tradingEnabled && client && pairAddress) {
+			getReserves(client, pairAddress)
+				.then((data) => {
+					setReserves(data);
+					if (data) {
+						const newPair = createPair(token0, token1, data);
+						setPair(newPair);
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
 		}
-	}, [chain, token0, token1, tradingEnabled]);
+	}, [chain, client, pairAddress, token0, token1, tradingEnabled]);
 
 	// get the allowance of the user
-	useContractRead({
+	const { data: allowanceData, refetch: check } = useReadContract({
 		address: contractAddress,
-		abi: tokenAbi.abi,
+		abi: tokenAbi,
 		functionName: "allowance",
-		args: [address, UNISWAP_ROUTER_ADDRESS],
-		onSuccess(data) {
-			if (data && typeof data === "bigint") {
-				setAllowance(data);
-			}
+		args: [address, routerAddress],
+	});
+
+	useEffect(() => {
+		if (allowanceData) {
+			setAllowance(allowanceData);
+		}
+	}, [allowanceData]);
+
+	const { isPending: approving, writeContractAsync: approve } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+			},
+			onError(error) {
+				setSuccess("Something went wrong!");
+				console.log(error);
+			},
 		},
 	});
 
 	// router function to swap ETH for tokens
-	const { isLoading: loadingSwap, writeContract: swap } = useContractWrite({
-		address: UNISWAP_ROUTER_ADDRESS,
-		abi: routerAbi.abi,
-		functionName: "swapExactETHForTokens",
-		onSuccess(res) {
-			setSuccess("Swapped successfully!");
-			console.log(res);
-		},
-		onError(error) {
-			console.log(error);
+	const { isPending: loadingSwap, writeContract: swap } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				setSuccess("Swapped successfully!");
+				console.log(res);
+			},
+			onError(error) {
+				setSuccess("Something went wrong!");
+				console.log(error);
+			},
 		},
 	});
 
 	// swap function for ETH to tokens
-	const { isLoading: loadingTokenSwap, writeContract: tokenSwap } = useContractWrite({
-		address: UNISWAP_ROUTER_ADDRESS,
-		abi: routerAbi.abi,
-		functionName: "swapExactTokensForETH",
-		onSuccess(res) {
-			setSuccess("Swapped successfully!");
-			console.log(res);
-		},
-		onError(error) {
-			console.log(error);
-		},
-	});
-
-	const { isLoading: approving, writeAsync: approve } = useContractWrite({
-		address: contractAddress,
-		abi: tokenAbi.abi,
-		functionName: "approve",
-		onSuccess(res) {
-			console.log(res);
-		},
-		onError(error) {
-			console.log(error);
+	const { isPending: loadingTokenSwap, writeContract: tokenSwap } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				setSuccess("Swapped successfully!");
+				console.log(res);
+			},
+			onError(error) {
+				setSuccess("Something went wrong!");
+				console.log(error);
+			},
 		},
 	});
 
@@ -133,34 +146,63 @@ const Swap = ({
 		formState: { errors },
 	} = useForm<SwapForm>();
 	const onSubmit: SubmitHandler<SwapForm> = (formData) => {
-		if (formData.pay && pair) {
+		if (formData.pay && pair && address) {
 			const amountInMax = parseEther(formData.pay.toString());
-			// const slippage = formData.slippage.toString();
-			// const deadline = Math.floor(Date.now() / 1000) + 60 * formData.deadline;
-			const deadline = Math.floor(Date.now() / 1000) + 60 * 10;
+			const slippage = formData.slippage.toString();
+			const deadline = BigInt(Math.floor(Date.now() / 1000) + 60 * (formData.deadline ? formData.deadline : 10));
 			const minAmountOut = getMinAmountOut(
 				tokenIn === token0 ? token0 : token1,
 				tokenIn === token0 ? token1 : token0,
 				amountInMax,
-				pair
-				// slippage
+				pair,
+				slippage
 			);
 
 			if (tokenIn.address.toUpperCase() === WETH_ADDRESS.toUpperCase()) {
+				console.log({
+					address: routerAddress,
+					functionName: "swapExactETHForTokens",
+					args: [minAmountOut, [WETH_ADDRESS, contractAddress], address, deadline],
+					value: amountInMax,
+				});
 				swap({
+					address: routerAddress,
+					abi: routerAbi,
+					functionName: "swapExactETHForTokens",
 					args: [minAmountOut, [WETH_ADDRESS, contractAddress], address, deadline],
 					value: amountInMax,
 				});
 			} else {
-				const args = {
-					args: [amountInMax, minAmountOut, [contractAddress, WETH_ADDRESS], address, deadline],
-				};
-
 				if (allowance >= amountInMax) {
-					tokenSwap(args);
+					console.log({
+						address: routerAddress,
+						functionName: "swapExactTokensForETH",
+						args: [amountInMax, minAmountOut, [contractAddress, WETH_ADDRESS], address, deadline],
+					});
+					tokenSwap({
+						address: routerAddress,
+						abi: routerAbi,
+						functionName: "swapExactTokensForETH",
+						args: [amountInMax, minAmountOut, [contractAddress, WETH_ADDRESS], address, deadline],
+					});
 				} else {
-					approve({ args: [UNISWAP_ROUTER_ADDRESS, amountInMax] }).then(() => {
-						tokenSwap(args);
+					approve({
+						address: contractAddress,
+						abi: tokenAbi,
+						functionName: "approve",
+						args: [routerAddress, amountInMax],
+					}).then(() => {
+						console.log({
+							address: routerAddress,
+							functionName: "swapExactTokensForETH",
+							args: [amountInMax, minAmountOut, [contractAddress, WETH_ADDRESS], address, deadline],
+						});
+						tokenSwap({
+							address: routerAddress,
+							abi: routerAbi,
+							functionName: "swapExactTokensForETH",
+							args: [amountInMax, minAmountOut, [contractAddress, WETH_ADDRESS], address, deadline],
+						});
 					});
 				}
 			}
@@ -170,116 +212,39 @@ const Swap = ({
 	// sets the tokens to recieve on swap
 	const setAmounts = useCallback(() => {
 		const amount = getValues("pay");
-		if (reserves && amount) {
+		if (reserves && amount && client) {
 			// gets the tokens to recieve on swap
 			getExchangeRate(
 				tokenIn === token0 ? reserves : [reserves[1], reserves[0]],
 				parseEther(amount.toString()),
-				chain ? chain : mainnet
+				client,
+				routerAddress
 			).then((data) => {
 				setWorstPrice(data);
 			});
 		}
-	}, [chain, getValues, reserves, token0, tokenIn]);
+	}, [routerAddress, client, getValues, reserves, token0, tokenIn]);
 
 	useEffect(() => {
 		setAmounts();
 	}, [setAmounts, tokenIn]);
-
-	const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-		const wrapper = wrapperRef.current;
-		if (
-			wrapper instanceof HTMLElement &&
-			settingRef.current instanceof SVGSVGElement &&
-			!wrapper.contains(event.target as Node) &&
-			!settingRef.current.contains(event.target as Node)
-		) {
-			setIsOpen(false);
-			document.removeEventListener("mouseup", handleClickOutside);
-			document.removeEventListener("touchend", handleClickOutside);
-		}
-	};
-
-	const handleSettings = () => {
-		if (!isOpen) {
-			document.addEventListener("mouseup", handleClickOutside);
-			document.addEventListener("touchend", handleClickOutside);
-			setIsOpen(true);
-		} else {
-			setIsOpen(false);
-			document.removeEventListener("mouseup", handleClickOutside);
-			document.removeEventListener("touchend", handleClickOutside);
-		}
-	};
 
 	return (
 		<>
 			{(loadingTokenSwap || loadingSwap) && <Loading msg="Bringing you new tokens..." />}
 			{approving && <Loading msg="Waiting for your approval..." />}
 			{error && (
-				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
+				<Modal
+					msg={error}
+					des="You can try increasing your slippage or this might be a temporary issue"
+					error={true}
+					callback={clear}
+				/>
 			)}
 			<div className="swap-container">
-				<div className="flex justify-between mb-2 items-center relative">
+				<div className="flex justify-between mb-2 items-center relative z-10">
 					<h2 className="text-2xl">Swap</h2>
-					<svg
-						ref={settingRef}
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						xmlns="http://www.w3.org/2000/svg"
-						className="fill-gray-400 cursor-pointer"
-						onClick={handleSettings}
-					>
-						<path d="M20.83 14.6C19.9 14.06 19.33 13.07 19.33 12C19.33 10.93 19.9 9.93999 20.83 9.39999C20.99 9.29999 21.05 9.1 20.95 8.94L19.28 6.06C19.22 5.95 19.11 5.89001 19 5.89001C18.94 5.89001 18.88 5.91 18.83 5.94C18.37 6.2 17.85 6.34 17.33 6.34C16.8 6.34 16.28 6.19999 15.81 5.92999C14.88 5.38999 14.31 4.41 14.31 3.34C14.31 3.15 14.16 3 13.98 3H10.02C9.83999 3 9.69 3.15 9.69 3.34C9.69 4.41 9.12 5.38999 8.19 5.92999C7.72 6.19999 7.20001 6.34 6.67001 6.34C6.15001 6.34 5.63001 6.2 5.17001 5.94C5.01001 5.84 4.81 5.9 4.72 6.06L3.04001 8.94C3.01001 8.99 3 9.05001 3 9.10001C3 9.22001 3.06001 9.32999 3.17001 9.39999C4.10001 9.93999 4.67001 10.92 4.67001 11.99C4.67001 13.07 4.09999 14.06 3.17999 14.6H3.17001C3.01001 14.7 2.94999 14.9 3.04999 15.06L4.72 17.94C4.78 18.05 4.89 18.11 5 18.11C5.06 18.11 5.12001 18.09 5.17001 18.06C6.11001 17.53 7.26 17.53 8.19 18.07C9.11 18.61 9.67999 19.59 9.67999 20.66C9.67999 20.85 9.82999 21 10.02 21H13.98C14.16 21 14.31 20.85 14.31 20.66C14.31 19.59 14.88 18.61 15.81 18.07C16.28 17.8 16.8 17.66 17.33 17.66C17.85 17.66 18.37 17.8 18.83 18.06C18.99 18.16 19.19 18.1 19.28 17.94L20.96 15.06C20.99 15.01 21 14.95 21 14.9C21 14.78 20.94 14.67 20.83 14.6ZM12 15C10.34 15 9 13.66 9 12C9 10.34 10.34 9 12 9C13.66 9 15 10.34 15 12C15 13.66 13.66 15 12 15Z"></path>
-					</svg>
-					{isOpen && (
-						<div
-							className="absolute top-10 right-0 rounded-xl bg-black p-4 border-2 border-neutral-800 w-80 z-10 flex"
-							ref={wrapperRef}
-						>
-							<div className="mr-8">
-								<label htmlFor="slippage" className="block text-sm leading-6 text-white mb-2">
-									Max.slippage
-								</label>
-								<div className="mt-2 relative">
-									<input
-										type="text"
-										id="slippage"
-										placeholder="0.5"
-										defaultValue="6"
-										{...register("slippage", {
-											required: true,
-											pattern: /^[0-9.]+$/i,
-											min: 0.005,
-											max: 6,
-										})}
-										className="block w-20 rounded-xl ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 border border-gray-600 outline-0 sm:text-md"
-									/>
-
-									<div className="absolute inset-y-0 right-0 flex items-center pr-4 sm:text-md text-gray-400">%</div>
-								</div>
-							</div>
-							<div className="">
-								<label htmlFor="deadline" className="block text-sm leading-6 text-white mb-2">
-									Deadline
-								</label>
-								<input
-									type="text"
-									id="deadline"
-									placeholder="10"
-									defaultValue={10}
-									{...register("deadline", {
-										required: true,
-										pattern: /^[0-9]+$/i,
-										min: 10,
-										max: 20,
-									})}
-									className="block w-20 rounded-xl ps-3 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-md"
-								/>
-							</div>
-						</div>
-					)}
+					<SwapSettings register={register} errors={errors} />
 				</div>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className="w-full p-4 rounded-xl border-2 border-transparent hover:border-neutral-800 bg-neutral-900">
@@ -307,16 +272,15 @@ const Swap = ({
 							</span>
 						</div>
 					</div>
-					<div
-						className="w-full flex justify-end pr-8"
-						style={{ margin: "-16px auto" }}
-						onClick={() => {
-							setTokenIn(tokenOut);
-							setTokenOut(tokenIn);
-							animate("#arrows", { skewY: [0, 180] }, { easing: spring() });
-						}}
-					>
-						<div className="w-10 h-10 bg-neutral-900 flex items-center justify-center rounded-xl border-4 border-black cursor-pointer">
+					<div className="w-full flex justify-end pr-8" style={{ margin: "-16px auto" }}>
+						<div
+							className="w-10 h-10 bg-neutral-900 flex items-center justify-center rounded-xl border-4 border-black cursor-pointer"
+							onClick={() => {
+								setTokenIn(tokenOut);
+								setTokenOut(tokenIn);
+								animate("#arrows", { skewY: [0, 180] }, { easing: spring() });
+							}}
+						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								className="fill-gray-400"
@@ -341,13 +305,15 @@ const Swap = ({
 						</div>
 					</div>
 					{tradingEnabled &&
-						(address ? (
+						(address !== address_0 ? (
 							<div className="flex justify-center flex-col mt-2">
 								<input className="safu-button-primary cursor-pointer" type="submit" value="Swap" />
 							</div>
 						) : (
 							<div className="w-full flex justify-center mt-4">
-								<w3m-button />
+								<button className="mr-8 safu-soft-button" onClick={() => open()}>
+									Connect Wallet
+								</button>
 							</div>
 						))}
 				</form>

@@ -39,7 +39,8 @@ export const local = defineChain({
 });
 
 // Create wagmiConfig
-const chains = [holesky, mainnet, arbitrum, sepolia, local] as const;
+// const chains = [holesky, mainnet, arbitrum, sepolia, local] as const;
+const chains = [holesky, local] as const;
 export const config = defaultWagmiConfig({
 	chains,
 	projectId,

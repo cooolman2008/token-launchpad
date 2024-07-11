@@ -1,12 +1,11 @@
-import { useContractWrite, useWalletClient, useContractRead, useBalance } from "wagmi";
+import { useWriteContract, useWalletClient, useReadContract, useBalance } from "wagmi";
 import { useState, SetStateAction, Dispatch, useEffect } from "react";
 
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
 
-import Presaleabi from "../../../../presaleabi.json";
-
 import { getNumber } from "@/utils/math";
+import { presaleAbi } from "@/abi/presaleAbi";
 
 interface Presale {
 	softcap: bigint;
@@ -37,81 +36,75 @@ const PresaleDashboard = ({
 	const [presaleScene, setPresaleScene] = useState(0);
 	const [error, setError] = useState("");
 
-	useBalance({
+	const { data: balanceData } = useBalance({
 		address: presaleAddress,
-		onSuccess(data) {
-			console.log("Success", data);
-			setBalance(Number(data.formatted));
-		},
-		onError(error) {
-			console.log("Error", error);
-		},
 	});
 
+	useEffect(() => {
+		if (balanceData) {
+			setBalance(Number(balanceData.value));
+		}
+	}, [balanceData]);
+
 	// get presale details.
-	const { refetch } = useContractRead({
+	const { data: presaleData, refetch } = useReadContract({
 		address: presaleAddress,
-		abi: Presaleabi.abi,
+		abi: presaleAbi,
 		functionName: "getPresaleDetails",
-		onSuccess(data: Presale) {
-			if (data) {
-				setPresale(data);
-			}
-		},
 	});
+
+	useEffect(() => {
+		if (presaleData) {
+			setPresale(presaleData);
+		}
+	}, [presaleData]);
 
 	const clear = () => {
 		setError("");
 	};
 
 	// contract call to end presale.
-	const { isLoading: finishing, writeContract: finish } = useContractWrite({
-		address: presaleAddress,
-		abi: Presaleabi.abi,
-		functionName: "finishPresale",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			refetch();
-			setSuccess("Presales terminated successfully");
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending: finishing, writeContract: finish } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				refetch();
+				setSuccess("Presales terminated successfully");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
 	// contract call to refund the liquidity from the token contract to presale contract.
-	const { isLoading: refunding, writeContract: refund } = useContractWrite({
-		address: presaleAddress,
-		abi: Presaleabi.abi,
-		functionName: "refundPresale",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			refetch();
-			setSuccess("Presales refunded successfully");
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending: refunding, writeContract: refund } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				refetch();
+				setSuccess("Presales refunded successfully");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
 	// contract call for the owner to claim ETH from presales after trading begins.
-	const { isLoading: claiming, writeContract: claim } = useContractWrite({
-		address: presaleAddress,
-		abi: Presaleabi.abi,
-		functionName: "claimEth",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			refetch();
-			setSuccess("Claim successful");
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending: claiming, writeContract: claim } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				refetch();
+				setSuccess("Claim successful");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
@@ -222,7 +215,14 @@ const PresaleDashboard = ({
 										type="submit"
 										value="End Presales"
 										onClick={() => {
-											finish();
+											if (presaleAddress) {
+												finish({
+													address: presaleAddress,
+													abi: presaleAbi,
+													functionName: "finishPresale",
+													account: walletClient?.account,
+												});
+											}
 										}}
 									/>
 								</div>
@@ -245,7 +245,14 @@ const PresaleDashboard = ({
 										type="submit"
 										value="Refund Presales"
 										onClick={() => {
-											refund();
+											if (presaleAddress) {
+												refund({
+													address: presaleAddress,
+													abi: presaleAbi,
+													functionName: "refundPresale",
+													account: walletClient?.account,
+												});
+											}
 										}}
 									/>
 								</div>
@@ -264,7 +271,14 @@ const PresaleDashboard = ({
 										type="submit"
 										value={"Claim " + balance}
 										onClick={() => {
-											claim();
+											if (presaleAddress) {
+												claim({
+													address: presaleAddress,
+													abi: presaleAbi,
+													functionName: "claimEth",
+													account: walletClient?.account,
+												});
+											}
 										}}
 									/>
 								</div>

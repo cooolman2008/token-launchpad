@@ -10,18 +10,23 @@ export interface Promo {
     promoCostEth: bigint
 }
 
-interface safuResponse {
+interface SAFUResponse {
     safulauncher: SAFU
 }
 
-interface promoResponse {
-    safulauncher: Promo
+export interface LauncherDetails {
+  bridge: string
+  ethCost: bigint
+  minLiq: bigint
+  promoCostEth: bigint
+  promoCostSafu: bigint
+  safuCost: bigint
 }
 
 export async function fetchSafu(id: string, api_endpoint: string) {
     if (id) {
         const query = `query MyQuery {
-          safulauncher(id: "${id}") {
+          safulauncher(id: "${id.toLowerCase()}") {
             launchCount
             totalVolumeUSD
             totalLiquidityUSD
@@ -30,22 +35,7 @@ export async function fetchSafu(id: string, api_endpoint: string) {
       
         const client = new GraphQLClient(api_endpoint);
       
-        const data: safuResponse = await client.request(query);
+        const data: SAFUResponse = await client.request(query);
         return data?.safulauncher;
-    }
-}
-
-export async function fetchPromoCost(id: string, api_endpoint: string) {
-  console.log(id);
-    if (id) {
-        const query = `query MyQuery {
-          safulauncher(id: "${id}") {
-            promoCostEth
-          }
-        }`;
-        const client = new GraphQLClient(api_endpoint);
-        const data: promoResponse = await client.request(query);
-
-        return data?.safulauncher.promoCostEth;
     }
 }

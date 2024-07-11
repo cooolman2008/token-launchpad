@@ -7,13 +7,16 @@ import logo from "../../../public/safu.svg";
 import Links from "@/components/Modules/Navigation/Links";
 import Search from "@/components/Modules/Navigation/Search";
 import { animate, spring } from "motion";
-import { useWeb3Modal, useWeb3ModalEvents, useWeb3ModalState, useWeb3ModalTheme } from "@web3modal/wagmi/react";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
+import { useAccount, useChainId, useSwitchChain } from "wagmi";
 
 function Navigation() {
 	const [isClient, setIsClient] = useState(false);
+	const { address } = useAccount();
 	const wrapperRef = useRef<HTMLDivElement>(null);
 	const { open } = useWeb3Modal();
-	const state = useWeb3ModalState();
+	const { chains, switchChain } = useSwitchChain();
+	const chainId = useChainId();
 
 	useEffect(() => {
 		setIsClient(true);
@@ -64,14 +67,28 @@ function Navigation() {
 					<div className="hidden lg:flex w-full">
 						<Links />
 						<Search />
-						<button onClick={() => open()}>Connect Wallet</button>
-						<button onClick={() => open({ view: "Networks" })}>Choose Network</button>
-						<button onClick={() => open({ view: "Networks" })}>Choose Network</button>
-						{/* <div>
-							<w3m-button />
-						</div> */}
-						{/* <w3m-network-button /> */}
-						<pre>{JSON.stringify(state, null, 2)}</pre>
+						{address ? (
+							<div>
+								<w3m-button />
+							</div>
+						) : (
+							<>
+								<div className="flex flex-col justify-center mr-8">
+									<button className="safu-soft-button" onClick={() => open()}>
+										Connect Wallet
+									</button>
+								</div>
+								{chains.map((chain) => (
+									<button
+										className={"mr-8 " + (chain.id === chainId ? "text-red-500" : "text-gray-400")}
+										key={chain.id}
+										onClick={() => switchChain({ chainId: chain.id })}
+									>
+										{chain.name}
+									</button>
+								))}
+							</>
+						)}
 					</div>
 				</nav>
 			)}

@@ -55,7 +55,7 @@ export interface LPDetails {
 export async function fetchToken(id: string, api_endpoint: string) {
     if (id) {
         const query = `query MyQuery {
-          token(id: "${id}") {
+          token(id: "${id.toLowerCase()}") {
             name
             totalSupply
             presale

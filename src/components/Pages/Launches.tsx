@@ -7,17 +7,17 @@ import Link from "next/link";
 import Details from "@/components/Modules/Launches/Details";
 import Table from "@/components/elements/Table";
 
-import { getContractAddress, getGraphUrl } from "@/utils/utils";
+import { getBaseCoin, getContractAddress, getGraphUrl, getUSDC } from "@/utils/utils";
 import { fetchTokens, fetchMyTokens, fetchStealthTokens, Tokens, fetchPresalesTokens } from "@/api/getTokens";
 
 function Launches() {
+	const address_0 = "0x0000000000000000000000000000000000000000";
 	const { data: walletClient } = useWalletClient();
 	const { address } = useAccount();
 
 	const chainId = useChainId();
 	const API_ENDPOINT = getGraphUrl(chainId);
 	const CONTRACT_ADDRESS = getContractAddress(chainId);
-	console.log(chainId);
 
 	const [isClient, setIsClient] = useState(false);
 	const [tab, setTab] = useState("Explore");
@@ -28,11 +28,15 @@ function Launches() {
 	const [presales, setPresales] = useState<Tokens[]>([]);
 	const [chain, setChain] = useState(0);
 
+	let id = getBaseCoin(chainId);
+	const BASE_ADDRESS = id ? id : address_0;
+	id = getUSDC(chainId);
+	const USDC_ADDRESS = id ? id : address_0;
+
 	const heading_classes = "text-lg xl:text-2xl pr-8 cursor-pointer ";
 
 	useEffect(() => {
-		console.log(chainId);
-		if (!address) {
+		if (!address && tab === "Launches") {
 			setTab("Explore");
 		}
 		if (chainId && API_ENDPOINT && CONTRACT_ADDRESS) {
@@ -57,14 +61,16 @@ function Launches() {
 					if (stealth.length > 0 && chain === Number(chainId)) {
 						setTokens(stealth);
 					} else {
-						fetchStealthTokens(API_ENDPOINT).then((tokensFetched) => {
-							setChain(Number(chainId));
-							if (tokensFetched.length === 0) {
-								setTokens([]);
-							} else {
-								setStealth(tokensFetched);
+						fetchStealthTokens(API_ENDPOINT, USDC_ADDRESS?.toString(), BASE_ADDRESS?.toString()).then(
+							(tokensFetched) => {
+								setChain(Number(chainId));
+								if (tokensFetched.length === 0) {
+									setTokens([]);
+								} else {
+									setStealth(tokensFetched);
+								}
 							}
-						});
+						);
 					}
 					break;
 				case "Presales":
@@ -96,15 +102,24 @@ function Launches() {
 					}
 			}
 		}
-	}, [API_ENDPOINT, CONTRACT_ADDRESS, address, explore, launches, stealth, presales, tab, chainId, chain]);
+	}, [
+		API_ENDPOINT,
+		CONTRACT_ADDRESS,
+		USDC_ADDRESS,
+		BASE_ADDRESS,
+		address,
+		explore,
+		launches,
+		stealth,
+		presales,
+		tab,
+		chainId,
+		chain,
+	]);
 
 	useEffect(() => {
 		setIsClient(true);
-	}, []);
-
-	function handleClick() {
-		console.log(chainId);
-	}
+	}, [chainId]);
 
 	return (
 		<>
@@ -165,7 +180,6 @@ function Launches() {
 					<Link href="/launch" className="safu-button-secondary" scroll={true}>
 						Launch a token
 					</Link>
-					<button onClick={handleClick}>SEEEE</button>
 				</>
 			)}
 		</>

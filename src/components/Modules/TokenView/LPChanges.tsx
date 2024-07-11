@@ -1,15 +1,14 @@
-import { useContractWrite, useWalletClient } from "wagmi";
+import { useWalletClient, useWriteContract } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, SetStateAction, Dispatch } from "react";
 
 import TextField from "@/components/elements/TextField";
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
-
-import Ownerabi from "../../../../ownerabi.json";
+import { ownerAbi } from "@/abi/ownerAbi";
 
 interface LockForm {
-	ldays: number;
+	ldays: bigint;
 }
 
 const LPChanges = ({
@@ -35,38 +34,30 @@ const LPChanges = ({
 	};
 
 	// contract call to extend the lock period for LP tokens.
-	const {
-		isLoading,
-		isSuccess,
-		writeContract: extend,
-	} = useContractWrite({
-		address: contractAddress,
-		abi: Ownerabi.abi,
-		functionName: "extendLock",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			setSuccess("Your lock period has been extended successfully!");
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending, writeContract: extend } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				setSuccess("Your lock period has been extended successfully!");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
 	// contract call to burn the LP tokens.
-	const { isSuccess: isBurnt, writeContract: burn } = useContractWrite({
-		address: contractAddress,
-		abi: Ownerabi.abi,
-		functionName: "burnLP",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			setSuccess("Liquidity tokens have been burnt successfully!");
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { writeContract: burn } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				setSuccess("Liquidity tokens have been burnt successfully!");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
@@ -74,17 +65,20 @@ const LPChanges = ({
 	const {
 		register,
 		handleSubmit,
-		watch,
 		formState: { errors },
 	} = useForm<LockForm>();
 	const onSubmit: SubmitHandler<LockForm> = (formData) => {
 		extend({
+			address: contractAddress,
+			abi: ownerAbi,
+			functionName: "extendLock",
+			account: walletClient?.account,
 			args: [formData.ldays],
 		});
 	};
 	return (
 		<>
-			{isLoading && <Loading msg="Increasing Limits..." />}
+			{isPending && <Loading msg="Increasing Limits..." />}
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
 			)}
@@ -101,7 +95,14 @@ const LPChanges = ({
 						<button
 							type="button"
 							onClick={() => {
-								burn();
+								if (contractAddress) {
+									burn({
+										address: contractAddress,
+										abi: ownerAbi,
+										functionName: "burnLP",
+										account: walletClient?.account,
+									});
+								}
 							}}
 							className="safu-button-primary"
 						>

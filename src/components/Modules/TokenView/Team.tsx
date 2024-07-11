@@ -1,19 +1,19 @@
 import { useState, SetStateAction, Dispatch } from "react";
-import { useContractWrite, useWalletClient, useAccount } from "wagmi";
+import { useWriteContract, useWalletClient } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import TextField from "@/components/elements/TextField";
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
 
-import Tokenabi from "../../../../newtokenabi.json";
 import { TeamMember } from "@/api/getToken";
+import { tokenAbi } from "@/abi/tokenAbi";
 
 interface TeamForm {
-	team1p: number;
-	team1: string;
-	cliffPeriod: number;
-	vestingPeriod: number;
+	team1p: bigint;
+	team1: `0x${string}`;
+	cliffPeriod: bigint;
+	vestingPeriod: bigint;
 }
 
 const Team = ({
@@ -31,18 +31,16 @@ const Team = ({
 	const [error, setError] = useState("");
 
 	// contract call to add team members.
-	const { isLoading, write } = useContractWrite({
-		address: contractAddress,
-		abi: Tokenabi.abi,
-		functionName: "addTeam",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			setSuccess("A team member has been added successfully");
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending, writeContract } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				setSuccess("A team member has been added successfully");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
@@ -54,13 +52,17 @@ const Team = ({
 	} = useForm<TeamForm>();
 	const onSubmit: SubmitHandler<TeamForm> = (formData) => {
 		if (formData.team1 && formData.team1p) {
-			write({
+			writeContract({
+				address: contractAddress,
+				abi: tokenAbi,
+				functionName: "addTeam",
+				account: walletClient?.account,
 				args: [
 					{
 						team1: formData.team1,
 						team1p: formData.team1p,
-						cliffPeriod: teamSet ? 0 : formData.cliffPeriod,
-						vestingPeriod: teamSet ? 0 : formData.vestingPeriod,
+						cliffPeriod: teamSet ? BigInt(0) : formData.cliffPeriod,
+						vestingPeriod: teamSet ? BigInt(0) : formData.vestingPeriod,
 						isAdd: true,
 					},
 				],
@@ -69,7 +71,7 @@ const Team = ({
 	};
 	return (
 		<>
-			{isLoading && <Loading msg="Adding your team..." />}
+			{isPending && <Loading msg="Adding your team..." />}
 			{error && <Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} />}
 			<div className="w-full py-8 border-b border-gray-700">
 				<h2 className="text-xl mb-1">Add your team</h2>

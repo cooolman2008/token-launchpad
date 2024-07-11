@@ -1,12 +1,11 @@
-import { useContractWrite, useWalletClient, useContractRead, useAccount } from "wagmi";
+import { useWriteContract, useWalletClient, useReadContract, useAccount } from "wagmi";
 import { useState, useEffect, SetStateAction, Dispatch } from "react";
 
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
 
-import Presaleabi from "../../../../presaleabi.json";
-
 import { getAbr, getNumber } from "@/utils/math";
+import { presaleAbi } from "@/abi/presaleAbi";
 
 interface Presale {
 	softcap: bigint;
@@ -23,19 +22,20 @@ interface Presale {
 
 const PresaleUser = ({
 	presaleAddress,
+	address,
 	callback,
 	setSuccess,
 	isTrading,
 	isOwner,
 }: {
 	presaleAddress?: `0x${string}`;
+	address: `0x${string}`;
 	callback: () => void;
 	setSuccess: Dispatch<SetStateAction<string>>;
 	isTrading: boolean;
 	isOwner: boolean;
 }) => {
 	const { data: walletClient } = useWalletClient();
-	const { address } = useAccount();
 	const [claimable, setClaimable] = useState(BigInt(0));
 	const [claimableDays, setClaimableDays] = useState(BigInt(0));
 	const [bought, setBought] = useState(0);
@@ -44,89 +44,83 @@ const PresaleUser = ({
 	const [error, setError] = useState("");
 
 	// get presale details.
-	const { refetch } = useContractRead({
+	const { data: presaleData, refetch } = useReadContract({
 		address: presaleAddress,
-		abi: Presaleabi.abi,
+		abi: presaleAbi,
 		functionName: "getPresaleDetails",
-		onSuccess(data: Presale) {
-			console.log(data);
-			if (data) {
-				setPresale(data);
-			}
-		},
 	});
+
+	useEffect(() => {
+		if (presaleData) {
+			setPresale(presaleData);
+		}
+	}, [presaleData]);
 
 	const clear = () => {
 		setError("");
 	};
 
 	// get user claimable token details.
-	const { refetch: getBought } = useContractRead({
+	const { data: clamables, refetch: getBought } = useReadContract({
 		address: presaleAddress,
-		abi: Presaleabi.abi,
+		abi: presaleAbi,
 		functionName: "getClaimableTokens",
 		args: [address],
-		onSuccess(data: [bigint, bigint, bigint]) {
-			console.log(data);
-			if (data && data.length > 0) {
-				setClaimable(data[0]);
-				setClaimableDays(data[1]);
-				setBought(getNumber(data[2]));
-			}
-		},
 	});
 
+	useEffect(() => {
+		if (clamables && clamables?.length > 0) {
+			setClaimable(clamables[0]);
+			setClaimableDays(clamables[1]);
+			setBought(getNumber(clamables[2]));
+		}
+	}, [clamables]);
+
 	// contract call for the user to get the refund.
-	const { isLoading: getting, writeContract: getrefund } = useContractWrite({
-		address: presaleAddress,
-		abi: Presaleabi.abi,
-		functionName: "getRefund",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			callback();
-			getBought();
-			setSuccess("Refund initiated successfully!");
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending: getting, writeContract: getrefund } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				callback();
+				getBought();
+				setSuccess("Refund initiated successfully!");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
 	// contract call to end presale after the owner of token doesn't start trading under the duration.
-	const { isLoading: finishing, writeContract: finish } = useContractWrite({
-		address: presaleAddress,
-		abi: Presaleabi.abi,
-		functionName: "finishPresale",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			getBought();
-			callback();
-			setSuccess("Presales terminated successfully");
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending: finishing, writeContract: finish } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				getBought();
+				callback();
+				setSuccess("Presales terminated successfully");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
 	// contract call to refund the liquidity from the token contract to presale contract.
-	const { isLoading: refunding, writeContract: refund } = useContractWrite({
-		address: presaleAddress,
-		abi: Presaleabi.abi,
-		functionName: "refundPresale",
-		account: walletClient?.account,
-		onSuccess(res) {
-			console.log(res);
-			getBought();
-			callback();
-			setSuccess("Presales refunded successfully");
-		},
-		onError(error) {
-			console.log(error);
-			setError("Something went wrong!");
+	const { isPending: refunding, writeContract: refund } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				getBought();
+				callback();
+				setSuccess("Presales refunded successfully");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
 		},
 	});
 
@@ -201,7 +195,14 @@ const PresaleUser = ({
 										type="submit"
 										value="End Presales"
 										onClick={() => {
-											finish();
+											if (presaleAddress) {
+												finish({
+													address: presaleAddress,
+													abi: presaleAbi,
+													functionName: "finishPresale",
+													account: walletClient?.account,
+												});
+											}
 										}}
 									/>
 								</div>
@@ -236,7 +237,14 @@ const PresaleUser = ({
 										type="submit"
 										value="Refund Presales"
 										onClick={() => {
-											refund();
+											if (presaleAddress) {
+												refund({
+													address: presaleAddress,
+													abi: presaleAbi,
+													functionName: "refundPresale",
+													account: walletClient?.account,
+												});
+											}
 										}}
 									/>
 								</div>
@@ -271,7 +279,14 @@ const PresaleUser = ({
 										type="submit"
 										value="Get my refund"
 										onClick={() => {
-											getrefund();
+											if (presaleAddress) {
+												getrefund({
+													address: presaleAddress,
+													abi: presaleAbi,
+													functionName: "getRefund",
+													account: walletClient?.account,
+												});
+											}
 										}}
 									/>
 								</div>

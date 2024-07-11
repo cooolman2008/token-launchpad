@@ -106,9 +106,9 @@ export async function fetchMyTokens(owner: string, APIEndpoint: string) {
   return data?.tokens;
 }
 
-export async function fetchStealthTokens(APIEndpoint: string) {
+export async function fetchStealthTokens(APIEndpoint: string, usdc: string, base: string) {
     const query = `query MyQuery {
-      tokens(first: 100, where: {pair: "0x0000000000000000000000000000000000000000"}) {
+      tokens(first: 100, where: {pair: "0x0000000000000000000000000000000000000000", id_not_in: ["${usdc.toLowerCase()}", "${base.toLowerCase()}"] }) {
         id
         name
         symbol
@@ -144,7 +144,7 @@ export async function fetchStealthTokens(APIEndpoint: string) {
 
 export async function fetchTokens(id: string, APIEndpoint: string) {
     let query = `query safuQuery {
-        tokens(first: 1, where: {id: "${id}"}) {
+        tokens(first: 1, where: {id: "${id.toLowerCase()}"}) {
         id
         name
         symbol
