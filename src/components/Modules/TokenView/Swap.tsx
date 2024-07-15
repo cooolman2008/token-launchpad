@@ -2,7 +2,7 @@ import { useWriteContract, useReadContract, useChainId, usePublicClient } from "
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useEffect, useState, useRef, SetStateAction, Dispatch, useCallback } from "react";
 import { animate, spring } from "motion";
-import { ChainId, Token } from "@uniswap/sdk-core";
+import { Token } from "@uniswap/sdk-core";
 import { Pair } from "@uniswap/v2-sdk";
 import { getAddress, parseEther } from "viem";
 
@@ -105,7 +105,7 @@ const Swap = ({
 				console.log(res);
 			},
 			onError(error) {
-				setSuccess("Something went wrong!");
+				setError("Something went wrong!");
 				console.log(error);
 			},
 		},
@@ -119,7 +119,7 @@ const Swap = ({
 				console.log(res);
 			},
 			onError(error) {
-				setSuccess("Something went wrong!");
+				setError("Something went wrong!");
 				console.log(error);
 			},
 		},
@@ -133,7 +133,7 @@ const Swap = ({
 				console.log(res);
 			},
 			onError(error) {
-				setSuccess("Something went wrong!");
+				setError("Something went wrong!");
 				console.log(error);
 			},
 		},
@@ -148,7 +148,7 @@ const Swap = ({
 	const onSubmit: SubmitHandler<SwapForm> = (formData) => {
 		if (formData.pay && pair && address) {
 			const amountInMax = parseEther(formData.pay.toString());
-			const slippage = formData.slippage.toString();
+			const slippage = formData.slippage ? formData.slippage.toString() : "6";
 			const deadline = BigInt(Math.floor(Date.now() / 1000) + 60 * (formData.deadline ? formData.deadline : 10));
 			const minAmountOut = getMinAmountOut(
 				tokenIn === token0 ? token0 : token1,
@@ -161,14 +161,14 @@ const Swap = ({
 			if (tokenIn.address.toUpperCase() === WETH_ADDRESS.toUpperCase()) {
 				console.log({
 					address: routerAddress,
-					functionName: "swapExactETHForTokens",
+					functionName: "swapExactETHForTokensSupportingFeeOnTransferTokens",
 					args: [minAmountOut, [WETH_ADDRESS, contractAddress], address, deadline],
 					value: amountInMax,
 				});
 				swap({
 					address: routerAddress,
 					abi: routerAbi,
-					functionName: "swapExactETHForTokens",
+					functionName: "swapExactETHForTokensSupportingFeeOnTransferTokens",
 					args: [minAmountOut, [WETH_ADDRESS, contractAddress], address, deadline],
 					value: amountInMax,
 				});
@@ -176,13 +176,13 @@ const Swap = ({
 				if (allowance >= amountInMax) {
 					console.log({
 						address: routerAddress,
-						functionName: "swapExactTokensForETH",
+						functionName: "swapExactTokensForETHSupportingFeeOnTransferTokens",
 						args: [amountInMax, minAmountOut, [contractAddress, WETH_ADDRESS], address, deadline],
 					});
 					tokenSwap({
 						address: routerAddress,
 						abi: routerAbi,
-						functionName: "swapExactTokensForETH",
+						functionName: "swapExactTokensForETHSupportingFeeOnTransferTokens",
 						args: [amountInMax, minAmountOut, [contractAddress, WETH_ADDRESS], address, deadline],
 					});
 				} else {
@@ -194,13 +194,13 @@ const Swap = ({
 					}).then(() => {
 						console.log({
 							address: routerAddress,
-							functionName: "swapExactTokensForETH",
+							functionName: "swapExactTokensForETHSupportingFeeOnTransferTokens",
 							args: [amountInMax, minAmountOut, [contractAddress, WETH_ADDRESS], address, deadline],
 						});
 						tokenSwap({
 							address: routerAddress,
 							abi: routerAbi,
-							functionName: "swapExactTokensForETH",
+							functionName: "swapExactTokensForETHSupportingFeeOnTransferTokens",
 							args: [amountInMax, minAmountOut, [contractAddress, WETH_ADDRESS], address, deadline],
 						});
 					});

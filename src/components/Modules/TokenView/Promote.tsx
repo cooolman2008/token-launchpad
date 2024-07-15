@@ -68,7 +68,7 @@ const Promote = ({ contractAddress, safuAddress }: { contractAddress: `0x${strin
 		<div className="w-full py-8 border-b border-gray-700">
 			<div className="flex mb-1">
 				<h2 className="text-xl">Promote this token</h2>
-				<InformationTip msg="The token will be highlighted on our X account for the selected frequency" />
+				<InformationTip msg="The token will be highlighted on our channels for the selected frequency" />
 			</div>
 			<p className="text-sm text-gray-500 mb-4">Enter the frequency for displaying the ad to know the total cost.</p>
 			<form onSubmit={handleSubmit(onSubmit)}>

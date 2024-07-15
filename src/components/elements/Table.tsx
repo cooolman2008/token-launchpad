@@ -41,7 +41,7 @@ const Table = ({ tokens, type }: { tokens: Tokens[]; type: string }) => {
 							</td>
 							{(type === "Explore" || type === "Launches") && (
 								<>
-									<td className="px-4 py-3">$ {getAbr(token?.price ? Number(Number(token?.price).toFixed(10)) : 0)}</td>
+									<td className="px-4 py-3">${token?.price ? token?.price : 0}</td>
 									<td className="px-4 py-3 text-green-500 font-medium">
 										<div className="flex items-center">
 											<svg

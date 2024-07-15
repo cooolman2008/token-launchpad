@@ -25,7 +25,7 @@ export interface Tokens {
   tradeVolumeUSD: number;
   pairBase: Pair[];
   pairQuote: Pair[];
-  price: number;
+  price: string;
 }
 
 interface TokenArray {
@@ -98,7 +98,7 @@ export async function fetchMyTokens(owner: string, APIEndpoint: string) {
             FDV = token.pairQuote[0].token0Price * token.totalSupply;
           }
       }}
-      tokens[index].price = price * ethPrice;
+      tokens[index].price = Number(price * ethPrice).toFixed(10);
       tokens[index].FDV = FDV * ethPrice
     });
   }
@@ -217,30 +217,30 @@ export async function fetchTokens(id: string, APIEndpoint: string) {
     if (data?.tokens.length > 0) {
       let ethPrice = 0;
       if (data?.bundles.length > 0) {
-        ethPrice = Number(data?.bundles[0].ethPrice);
+        ethPrice = data?.bundles[0].ethPrice;
       }
       data?.tokens.forEach((token, index, tokens) => {
         let price = 0;
         let FDV = 0;
         if (token.pairBase.length >0) {
           if (token.pairBase[0].token0.id === token.id) {
-            price = Number(token.pairBase[0].token1Price);
+            price = token.pairBase[0].token1Price;
             FDV = token.pairBase[0].token1Price * token.totalSupply;
           } else {
-            price = Number(token.pairBase[0].token0Price);
+            price = token.pairBase[0].token0Price;
             FDV = token.pairBase[0].token0Price * token.totalSupply;
           }
         } else {
         if (token.pairQuote.length >0) {
           if (token.pairQuote[0].token0.id === token.id) {
-            price = Number(token.pairQuote[0].token1Price);
+            price = token.pairQuote[0].token1Price;
             FDV = token.pairQuote[0].token1Price * token.totalSupply;
           } else {
-            price = Number(token.pairQuote[0].token0Price);
+            price = token.pairQuote[0].token0Price;
             FDV = token.pairQuote[0].token0Price * token.totalSupply;
           }
         }}
-        tokens[index].price = price * ethPrice;
+        tokens[index].price = price !== 0 ? Number(price * ethPrice).toFixed(10) : "0";
         tokens[index].FDV = FDV * ethPrice;
       });
     }

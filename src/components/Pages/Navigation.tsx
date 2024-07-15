@@ -38,8 +38,30 @@ function Navigation() {
 					<Link href={"/"} className="pr-8" scroll={true}>
 						<Image id="box" src={logo} className="w-auto h-10" alt="SAFU Launcher Logo" />
 					</Link>
+					{address ? (
+						<div className=" lg:hidden">
+							<w3m-button />
+						</div>
+					) : (
+						<>
+							<div className="flex flex-col justify-center ml-auto lg:hidden">
+								<button className="safu-soft-button" onClick={() => open()}>
+									Connect Wallet
+								</button>
+							</div>
+							{/* {chains.map((chain) => (
+								<button
+									className={"mr-8 " + (chain.id === chainId ? "text-red-500" : "text-gray-400")}
+									key={chain.id}
+									onClick={() => switchChain({ chainId: chain.id })}
+								>
+									{chain.name}
+								</button>
+							))} */}
+						</>
+					)}
 					<div
-						className="menu-button w-10 h-10 rounded-full flex flex-col items-center justify-center ml-auto lg:hidden"
+						className="menu-button w-10 h-10 rounded-full flex flex-col items-center justify-center lg:hidden ml-2"
 						onClick={() => {
 							animate("#menu", { x: [-288] }, { easing: spring({ stiffness: 300, damping: 16, mass: 0.4 }) });
 							document.addEventListener("mouseup", handleClickOutside);
@@ -56,12 +78,6 @@ function Navigation() {
 							<div className="flex flex-col">
 								<Links />
 							</div>
-						</div>
-						<div className="flex justify-center mb-8">
-							<w3m-button />
-						</div>
-						<div className="flex justify-center">
-							<w3m-network-button />
 						</div>
 					</div>
 					<div className="hidden lg:flex w-full">
