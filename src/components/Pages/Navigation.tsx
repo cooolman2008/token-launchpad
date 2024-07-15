@@ -39,7 +39,7 @@ function Navigation() {
 						<Image id="box" src={logo} className="w-auto h-10" alt="SAFU Launcher Logo" />
 					</Link>
 					{address ? (
-						<div className=" lg:hidden">
+						<div className="ml-auto lg:hidden">
 							<w3m-button />
 						</div>
 					) : (
