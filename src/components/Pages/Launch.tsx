@@ -1,7 +1,7 @@
 "use client";
 
 import { useAccount, useWriteContract, useWalletClient, useWaitForTransactionReceipt, useChainId } from "wagmi";
-import { useWeb3Modal, useWeb3ModalState } from "@web3modal/wagmi/react";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -96,6 +96,8 @@ function Launch() {
 		register,
 		handleSubmit,
 		setValue,
+		getValues,
+		resetField,
 		formState: { errors },
 	} = useForm<LaunchForm>();
 	const onSubmit: SubmitHandler<LaunchForm> = (formData) => {
@@ -136,11 +138,9 @@ function Launch() {
 	};
 
 	useEffect(() => {
-		updateFields(setValue, templateOptions.templates[0]);
+		updateFields(setValue, resetField, templateOptions.templates[0]);
 		setIsClient(true);
-	}, [setValue]);
-
-	// Error messages in case of redirection failure & display instructions to manually check the token from launches.
+	}, [resetField, setValue]);
 
 	return (
 		<>
@@ -174,7 +174,7 @@ function Launch() {
 									onChange={(value) => {
 										const selectedTemplate = templateOptions.templates.find((x) => x.symbol === value?.value);
 										if (selectedTemplate) {
-											updateFields(setValue, selectedTemplate);
+											updateFields(setValue, resetField, selectedTemplate);
 											setTemplate(selectedTemplate);
 										}
 									}}
@@ -188,7 +188,7 @@ function Launch() {
 								Enter wallet address or <b className="font-bold text-gray-400"> splitter contract </b> address as your
 								tax wallet.
 							</p>
-							<Basic register={register} errors={errors} />
+							<Basic register={register} setValue={setValue} errors={errors} />
 						</div>
 						<div id="tax_container" className="border-b border-gray-700 py-8">
 							<div className="flex mb-1">
@@ -254,7 +254,7 @@ function Launch() {
 							<p className="text-sm text-gray-500 mb-4">
 								If you <b className="font-bold text-gray-400">know</b> what you are doing, configure the settings.
 							</p>
-							{advanced && <Advanced register={register} errors={errors} />}
+							{advanced && <Advanced register={register} getValues={getValues} errors={errors} />}
 						</div>
 						<div id="premium_container" className="py-8">
 							<div className="flex mb-1">

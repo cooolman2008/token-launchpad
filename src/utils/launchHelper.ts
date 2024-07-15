@@ -1,4 +1,4 @@
-import { UseFormSetValue } from "react-hook-form";
+import { UseFormResetField, UseFormSetValue } from "react-hook-form";
 
 export interface LaunchForm {
 	name: string;
@@ -42,9 +42,18 @@ export interface Template {
 
 export const updateFields = (
     setValue: UseFormSetValue<LaunchForm>,
-    template: Template
+    resetField: UseFormResetField<LaunchForm>,
+    template: Template,
 ): void => {
-  setValue('supply', template.supply);
+  if(template.symbol === "EMPTY") {
+    resetField('supply');
+    resetField('name');
+    resetField('symbol');
+  } else {
+    setValue('supply', template.supply);
+    setValue('name', template.name);
+    setValue('symbol', template.symbol);
+  }
   setValue('initTaxType', template.initTaxType);
   setValue('initInterval', template.initInterval);
   setValue('countInterval', template.countInterval);
@@ -58,6 +67,4 @@ export const updateFields = (
   setValue('preventSwap', template.preventSwap);
   setValue('maxSwap', template.maxSwap);
   setValue('taxSwapThreshold', template.taxSwapThreshold);
-  setValue('name', template.name);
-  setValue('symbol', template.symbol);
 }

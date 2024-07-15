@@ -1,6 +1,6 @@
 import { useWriteContract, useReadContract, useChainId, usePublicClient } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useEffect, useState, useRef, SetStateAction, Dispatch, useCallback } from "react";
+import { useEffect, useState, SetStateAction, Dispatch, useCallback } from "react";
 import { animate, spring } from "motion";
 import { Token } from "@uniswap/sdk-core";
 import { Pair } from "@uniswap/v2-sdk";

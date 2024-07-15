@@ -1,10 +1,18 @@
 import { useAccount } from "wagmi";
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { UseFormRegister, UseFormSetValue, FieldErrors } from "react-hook-form";
 
 import TextField from "@/components/elements/TextField";
 import { LaunchForm } from "@/utils/launchHelper";
 
-const Basic = ({ register, errors }: { register: UseFormRegister<LaunchForm>; errors: FieldErrors<LaunchForm> }) => {
+const Basic = ({
+	register,
+	setValue,
+	errors,
+}: {
+	register: UseFormRegister<LaunchForm>;
+	setValue: UseFormSetValue<LaunchForm>;
+	errors: FieldErrors<LaunchForm>;
+}) => {
 	const { address } = useAccount();
 	return (
 		<>
@@ -45,6 +53,12 @@ const Basic = ({ register, errors }: { register: UseFormRegister<LaunchForm>; er
 						min: 1000000,
 						pattern: /^[0-9]+$/i,
 					})}
+					onChange={(event) => {
+						console.log(event.target.value);
+						const supply = event.target.value;
+						setValue("maxSwap", Number(supply) * 0.01);
+						setValue("taxSwapThreshold", Number(supply) * 0.0001);
+					}}
 					isError={errors.supply ? true : false}
 					error="Supply should be minimum 1Million."
 					width="w-48 lg:grow"

@@ -1,11 +1,19 @@
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { UseFormRegister, FieldErrors, UseFormGetValues } from "react-hook-form";
 import { animate, spring } from "motion";
 import { useEffect } from "react";
 
 import TextField from "@/components/elements/TextField";
 import { LaunchForm } from "@/utils/launchHelper";
 
-const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>; errors: FieldErrors<LaunchForm> }) => {
+const Advanced = ({
+	register,
+	getValues,
+	errors,
+}: {
+	register: UseFormRegister<LaunchForm>;
+	getValues: UseFormGetValues<LaunchForm>;
+	errors: FieldErrors<LaunchForm>;
+}) => {
 	useEffect(() => {
 		animate(
 			"#advanced",
@@ -53,6 +61,8 @@ const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>;
 					{...register("taxSwapThreshold", {
 						required: true,
 						pattern: /^[0-9]+$/i,
+						min: Number(getValues("supply")) * 0.00001,
+						max: Number(getValues("supply")) * 0.01,
 					})}
 					isError={errors.taxSwapThreshold ? true : false}
 					error="Please provide a valid limit."
@@ -66,6 +76,8 @@ const Advanced = ({ register, errors }: { register: UseFormRegister<LaunchForm>;
 					{...register("maxSwap", {
 						required: true,
 						pattern: /^[0-9]+$/i,
+						min: Number(getValues("supply")) * 0.01,
+						max: Number(getValues("supply")) * 0.02,
 					})}
 					isError={errors.maxSwap ? true : false}
 					error="Please provide a valid limit."
