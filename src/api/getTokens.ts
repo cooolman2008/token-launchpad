@@ -181,7 +181,7 @@ export async function fetchTokens(id: string, APIEndpoint: string) {
 
     let data: TokenArray  = await client.request(query);
     query = `query MyQuery {
-        tokens(first: 100, where: {pair_not: "0x0000000000000000000000000000000000000000", id_not: "${id}"}) {
+        tokens(first: 100, where: {pair_not: "0x0000000000000000000000000000000000000000", id_not: "${id.toLowerCase()}"}) {
         id
         name
         symbol
