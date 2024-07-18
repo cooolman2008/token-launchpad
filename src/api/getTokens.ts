@@ -33,7 +33,7 @@ interface TokenArray {
     bundles: Bundles[]
 }
 
-export async function fetchMyTokens(owner: string, APIEndpoint: string) {
+export async function fetchMyTokens(owner: string, APIEndpoint: string, signal:AbortSignal) {
   const query = `query MyQuery {
     tokens(first: 100, where: {owner: "${owner}"}) {
       id
@@ -68,7 +68,9 @@ export async function fetchMyTokens(owner: string, APIEndpoint: string) {
       }
   }`;
 
-  const client = new GraphQLClient(APIEndpoint);
+  const client = new GraphQLClient(APIEndpoint, {
+    signal: signal,
+  });
 
   const data: TokenArray  = await client.request(query);
 
@@ -106,7 +108,7 @@ export async function fetchMyTokens(owner: string, APIEndpoint: string) {
   return data?.tokens;
 }
 
-export async function fetchStealthTokens(APIEndpoint: string, usdc: string, base: string) {
+export async function fetchStealthTokens(APIEndpoint: string, usdc: string, base: string, signal:AbortSignal) {
     const query = `query MyQuery {
       tokens(first: 100, where: {pair: "0x0000000000000000000000000000000000000000", id_not_in: ["${usdc.toLowerCase()}", "${base.toLowerCase()}"] }) {
         id
@@ -118,13 +120,15 @@ export async function fetchStealthTokens(APIEndpoint: string, usdc: string, base
       }
     }`;
   
-    const client = new GraphQLClient(APIEndpoint);
+    const client = new GraphQLClient(APIEndpoint, {
+      signal: signal,
+    });
   
     const data: TokenArray  = await client.request(query);
     return data?.tokens;
   }
 
-  export async function fetchPresalesTokens(APIEndpoint: string) {
+  export async function fetchPresalesTokens(APIEndpoint: string, signal:AbortSignal) {
       const query = `query MyQuery {
         tokens(first: 100, where: {presaleStatus: "1"}) {
           id
@@ -136,13 +140,15 @@ export async function fetchStealthTokens(APIEndpoint: string, usdc: string, base
         }
       }`;
     
-      const client = new GraphQLClient(APIEndpoint);
+      const client = new GraphQLClient(APIEndpoint, {
+        signal: signal,
+      });
     
       const data: TokenArray  = await client.request(query);
       return data?.tokens;
     }
 
-export async function fetchTokens(id: string, APIEndpoint: string) {
+export async function fetchTokens(id: string, APIEndpoint: string, signal:AbortSignal) {
     let query = `query safuQuery {
         tokens(first: 1, where: {id: "${id.toLowerCase()}"}) {
         id
@@ -177,7 +183,9 @@ export async function fetchTokens(id: string, APIEndpoint: string) {
       }
     }`;
 
-    const client = new GraphQLClient(APIEndpoint);
+    const client = new GraphQLClient(APIEndpoint, {
+      signal: signal,
+    });
 
     let data: TokenArray  = await client.request(query);
     query = `query MyQuery {

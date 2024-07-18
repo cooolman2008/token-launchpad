@@ -1,7 +1,7 @@
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 
 import { cookieStorage, createStorage } from "wagmi";
-import { arbitrum, mainnet, sepolia, holesky } from "wagmi/chains";
+import { arbitrum, mainnet, sepolia, holesky, baseSepolia } from "wagmi/chains";
 import { defineChain } from "viem";
 
 // Get projectId from https://cloud.walletconnect.com
@@ -40,7 +40,7 @@ export const local = defineChain({
 
 // Create wagmiConfig
 // const chains = [holesky, mainnet, arbitrum, sepolia, local] as const;
-const chains = [holesky, local] as const;
+const chains = [holesky, baseSepolia, local] as const;
 export const config = defaultWagmiConfig({
 	chains,
 	projectId,

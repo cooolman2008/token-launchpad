@@ -116,11 +116,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	}, []);
 
 	const checkIfOwner = useCallback((tokenOwner: string, wallet: `0x${string}`) => {
-		if (tokenOwner.toLocaleLowerCase() === wallet?.toLocaleLowerCase()) {
-			setIsOwner(true);
-		} else {
-			setIsOwner(false);
-		}
+		tokenOwner.toLocaleLowerCase() === wallet?.toLocaleLowerCase() ? setIsOwner(true) : setIsOwner(false);
 	}, []);
 
 	const fetchTheToken = useCallback(async () => {
@@ -170,7 +166,13 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 							{success && <Modal msg={success} callback={clear} />}
 							<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-12 w-full">
 								<div className="lg:col-span-8">
-									<Intro address={params?.slug} token={token} isOwner={isOwner} isPresale={presale === 1} />
+									<Intro
+										address={params?.slug}
+										token={token}
+										isOwner={isOwner}
+										isPresale={presale === 1}
+										chain={chainId}
+									/>
 									{isTeam && <Claim contractAddress={params?.slug} />}
 									{isOwner && !isTrading && presale === 0 && (
 										<Team

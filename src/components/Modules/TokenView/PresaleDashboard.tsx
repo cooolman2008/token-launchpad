@@ -122,11 +122,7 @@ const PresaleDashboard = ({
 				if (!isTrading) {
 					const finish = Number(presale.finishTs);
 					const durarion = Number(presale.duration);
-					if (Math.floor(Date.now() / 1000) < finish + durarion * 86400) {
-						setPresaleScene(2);
-					} else {
-						setPresaleScene(3);
-					}
+					Math.floor(Date.now() / 1000) < finish + durarion * 86400 ? setPresaleScene(2) : setPresaleScene(3);
 				} else {
 					if (balance > 0) {
 						setPresaleScene(4);

@@ -145,11 +145,7 @@ const PresaleUser = ({
 					break;
 				case BigInt(2):
 					if (!isTrading) {
-						if (now < finish + duration) {
-							setPresaleScene(2);
-						} else {
-							setPresaleScene(3);
-						}
+						now < finish + duration ? setPresaleScene(2) : setPresaleScene(3);
 					} else {
 						if (now < finish + cliff) {
 							setPresaleScene(4);

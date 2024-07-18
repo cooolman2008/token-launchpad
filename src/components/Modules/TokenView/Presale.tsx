@@ -90,11 +90,7 @@ const Presale = ({
 		if (presale) {
 			const remaining = presale.maxBag - bought;
 			const available = presale.hardcap - presale.sold;
-			if (remaining > available) {
-				setMaxBag(getNumber(available));
-			} else {
-				setMaxBag(getNumber(remaining));
-			}
+			remaining > available ? setMaxBag(getNumber(available)) : setMaxBag(getNumber(remaining));
 		}
 	}, [bought, presale]);
 

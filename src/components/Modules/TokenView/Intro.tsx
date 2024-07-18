@@ -11,17 +11,20 @@ import { Token } from "@/api/getToken";
 import { getAbr } from "@/utils/math";
 import { useEffect } from "react";
 import { animate } from "motion";
+import { getEtherscan } from "@/utils/utils";
 
 const Intro = ({
 	address,
 	token,
 	isOwner,
 	isPresale,
+	chain,
 }: {
 	address: `0x${string}`;
 	token: Token;
 	isOwner: boolean;
 	isPresale: boolean;
+	chain: number;
 }) => {
 	useEffect(() => {
 		if (isPresale) {
@@ -70,7 +73,7 @@ const Intro = ({
 					{!isOwner && token?.website && <Website url="token?.website" />}
 					{!isOwner && token?.telegram && <Telegram url="token?.telegram" />}
 					{!isOwner && token?.twitter && <XBadge url="token?.twitter" />}
-					<EtherscanBadge url={"https://etherscan.io/token/" + address} />
+					<EtherscanBadge url={getEtherscan(chain) + address} />
 					<DextoolsBadge url="https://info.dextools.io/" />
 				</div>
 			</div>

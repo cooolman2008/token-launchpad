@@ -149,30 +149,28 @@ const Staking = ({
 	const onSubmit: SubmitHandler<StakingForm> = (formData) => {
 		const amount = parseEther(formData.amount.toString());
 
-		if (allowance >= amount) {
-			stake({
-				address: stakingAddress,
-				abi: stakingAbi,
-				functionName: "stake",
-				account: walletClient?.account,
-				args: [amount],
-			});
-		} else {
-			approve({
-				address: contractAddress,
-				abi: tokenAbi,
-				functionName: "approve",
-				args: [stakingAddress, amount],
-			}).then(() => {
-				stake({
+		allowance >= amount
+			? stake({
 					address: stakingAddress,
 					abi: stakingAbi,
 					functionName: "stake",
 					account: walletClient?.account,
 					args: [amount],
-				});
-			});
-		}
+			  })
+			: approve({
+					address: contractAddress,
+					abi: tokenAbi,
+					functionName: "approve",
+					args: [stakingAddress, amount],
+			  }).then(() => {
+					stake({
+						address: stakingAddress,
+						abi: stakingAbi,
+						functionName: "stake",
+						account: walletClient?.account,
+						args: [amount],
+					});
+			  });
 	};
 
 	useEffect(() => {

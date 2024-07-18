@@ -107,11 +107,6 @@ function Launches() {
 	const [isClient, setIsClient] = useState(false);
 	const [tab, setTab] = useState("Explore");
 	const [tokens, setTokens] = useState<Tokens[]>([]);
-	const [explore, setExplore] = useState<Tokens[]>([]);
-	const [launches, setLaunches] = useState<Tokens[]>([]);
-	const [stealth, setStealth] = useState<Tokens[]>([]);
-	const [presales, setPresales] = useState<Tokens[]>([]);
-	const [chain, setChain] = useState(0);
 
 	let id = getBaseCoin(chainId);
 	const BASE_ADDRESS = id ? id : address_0;
@@ -120,87 +115,38 @@ function Launches() {
 
 	const heading_classes = "text-base xl:text-2xl max-lg:mx-auto lg:mr-8 cursor-pointer ";
 
+	const handleTokens = (tokensFetched: Tokens[]) => {
+		tokensFetched.length === 0 ? setTokens([]) : setTokens(tokensFetched);
+	};
+
 	useEffect(() => {
+		const controller = new AbortController();
 		if (!address && tab === "Launches") {
 			setTab("Explore");
 		}
-		if (chainId && API_ENDPOINT && CONTRACT_ADDRESS) {
+		if (API_ENDPOINT && CONTRACT_ADDRESS) {
 			switch (tab) {
 				case "Launches":
-					if (launches.length > 0 && chain === Number(chainId)) {
-						setTokens(launches);
-					} else {
-						if (address) {
-							fetchMyTokens(address?.toString(), API_ENDPOINT).then((tokensFetched) => {
-								setChain(Number(chainId));
-								if (tokensFetched.length === 0) {
-									setTokens([]);
-								} else {
-									setLaunches(tokensFetched);
-								}
-							});
-						}
+					if (address) {
+						fetchMyTokens(address?.toString(), API_ENDPOINT, controller.signal).then(handleTokens);
 					}
 					break;
 				case "Stealth":
-					if (stealth.length > 0 && chain === Number(chainId)) {
-						setTokens(stealth);
-					} else {
-						fetchStealthTokens(API_ENDPOINT, USDC_ADDRESS?.toString(), BASE_ADDRESS?.toString()).then(
-							(tokensFetched) => {
-								setChain(Number(chainId));
-								if (tokensFetched.length === 0) {
-									setTokens([]);
-								} else {
-									setStealth(tokensFetched);
-								}
-							}
-						);
-					}
+					fetchStealthTokens(API_ENDPOINT, USDC_ADDRESS?.toString(), BASE_ADDRESS?.toString(), controller.signal).then(
+						handleTokens
+					);
 					break;
 				case "Presales":
-					if (presales.length > 0 && chain === Number(chainId)) {
-						setTokens(presales);
-					} else {
-						fetchPresalesTokens(API_ENDPOINT).then((tokensFetched) => {
-							setChain(Number(chainId));
-							if (tokensFetched.length === 0) {
-								setTokens([]);
-							} else {
-								setPresales(tokensFetched);
-							}
-						});
-					}
+					fetchPresalesTokens(API_ENDPOINT, controller.signal).then(handleTokens);
 					break;
 				default:
-					if (explore.length > 0 && chain === Number(chainId)) {
-						setTokens(explore);
-					} else {
-						fetchTokens(CONTRACT_ADDRESS, API_ENDPOINT).then((tokensFetched) => {
-							setChain(Number(chainId));
-							if (tokensFetched.length === 0) {
-								setTokens([]);
-							} else {
-								setExplore(tokensFetched);
-							}
-						});
-					}
+					fetchTokens(CONTRACT_ADDRESS, API_ENDPOINT, controller.signal).then(handleTokens);
 			}
 		}
-	}, [
-		API_ENDPOINT,
-		CONTRACT_ADDRESS,
-		USDC_ADDRESS,
-		BASE_ADDRESS,
-		address,
-		explore,
-		launches,
-		stealth,
-		presales,
-		tab,
-		chainId,
-		chain,
-	]);
+		return () => {
+			controller.abort();
+		};
+	}, [API_ENDPOINT, CONTRACT_ADDRESS, USDC_ADDRESS, BASE_ADDRESS, address, tab, chainId]);
 
 	useEffect(() => {
 		setIsClient(true);
