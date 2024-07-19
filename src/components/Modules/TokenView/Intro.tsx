@@ -95,7 +95,8 @@ const Intro = ({
 					<div className="w-1/2 flex flex-col md:flex-1">
 						<span className="text-sm mb-2 text-gray-400">1 day Volume</span>
 						<h2 className="text-2xl text-slate-200">
-							${token?.tokenDayData[0] ? getAbr(Number(token?.tokenDayData[0]?.dailyVolumeUSD)) : "0"}
+							$
+							{token?.tokenDayData[0] ? getAbr(Number(Number(token?.tokenDayData[0]?.dailyVolumeUSD).toFixed(2))) : "0"}
 						</h2>
 					</div>
 				</div>

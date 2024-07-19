@@ -120,9 +120,9 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	}, []);
 
 	const fetchTheToken = useCallback(
-		async (controller: AbortController) => {
+		async (controller?: AbortController) => {
 			if (API_ENDPOINT) {
-				fetchToken(params?.slug?.toString(), API_ENDPOINT, controller.signal)
+				fetchToken(params?.slug?.toString(), API_ENDPOINT, controller ? controller.signal : undefined)
 					.then((data) => {
 						if (data) {
 							if (data?.presaleStatus) {
@@ -139,7 +139,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 					})
 					.catch((error) => {
 						console.log(error);
-						if (!controller.signal.aborted) {
+						if (controller && !controller.signal.aborted) {
 							setLoading(false);
 						}
 					});

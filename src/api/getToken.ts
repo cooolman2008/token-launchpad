@@ -52,7 +52,7 @@ export interface LPDetails {
 	walletLimited: boolean;
 }
 
-export async function fetchToken(id: string, api_endpoint: string, signal: AbortSignal) {
+export async function fetchToken(id: string, api_endpoint: string, signal?: AbortSignal) {
     if (id) {
         const query = `query MyQuery {
           token(id: "${id.toLowerCase()}") {
@@ -84,7 +84,7 @@ export async function fetchToken(id: string, api_endpoint: string, signal: Abort
           }
         }`;
       
-        const client = new GraphQLClient(api_endpoint,{signal: signal});
+        const client = new GraphQLClient(api_endpoint,signal ? {signal: signal} : {});
       
         const data: tokenResponse = await client.request(query);
         return data?.token;
