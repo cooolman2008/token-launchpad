@@ -119,21 +119,34 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 		tokenOwner.toLocaleLowerCase() === wallet?.toLocaleLowerCase() ? setIsOwner(true) : setIsOwner(false);
 	}, []);
 
-	const fetchTheToken = useCallback(async () => {
-		if (API_ENDPOINT) {
-			const data = await fetchToken(params?.slug?.toString(), API_ENDPOINT);
-			if (data) {
-				if (data?.presaleStatus) {
-					setPresale(Number(data?.presaleStatus));
-				}
-				if (data?.cliffPeriod && Number(data?.cliffPeriod) !== 0) {
-					setIsTeamSet(true);
-				}
-				setToken(data);
+	const fetchTheToken = useCallback(
+		async (controller: AbortController) => {
+			if (API_ENDPOINT) {
+				fetchToken(params?.slug?.toString(), API_ENDPOINT, controller.signal)
+					.then((data) => {
+						if (data) {
+							if (data?.presaleStatus) {
+								setPresale(Number(data?.presaleStatus));
+							}
+							if (data?.cliffPeriod && Number(data?.cliffPeriod) !== 0) {
+								setIsTeamSet(true);
+							}
+							setToken(data);
+							setLoading(false);
+						} else {
+							setLoading(false);
+						}
+					})
+					.catch((error) => {
+						console.log(error);
+						if (!controller.signal.aborted) {
+							setLoading(false);
+						}
+					});
 			}
-		}
-		setLoading(false);
-	}, [API_ENDPOINT, params?.slug]);
+		},
+		[API_ENDPOINT, params?.slug]
+	);
 
 	useEffect(() => {
 		if (token?.owner && address) {
@@ -145,15 +158,19 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	}, [address, checkIfOwner, checkIfTeam, token?.owner, token?.teamMembers]);
 
 	useEffect(() => {
+		const controller = new AbortController();
 		setLoading(true);
 		if (!isAddress(params?.slug)) {
 			router.push("/", { scroll: true });
 		}
 		if (chainId) {
-			fetchTheToken();
+			fetchTheToken(controller);
 		}
 		scrollTo("#body");
 		setIsClient(true);
+		return () => {
+			controller.abort();
+		};
 	}, [router, params?.slug, fetchTheToken, chainId]);
 
 	return (

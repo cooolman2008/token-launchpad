@@ -103,6 +103,30 @@ function Launch() {
 	const onSubmit: SubmitHandler<LaunchForm> = (formData) => {
 		console.log(CONTRACT_ADDRESS);
 		if (address && CONTRACT_ADDRESS && ROUTER_ADDRESS) {
+			console.log({
+				owner: address,
+				taxWallet: getAddress(formData.taxWallet),
+				stakingFacet: CONTRACT_ADDRESS,
+				v2router: ROUTER_ADDRESS,
+				isFreeTier: true,
+				minLiq: BigInt(0),
+				supply: BigInt(formData.supply),
+				initTaxType: BigInt(0),
+				initInterval: BigInt(formData.initInterval ? formData.initInterval : template.initInterval),
+				countInterval: BigInt(formData.countInterval ? formData.countInterval : template.initInterval),
+				maxBuyTax: BigInt(formData.maxBuyTax ? formData.maxBuyTax : template.maxBuyTax),
+				minBuyTax: BigInt(formData.minBuyTax ? formData.minBuyTax : template.minBuyTax),
+				maxSellTax: BigInt(formData.maxSellTax ? formData.maxSellTax : template.maxSellTax),
+				minSellTax: BigInt(formData.minSellTax ? formData.minSellTax : template.minSellTax),
+				lpTax: BigInt(formData.lpTax ? formData.lpTax : template.lpTax),
+				maxWallet: BigInt(formData.maxWallet ? formData.maxWallet : template.maxWallet),
+				maxTx: BigInt(formData.maxTx ? formData.maxTx : template.maxTx),
+				preventSwap: BigInt(formData.preventSwap ? formData.preventSwap : template.preventSwap),
+				maxSwap: BigInt(formData.maxSwap ? formData.maxSwap : template.maxSwap),
+				taxSwapThreshold: BigInt(formData.taxSwapThreshold ? formData.taxSwapThreshold : template.taxSwapThreshold),
+				name: formData.name,
+				symbol: formData.symbol,
+			});
 			launchFree({
 				address: CONTRACT_ADDRESS,
 				abi: managerAbi,

@@ -2,7 +2,7 @@ import { Chain, getAddress } from "viem"
 
 export const getContractAddress = ( chainId: number | undefined) => {
     switch(chainId) {
-        case 84532: return getAddress("0xe21a4adcaffdce1dfe914ed9a23e716d43e498cc")
+        case 84532: return getAddress("0x6bde6c9e1a71fdae91c475a740b1d4ab36c26ae8")
         case 17000: return getAddress("0x61cc0c851c75e26712892b9fbe619d75d3e62d7e")
         case 1337: return getAddress("0x26df0ea798971a97ae121514b32999dfdb220e1f")
         default: return undefined;
@@ -15,7 +15,7 @@ export const getChains = ( chains: Chain[]) => {
 
 export const getGraphUrl = ( chainId: number) => {
     switch(chainId) {
-        case 84532: return "https://api.studio.thegraph.com/query/82166/safubasesepolia/0.0.1"
+        case 84532: return "https://api.studio.thegraph.com/query/82166/safubasesepolia/0.0.2"
         case 17000: return "https://api.studio.thegraph.com/query/82166/safulauncher/0.0.10"
         case 1337: return "http://localhost:8000/subgraphs/name/SAFUlauncher"
         default: return undefined;

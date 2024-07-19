@@ -16,31 +16,31 @@ const metadata = {
 	icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 
-export const local = defineChain({
-	id: 1337,
-	name: "Local",
-	network: "Local",
-	nativeCurrency: {
-		decimals: 18,
-		name: "Ether",
-		symbol: "ETH",
-	},
-	rpcUrls: {
-		default: {
-			http: ["http://0.0.0.0:8545"],
-		},
-		public: {
-			http: ["http://0.0.0.0:8545"],
-		},
-	},
-	blockExplorers: {
-		default: { name: "Etherscan", url: "https://etherscan.io" },
-	},
-});
+// export const local = defineChain({
+// 	id: 1337,
+// 	name: "Local",
+// 	network: "Local",
+// 	nativeCurrency: {
+// 		decimals: 18,
+// 		name: "Ether",
+// 		symbol: "ETH",
+// 	},
+// 	rpcUrls: {
+// 		default: {
+// 			http: ["http://0.0.0.0:8545"],
+// 		},
+// 		public: {
+// 			http: ["http://0.0.0.0:8545"],
+// 		},
+// 	},
+// 	blockExplorers: {
+// 		default: { name: "Etherscan", url: "https://etherscan.io" },
+// 	},
+// });
 
 // Create wagmiConfig
 // const chains = [holesky, mainnet, arbitrum, sepolia, local] as const;
-const chains = [holesky, baseSepolia, local] as const;
+const chains = [holesky, baseSepolia] as const;
 export const config = defaultWagmiConfig({
 	chains,
 	projectId,

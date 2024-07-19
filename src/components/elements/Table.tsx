@@ -27,7 +27,7 @@ const Table = ({ tokens, type }: { tokens: Tokens[]; type: string }) => {
 					</tr>
 				</thead>
 			)}
-			<tbody className="bg-black">
+			<tbody className="bg-transparent">
 				{tokens.length > 0 ? (
 					Object.values(tokens).map((token) => (
 						<tr key={token.id} className="text-base">

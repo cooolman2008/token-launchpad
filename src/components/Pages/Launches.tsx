@@ -128,19 +128,33 @@ function Launches() {
 			switch (tab) {
 				case "Launches":
 					if (address) {
-						fetchMyTokens(address?.toString(), API_ENDPOINT, controller.signal).then(handleTokens);
+						fetchMyTokens(address?.toString(), API_ENDPOINT, controller.signal)
+							.then(handleTokens)
+							.catch((error) => {
+								console.log(error);
+							});
 					}
 					break;
 				case "Stealth":
-					fetchStealthTokens(API_ENDPOINT, USDC_ADDRESS?.toString(), BASE_ADDRESS?.toString(), controller.signal).then(
-						handleTokens
-					);
+					fetchStealthTokens(API_ENDPOINT, USDC_ADDRESS?.toString(), BASE_ADDRESS?.toString(), controller.signal)
+						.then(handleTokens)
+						.catch((error) => {
+							console.log(error);
+						});
 					break;
 				case "Presales":
-					fetchPresalesTokens(API_ENDPOINT, controller.signal).then(handleTokens);
+					fetchPresalesTokens(API_ENDPOINT, controller.signal)
+						.then(handleTokens)
+						.catch((error) => {
+							console.log(error);
+						});
 					break;
 				default:
-					fetchTokens(CONTRACT_ADDRESS, API_ENDPOINT, controller.signal).then(handleTokens);
+					fetchTokens(CONTRACT_ADDRESS, API_ENDPOINT, controller.signal)
+						.then(handleTokens)
+						.catch((error) => {
+							console.log(error);
+						});
 			}
 		}
 		return () => {
