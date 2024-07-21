@@ -107,6 +107,7 @@ function Launches() {
 	const [isClient, setIsClient] = useState(false);
 	const [tab, setTab] = useState("Explore");
 	const [tokens, setTokens] = useState<Tokens[]>([]);
+	const [loading, setLoading] = useState(true);
 
 	let id = getBaseCoin(chainId);
 	const BASE_ADDRESS = id ? id : address_0;
@@ -117,6 +118,7 @@ function Launches() {
 
 	const handleTokens = (tokensFetched: Tokens[]) => {
 		tokensFetched.length === 0 ? setTokens([]) : setTokens(tokensFetched);
+		setLoading(false);
 	};
 
 	useEffect(() => {
@@ -125,6 +127,8 @@ function Launches() {
 			setTab("Explore");
 		}
 		if (API_ENDPOINT && CONTRACT_ADDRESS) {
+			setTokens([]);
+			setLoading(true);
 			switch (tab) {
 				case "Launches":
 					if (address) {
@@ -132,6 +136,9 @@ function Launches() {
 							.then(handleTokens)
 							.catch((error) => {
 								console.log(error);
+								if (controller && !controller.signal.aborted) {
+									setLoading(false);
+								}
 							});
 					}
 					break;
@@ -140,6 +147,9 @@ function Launches() {
 						.then(handleTokens)
 						.catch((error) => {
 							console.log(error);
+							if (controller && !controller.signal.aborted) {
+								setLoading(false);
+							}
 						});
 					break;
 				case "Presales":
@@ -147,6 +157,9 @@ function Launches() {
 						.then(handleTokens)
 						.catch((error) => {
 							console.log(error);
+							if (controller && !controller.signal.aborted) {
+								setLoading(false);
+							}
 						});
 					break;
 				default:
@@ -154,6 +167,9 @@ function Launches() {
 						.then(handleTokens)
 						.catch((error) => {
 							console.log(error);
+							if (controller && !controller.signal.aborted) {
+								setLoading(false);
+							}
 						});
 			}
 		}
@@ -220,7 +236,7 @@ function Launches() {
 					</div>
 					<div className="w-full mb-8 overflow-hidden rounded-2xl shadow-lg border border-neutral-800">
 						<div className="w-full overflow-x-auto">
-							<Table tokens={tokens} type={tab} />
+							<Table tokens={tokens} type={tab} loading={loading} />
 						</div>
 					</div>
 					<Link href="/launch" className="safu-button-secondary" scroll={true}>

@@ -78,6 +78,20 @@ function Navigation() {
 							<div className="flex flex-col">
 								<Links />
 							</div>
+
+							{!address && (
+								<div className="mt-4 flex flex-col items-center">
+									{chains.map((chain) => (
+										<button
+											className={"lg:mr-8 " + (chain.id === chainId ? "text-red-500" : "text-gray-400")}
+											key={chain.id}
+											onClick={() => switchChain({ chainId: chain.id })}
+										>
+											{chain.name}
+										</button>
+									))}
+								</div>
+							)}
 						</div>
 					</div>
 					<div className="hidden lg:flex w-full">

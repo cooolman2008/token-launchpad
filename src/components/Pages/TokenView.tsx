@@ -262,7 +262,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 										routerAddress={lp?.router && lp?.router !== address_0 ? getAddress(lp?.router) : address_0}
 										pairAddress={lp?.pair && lp?.pair !== address_0 ? getAddress(lp?.pair) : address_0}
 										symbol={token?.symbol ? token?.symbol : ""}
-										tradingEnabled={lp?.pair ? true : false}
+										tradingEnabled={lp?.pair && lp?.pair !== address_0 ? true : false}
 										setSuccess={setSuccess}
 										address={address ? address : address_0}
 									/>

@@ -74,6 +74,28 @@ const Team = ({
 			{isPending && <Loading msg="Adding your team..." />}
 			{error && <Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} />}
 			<div className="w-full py-8 border-b border-gray-700">
+				<div className="bg-gradient-to-r from-red-800/20 mb-2 p-4 rounded-xl border border-red-900/50">
+					<div className="flex items-center">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="18px"
+							height="18px"
+							viewBox="0 0 24 24"
+							className="stroke-red-600 mr-1"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+							<line x1="12" y1="9" x2="12" y2="13"></line>
+							<line x1="12" y1="17" x2="12.01" y2="17"></line>
+						</svg>
+						<p className="font-bold text-red-600">Warning!</p>
+					</div>
+					<span className=" font-medium text-red-700 text-sm">
+						Make sure you have set your team wallet details before enabling the trade or launching a presale.
+					</span>
+				</div>
 				<h2 className="text-xl mb-1">Add your team</h2>
 				<p className="text-sm text-gray-500 mb-4">
 					Add team members before launching the presale or trade.
