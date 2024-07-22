@@ -46,7 +46,9 @@ const LaunchPresale = ({
 		mutation: {
 			onSuccess: (res) => {
 				console.log(res);
-				setSuccess("Presale contract was launched successfully");
+				setTimeout(() => {
+					setSuccess("Presale contract was launched successfully");
+				}, 1000);
 			},
 			onError(error) {
 				console.log(error);
@@ -60,7 +62,9 @@ const LaunchPresale = ({
 		mutation: {
 			onSuccess(res) {
 				console.log(res);
-				setSuccess("Presale setup was successful");
+				setTimeout(() => {
+					setSuccess("Presale setup was successful");
+				}, 1000);
 			},
 			onError(error) {
 				console.log(error);
