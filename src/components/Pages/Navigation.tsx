@@ -49,15 +49,6 @@ function Navigation() {
 									Connect Wallet
 								</button>
 							</div>
-							{/* {chains.map((chain) => (
-								<button
-									className={"mr-8 " + (chain.id === chainId ? "text-red-500" : "text-gray-400")}
-									key={chain.id}
-									onClick={() => switchChain({ chainId: chain.id })}
-								>
-									{chain.name}
-								</button>
-							))} */}
 						</>
 					)}
 					<div

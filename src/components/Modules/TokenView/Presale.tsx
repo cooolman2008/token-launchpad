@@ -30,7 +30,6 @@ const Presale = ({
 	address,
 }: {
 	symbol: string;
-	contractAddress: `0x${string}`;
 	presaleAddress: `0x${string}`;
 	address: `0x${string}`;
 	setSuccess: Dispatch<SetStateAction<string>>;

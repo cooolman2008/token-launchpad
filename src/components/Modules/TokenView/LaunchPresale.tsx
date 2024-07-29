@@ -115,7 +115,7 @@ const LaunchPresale = ({
 	return (
 		<>
 			{launching && <Loading msg="Launching a presale contract..." />}
-			{/* {setting && <Loading msg="Setting & starting your presales..." />} */}
+			{setting && <Loading msg="Setting & starting your presales..." />}
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
 			)}

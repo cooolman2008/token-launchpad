@@ -71,7 +71,7 @@ const Team = ({
 	};
 	return (
 		<>
-			{isPending && <Loading msg="Adding your team..." />}
+			{isPending && <Loading msg="Updating your team wallet details..." />}
 			{error && <Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} />}
 			<div className="w-full py-8 border-b border-gray-700">
 				<div className="bg-gradient-to-r from-red-800/20 mb-2 p-4 rounded-xl border border-red-900/50">

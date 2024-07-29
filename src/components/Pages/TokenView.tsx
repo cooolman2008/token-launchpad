@@ -269,7 +269,6 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 									/>
 									{presale === 1 && token?.presale && address && (
 										<Presale
-											contractAddress={params?.slug}
 											presaleAddress={getAddress(token?.presale)}
 											address={address}
 											symbol={token?.symbol ? token?.symbol : ""}

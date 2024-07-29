@@ -61,7 +61,7 @@ const Swap = ({
 	const base = getBaseCoin(chain);
 	const WETH_ADDRESS = base ? base : getAddress("0xcd12ed11c27c1fa611bbc814178f7ea8be25402c");
 
-	// states to dictate the
+	// states to dictate the reserves
 	const [tokenIn, setTokenIn] = useState(new Token(chain, WETH_ADDRESS, 18));
 	const [tokenOut, setTokenOut] = useState(new Token(chain, contractAddress, 18));
 

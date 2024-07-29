@@ -108,11 +108,11 @@ const PresaleDashboard = ({
 		},
 	});
 
-	// 1 - Presale live
-	// 2 - Presale successfull but not trading, refund - display banner
-	// 3 - Presale successfull but not trading & duration passed - display red banner
-	// 4 - Presale successfull trading started & balance claim.
-	// 5 - Presale Unsuccessfull
+	// 1 - Presale live - Show details
+	// 2 - Presale successfull but not trading - Display refund banner & show refund button
+	// 3 - Presale successfull but not trading & duration passed - Display red banner & show refund button
+	// 4 - Presale successfull trading started - Balance claim
+	// 5 - Presale Unsuccessfull - Display refund message
 	useEffect(() => {
 		switch (presale?.status) {
 			case BigInt(1):

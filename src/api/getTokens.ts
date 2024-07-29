@@ -8,6 +8,12 @@ interface Bundles {
   ethPrice: number;
 }
 
+interface DayData {
+  totalLiquidityUSD: bigint;
+  totalVolumeUSD: bigint;
+  date: number;
+}
+
 interface Pair {
   token0Price: number;
   token1Price: number;
@@ -29,8 +35,12 @@ export interface Tokens {
 }
 
 interface TokenArray {
-    tokens: Tokens[]
-    bundles: Bundles[]
+  tokens: Tokens[]
+  bundles: Bundles[]
+}
+
+interface DayDataArray {
+  safudayDatas: DayData[];
 }
 
 export async function fetchMyTokens(owner: string, APIEndpoint: string, signal:AbortSignal) {
@@ -254,4 +264,21 @@ export async function fetchTokens(id: string, APIEndpoint: string, signal:AbortS
     }
 
     return data?.tokens;
+}
+
+export async function fetchChartData(APIEndpoint: string, signal:AbortSignal) {
+  const query = `query MyQuery {
+    safudayDatas {
+      totalLiquidityUSD
+      totalVolumeUSD
+      date
+    }
+  }`;
+
+  const client = new GraphQLClient(APIEndpoint, {
+    signal: signal,
+  });
+
+  const data: DayDataArray  = await client.request(query);
+  return data?.safudayDatas;
 }
