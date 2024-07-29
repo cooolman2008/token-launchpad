@@ -29,15 +29,15 @@ const Details = memo(() => {
 		<>
 			<div className="flex flex-col px-4 xl:px-12 mx-auto">
 				<span className="text-base xl:text-lg mb-2 text-gray-400">SAFU TVL</span>
-				<h2 className="text-2xl xl:text-4xl">${getAbr(Number(safuTVL))}</h2>
+				<h2 className="text-2xl xl:text-4xl md:text-pink-600">${getAbr(Number(safuTVL))}</h2>
 			</div>
 			<div className="flex flex-col px-4 xl:px-12 mx-auto">
-				<span className="text-base xl:text-lg mb-2 text-gray-400">SAFU Volume</span>
-				<h2 className="text-2xl xl:text-4xl">${getAbr(Number(safuVolume))}</h2>
-			</div>
-			<div className="flex flex-col px-4 xl:px-12 mx-auto max-md:mt-4">
 				<span className="text-base xl:text-lg mb-2 text-gray-400">SAFU Launches</span>
 				<h2 className="text-2xl xl:text-4xl">{safuLaunches}</h2>
+			</div>
+			<div className="flex flex-col px-4 xl:px-12 mx-auto max-md:mt-4">
+				<span className="text-base xl:text-lg mb-2 text-gray-400">SAFU Volume</span>
+				<h2 className="text-2xl xl:text-4xl md:text-cyan-500">${getAbr(Number(safuVolume))}</h2>
 			</div>
 		</>
 	);

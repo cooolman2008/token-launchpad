@@ -10,95 +10,21 @@ import Details from "@/components/Modules/Launches/Details";
 import Table from "@/components/elements/Table";
 
 import { getBaseCoin, getContractAddress, getGraphUrl, getUSDC } from "@/utils/utils";
-import { fetchTokens, fetchMyTokens, fetchStealthTokens, Tokens, fetchPresalesTokens } from "@/api/getTokens";
+import {
+	fetchTokens,
+	fetchMyTokens,
+	fetchStealthTokens,
+	Tokens,
+	fetchPresalesTokens,
+	fetchChartData,
+} from "@/api/getTokens";
+import { getOptions } from "@/config/ChartOptions";
 
 function Launches() {
-	// const options: Highcharts.Options = {
-	// 	chart: {
-	// 		type: "area",
-	// 		backgroundColor: "#000000",
-	// 	},
-	// 	colors: ["#51a0d3", "#51a0d3", "#ED561B", "#DDDF00", "#24CBE5", "#64E572", "#FF9655", "#FFF263", "#6AF9C4"],
-	// 	accessibility: {
-	// 		description: "None",
-	// 	},
-	// 	legend: {
-	// 		itemStyle: {
-	// 			font: "9pt Trebuchet MS, Verdana, sans-serif",
-	// 			color: "gray",
-	// 		},
-	// 		itemHoverStyle: {
-	// 			color: "#fff",
-	// 		},
-	// 	},
-	// 	title: {
-	// 		style: {
-	// 			color: "#fff",
-	// 			font: 'bold 16px "Trebuchet MS", Verdana, sans-serif',
-	// 		},
-	// 		text: "",
-	// 	},
-	// 	xAxis: {
-	// 		allowDecimals: false,
-	// 		accessibility: {
-	// 			rangeDescription: "Range: 1940 to 2024.",
-	// 		},
-	// 		gridLineWidth: 0,
-	// 	},
-	// 	yAxis: {
-	// 		title: {
-	// 			text: "",
-	// 		},
-	// 		gridLineWidth: 0,
-	// 		labels: {
-	// 			style: {
-	// 				color: "transparent",
-	// 			},
-	// 		},
-	// 	},
-	// 	tooltip: {
-	// 		backgroundColor: "transparent",
-	// 		borderWidth: 1,
-	// 		borderColor: "#3d3d3d",
-	// 		style: {
-	// 			color: "#fff",
-	// 			font: 'bold 16px "Trebuchet MS", Verdana, sans-serif',
-	// 		},
-	// 		pointFormat: "{series.name} {point.y}",
-	// 	},
-	// 	plotOptions: {
-	// 		area: {
-	// 			pointStart: 1940,
-	// 			marker: {
-	// 				enabled: false,
-	// 				symbol: "circle",
-	// 				radius: 2,
-	// 				states: {
-	// 					hover: {
-	// 						enabled: true,
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// 	series: [
-	// 		{
-	// 			type: "area",
-	// 			name: "SAFU",
-	// 			data: [
-	// 				2, 9, 13, 50, 170, 299, 438, 841, 1169, 1703, 2422, 3692, 5543, 7345, 12298, 18638, 22229, 25540, 28133,
-	// 				29463, 31139, 31175, 31255, 29561, 27552, 26008, 25830, 26516, 27835, 28537, 27519, 25914, 25542, 24418,
-	// 				24138, 24104, 23208, 22886, 23305, 23459, 23368, 23317, 23575, 23205, 22217, 21392, 19008, 13708, 11511,
-	// 				10979, 10904, 11011, 10903, 10732, 10685, 10577, 10526, 10457, 10027, 8570, 8360, 7853, 5709, 5273, 5113,
-	// 				5066, 4897, 4881, 4804, 4717, 4571, 4018, 3822, 3785, 3805, 3750, 3708, 3708, 3708, 3708,
-	// 			],
-	// 		},
-	// 	],
-	// };
 	const address_0 = "0x0000000000000000000000000000000000000000";
 	const { data: walletClient } = useWalletClient();
 	const { address } = useAccount();
-	const chartComponentRef = useRef<HighchartsReact.RefObject>(null);
+	// const chartComponentRef = useRef<HighchartsReact.RefObject>(null);
 
 	const chainId = useChainId();
 	const API_ENDPOINT = getGraphUrl(chainId);
@@ -126,6 +52,15 @@ function Launches() {
 		if (!address && tab === "Launches") {
 			setTab("Explore");
 		}
+		// if (API_ENDPOINT) {
+		// 	fetchChartData(API_ENDPOINT, controller.signal).then((chartData) => {
+		// 		if(chartData.length !== 0) {
+
+		// 		}
+		// 	}
+
+		// 	)
+		// }
 		if (API_ENDPOINT && CONTRACT_ADDRESS) {
 			setTokens([]);
 			setLoading(true);
@@ -173,6 +108,7 @@ function Launches() {
 						});
 			}
 		}
+
 		return () => {
 			controller.abort();
 		};
@@ -186,10 +122,13 @@ function Launches() {
 		<>
 			{isClient && (
 				<>
-					<div className="w-full flex my-12 justify-between flex-wrap text-center">
+					<div className="w-full flex mt-12 max-md:mb-12 justify-between flex-wrap text-center">
 						<Details />
 					</div>
-					{/* <HighchartsReact highcharts={Highcharts} options={options} ref={chartComponentRef} /> */}
+					<div className="w-full flex justify-between max-md:hidden">
+						<HighchartsReact highcharts={Highcharts} options={getOptions("pink")} />
+						<HighchartsReact highcharts={Highcharts} options={getOptions("blue")} />
+					</div>
 					<div className="flex self-start my-4 min-w-full px-3 flex-wrap gap-1 items-end">
 						<h2
 							className={heading_classes + (tab === "Explore" ? "safu-grad-text-l text-xl" : "text-gray-400")}
