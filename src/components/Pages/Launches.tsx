@@ -56,11 +56,10 @@ function Launches() {
 		if (API_ENDPOINT) {
 			fetchChartData(API_ENDPOINT, controller.signal)
 				.then((fetchedChartData) => {
-					if (fetchedChartData.length !== 0) {
-						setChartData(fetchedChartData);
-					}
+					setChartData(fetchedChartData);
 				})
 				.catch((error) => {
+					setChartData([]);
 					console.log(error);
 				});
 		}
@@ -128,10 +127,12 @@ function Launches() {
 					<div className="w-full flex mt-12 max-md:mb-12 justify-between flex-wrap">
 						<Details />
 					</div>
-					<div className="w-full flex justify-between max-md:hidden">
-						<HighchartsReact highcharts={Highcharts} options={getOptions("tvl", chartData)} />
-						<HighchartsReact highcharts={Highcharts} options={getOptions("volume", chartData)} />
-					</div>
+					{chartData.length > 0 && (
+						<div className="w-full flex justify-between max-md:hidden">
+							<HighchartsReact highcharts={Highcharts} options={getOptions("tvl", chartData)} />
+							<HighchartsReact highcharts={Highcharts} options={getOptions("volume", chartData)} />
+						</div>
+					)}
 					<div className="flex self-start my-4 min-w-full px-3 flex-wrap gap-1 items-end">
 						<h2
 							className={heading_classes + (tab === "Explore" ? "safu-grad-text-l text-xl" : "text-gray-400")}
