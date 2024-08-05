@@ -8,9 +8,9 @@ interface Bundles {
   ethPrice: number;
 }
 
-interface DayData {
+export interface DayData {
   totalLiquidityUSD: bigint;
-  totalVolumeUSD: bigint;
+  dailyVolumeUSD: bigint;
   date: number;
 }
 
@@ -51,7 +51,7 @@ export async function fetchMyTokens(owner: string, APIEndpoint: string, signal:A
       symbol
       totalSupply
       totalTax
-      tradeVolume
+      tradeVolumeUSD
       pairBase {
         token0Price
         token1Price
@@ -126,7 +126,7 @@ export async function fetchStealthTokens(APIEndpoint: string, usdc: string, base
         symbol
         totalSupply
         totalTax
-        tradeVolume
+        tradeVolumeUSD
       }
     }`;
   
@@ -146,7 +146,7 @@ export async function fetchStealthTokens(APIEndpoint: string, usdc: string, base
           symbol
           totalSupply
           totalTax
-          tradeVolume
+          tradeVolumeUSD
         }
       }`;
     
@@ -166,7 +166,7 @@ export async function fetchTokens(id: string, APIEndpoint: string, signal:AbortS
         symbol
         totalSupply
         totalTax
-        tradeVolume
+        tradeVolumeUSD
         pairBase {
           token0Price
           token1Price
@@ -205,7 +205,7 @@ export async function fetchTokens(id: string, APIEndpoint: string, signal:AbortS
         symbol
         totalSupply
         totalTax
-        tradeVolume
+        tradeVolumeUSD
         pairBase {
           token0Price
           token1Price
@@ -270,7 +270,7 @@ export async function fetchChartData(APIEndpoint: string, signal:AbortSignal) {
   const query = `query MyQuery {
     safudayDatas {
       totalLiquidityUSD
-      totalVolumeUSD
+      dailyVolumeUSD
       date
     }
   }`;

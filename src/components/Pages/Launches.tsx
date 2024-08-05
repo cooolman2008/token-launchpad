@@ -1,7 +1,7 @@
 "use client";
 
 import { useWalletClient, useAccount, useChainId } from "wagmi";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import * as Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
@@ -17,6 +17,7 @@ import {
 	Tokens,
 	fetchPresalesTokens,
 	fetchChartData,
+	DayData,
 } from "@/api/getTokens";
 import { getOptions } from "@/config/ChartOptions";
 
@@ -24,7 +25,6 @@ function Launches() {
 	const address_0 = "0x0000000000000000000000000000000000000000";
 	const { data: walletClient } = useWalletClient();
 	const { address } = useAccount();
-	// const chartComponentRef = useRef<HighchartsReact.RefObject>(null);
 
 	const chainId = useChainId();
 	const API_ENDPOINT = getGraphUrl(chainId);
@@ -33,6 +33,7 @@ function Launches() {
 	const [isClient, setIsClient] = useState(false);
 	const [tab, setTab] = useState("Explore");
 	const [tokens, setTokens] = useState<Tokens[]>([]);
+	const [chartData, setChartData] = useState<DayData[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	let id = getBaseCoin(chainId);
@@ -52,15 +53,17 @@ function Launches() {
 		if (!address && tab === "Launches") {
 			setTab("Explore");
 		}
-		// if (API_ENDPOINT) {
-		// 	fetchChartData(API_ENDPOINT, controller.signal).then((chartData) => {
-		// 		if(chartData.length !== 0) {
-
-		// 		}
-		// 	}
-
-		// 	)
-		// }
+		if (API_ENDPOINT) {
+			fetchChartData(API_ENDPOINT, controller.signal)
+				.then((fetchedChartData) => {
+					if (fetchedChartData.length !== 0) {
+						setChartData(fetchedChartData);
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		}
 		if (API_ENDPOINT && CONTRACT_ADDRESS) {
 			setTokens([]);
 			setLoading(true);
@@ -122,12 +125,12 @@ function Launches() {
 		<>
 			{isClient && (
 				<>
-					<div className="w-full flex mt-12 max-md:mb-12 justify-between flex-wrap text-center">
+					<div className="w-full flex mt-12 max-md:mb-12 justify-between flex-wrap">
 						<Details />
 					</div>
 					<div className="w-full flex justify-between max-md:hidden">
-						<HighchartsReact highcharts={Highcharts} options={getOptions("pink")} />
-						<HighchartsReact highcharts={Highcharts} options={getOptions("blue")} />
+						<HighchartsReact highcharts={Highcharts} options={getOptions("tvl", chartData)} />
+						<HighchartsReact highcharts={Highcharts} options={getOptions("volume", chartData)} />
 					</div>
 					<div className="flex self-start my-4 min-w-full px-3 flex-wrap gap-1 items-end">
 						<h2

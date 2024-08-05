@@ -74,7 +74,9 @@ const Table = ({ tokens, type, loading }: { tokens: Tokens[]; type: string; load
 												${getAbr(token?.FDV ? Number(token?.FDV) : 0)}
 											</span>
 										</td>
-										<td className="px-4 py-3">${getAbr(token?.tradeVolumeUSD ? Number(token?.tradeVolumeUSD) : 0)}</td>
+										<td className="px-4 py-3">
+											${getAbr(token?.tradeVolumeUSD ? Number(Number(token?.tradeVolumeUSD).toFixed(2)) : 0)}
+										</td>
 									</>
 								)}
 								{(type === "Stealth" || type === "Presales") && (
@@ -90,7 +92,7 @@ const Table = ({ tokens, type, loading }: { tokens: Tokens[]; type: string; load
 			</table>
 			{loading && (
 				<div className="flex flex-col items-center p-12">
-					<svg width="60" height="60" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="fill-gray-400">
+					<svg width="60" height="60" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="fill-pink-500">
 						<defs>
 							<filter id="spinner-gF00">
 								<feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="y" />

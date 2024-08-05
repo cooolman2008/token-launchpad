@@ -86,11 +86,11 @@ const Intro = ({
 					</div>
 					<div className="w-1/2 flex flex-col md:flex-1">
 						<span className="text-sm mb-2 text-gray-400">Market cap</span>
-						<h2 className="text-2xl text-slate-200">$0</h2>
+						<h2 className="text-2xl text-slate-200">${getAbr(Number(token?.marketCap))}</h2>
 					</div>
 					<div className="w-1/2 flex flex-col md:flex-1">
 						<span className="text-sm mb-2 text-gray-400">FDV</span>
-						<h2 className="text-2xl text-slate-200">$0</h2>
+						<h2 className="text-2xl text-slate-200">${getAbr(Number(token?.FDV))}</h2>
 					</div>
 					<div className="w-1/2 flex flex-col md:flex-1">
 						<span className="text-sm mb-2 text-gray-400">1 day Volume</span>

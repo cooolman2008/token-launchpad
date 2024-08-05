@@ -1,4 +1,3 @@
-import { useWeb3ModalState } from "@web3modal/wagmi/react";
 import { useEffect, useState, memo } from "react";
 import { fetchSafu } from "@/api/getSafu";
 import { getAbr } from "@/utils/math";
@@ -27,17 +26,17 @@ const Details = memo(() => {
 	}, [CONTRACT_ADDRESS, API_ENDPOINT]);
 	return (
 		<>
-			<div className="flex flex-col px-4 xl:px-12 mx-auto">
+			<div className="flex flex-col max-md:px-4 max-md:mx-auto max-md:text-center">
 				<span className="text-base xl:text-lg mb-2 text-gray-400">SAFU TVL</span>
-				<h2 className="text-2xl xl:text-4xl md:text-pink-600">${getAbr(Number(safuTVL))}</h2>
+				<h2 className="text-2xl xl:text-4xl md:text-pink-500">${getAbr(Number(safuTVL))}</h2>
 			</div>
-			<div className="flex flex-col px-4 xl:px-12 mx-auto">
+			<div className="flex flex-col max-md:px-4 max-md:mx-auto text-center">
 				<span className="text-base xl:text-lg mb-2 text-gray-400">SAFU Launches</span>
 				<h2 className="text-2xl xl:text-4xl">{safuLaunches}</h2>
 			</div>
-			<div className="flex flex-col px-4 xl:px-12 mx-auto max-md:mt-4">
+			<div className="flex flex-col max-md:px-4 max-md:mx-auto max-md:mt-4 max-md:text-center md:text-right">
 				<span className="text-base xl:text-lg mb-2 text-gray-400">SAFU Volume</span>
-				<h2 className="text-2xl xl:text-4xl md:text-cyan-500">${getAbr(Number(safuVolume))}</h2>
+				<h2 className="text-2xl xl:text-4xl md:text-blue-600">${getAbr(Number(safuVolume))}</h2>
 			</div>
 		</>
 	);

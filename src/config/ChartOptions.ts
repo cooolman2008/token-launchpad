@@ -1,7 +1,16 @@
-const pink = {};
-const blue = {};
+import { DayData } from "@/api/getTokens";
+import { getAbr } from "@/utils/math";
 
-export const getOptions = ( type: string)=> {
+const getData = (data: DayData[], type: string) => {
+    let chart = <number[][]>[];
+    data.map((dayData) => {
+        chart.push([Number(dayData.date + "000"), Number(type === "tvl" ? dayData.totalLiquidityUSD: dayData.dailyVolumeUSD)])
+    })
+    return chart;
+}
+
+export const getOptions = ( type: string, data: DayData[] )=> {
+    const chartData = getData(data, type);
     const options: Highcharts.Options = {
         chart: {
             type: "area",
@@ -18,16 +27,23 @@ export const getOptions = ( type: string)=> {
             text: "",
         },
         xAxis: {
+            type: 'datetime',
+            // accessibility: {
+            //     rangeDescription: 'Range: Jul 8th 2024 to Aug 4 2024.'
+            // },
             title: {
                 text: "",
             },
             labels:{
                 style: {
                     color: "#9ca3af"
-                }
+                },
+                step: 2,
+                format:"{value:%b %d}"
             },
             gridLineWidth: 0,
             tickLength: 0,
+            tickAmount: 8,
             lineWidth: 0,
             crosshair: {
                 width: 1,
@@ -36,6 +52,7 @@ export const getOptions = ( type: string)=> {
             },
         },
         yAxis: {
+            maxPadding: 0.3,
             visible: false,
             crosshair: {
                 width: 1,
@@ -57,18 +74,21 @@ export const getOptions = ( type: string)=> {
                     y: 10,
                 };
             },
-            headerFormat: '<span style="color: #9ca3af;font-size: 1.2em">${point.y}</span><br/>',
-            pointFormat: '<span style="font-size: 0.8em">{point.x}</span>',
+            formatter: function ()
+            {
+                return '<span style="color: #9ca3af;font-size: 1.2em">$'+ getAbr(Number(this.y))+'</span><br/><span style="font-size: 0.8em">'+new Date(Number(this.x)).toLocaleDateString('en-us',{month: 'long',day: 'numeric',})+'</span>';
+            },
+            // xDateFormat: '%A, %b %e',
+            // pointFormat: '<span style="color: #9ca3af;font-size: 1.2em">${point.y}</span><br/>',
         },
         plotOptions: {
             area: {
                 lineWidth: 1,
-                pointStart: 1940,
-                color: type === "pink" ? "#d51e7a":"#06b6d4",
+                color: type === "tvl" ? "#ec4899":"#2563eb",
                 fillColor: {
                     linearGradient: { x1: 0, x2: 0, y1: 0, y2: 2 },
                     stops: [
-                        [0, type === "pink" ? "#d51e7acc" : "#06b6d4cc"],
+                        [0, type === "tvl" ? "#ec489988" : "#2563eb88"],
                         [1, "transparent"],
                     ],
                 },
@@ -88,13 +108,7 @@ export const getOptions = ( type: string)=> {
             {
                 type: "area",
                 name: "SAFU",
-                data: [
-                    2, 9, 13, 50, 170, 299, 438, 841, 1169, 1703, 2422, 3692, 5543, 7345, 12298, 18638, 22229, 25540, 28133,
-                    29463, 31139, 31175, 31255, 29561, 27552, 26008, 25830, 26516, 27835, 28537, 27519, 25914, 25542, 24418,
-                    24138, 24104, 23208, 22886, 23305, 23459, 23368, 23317, 23575, 23205, 22217, 21392, 19008, 13708, 11511,
-                    10979, 10904, 11011, 10903, 10732, 10685, 10577, 10526, 10457, 10027, 8570, 8360, 7853, 5709, 5273, 5113,
-                    5066, 4897, 4881, 4804, 4717, 4571, 4018, 3822, 3785, 3805, 3750, 3708, 3708, 3708, 3708,
-                ],
+                data: chartData,
             },
         ],
     }
