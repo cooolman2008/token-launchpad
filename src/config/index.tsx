@@ -1,7 +1,24 @@
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 
 import { cookieStorage, createStorage } from "wagmi";
-import { arbitrum, mainnet, sepolia, holesky, baseSepolia } from "wagmi/chains";
+import {
+	mainnet,
+	arbitrum,
+	optimism,
+	polygon,
+	base,
+	bsc,
+	avalancheFuji,
+	blast,
+	holesky,
+	arbitrumSepolia,
+	optimismSepolia,
+	polygonAmoy,
+	baseSepolia,
+	bscTestnet,
+	avalanche,
+	blastSepolia,
+} from "wagmi/chains";
 import { defineChain } from "viem";
 
 // Get projectId from https://cloud.walletconnect.com

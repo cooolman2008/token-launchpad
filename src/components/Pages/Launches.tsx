@@ -20,26 +20,21 @@ import {
 	DayData,
 } from "@/api/getTokens";
 import { getOptions } from "@/config/ChartOptions";
+import { useWeb3ModalState } from "@web3modal/wagmi/react";
 
 function Launches() {
 	const address_0 = "0x0000000000000000000000000000000000000000";
 	const { data: walletClient } = useWalletClient();
 	const { address } = useAccount();
 
-	const chainId = useChainId();
-	const API_ENDPOINT = getGraphUrl(chainId);
-	const CONTRACT_ADDRESS = getContractAddress(chainId);
+	const loggedOutChain = useChainId();
+	const { selectedNetworkId } = useWeb3ModalState();
 
 	const [isClient, setIsClient] = useState(false);
 	const [tab, setTab] = useState("Explore");
 	const [tokens, setTokens] = useState<Tokens[]>([]);
 	const [chartData, setChartData] = useState<DayData[]>([]);
 	const [loading, setLoading] = useState(true);
-
-	let id = getBaseCoin(chainId);
-	const BASE_ADDRESS = id ? id : address_0;
-	id = getUSDC(chainId);
-	const USDC_ADDRESS = id ? id : address_0;
 
 	const heading_classes = "text-base xl:text-2xl max-lg:mx-auto lg:mr-8 cursor-pointer ";
 
@@ -49,6 +44,17 @@ function Launches() {
 	};
 
 	useEffect(() => {
+		setTokens([]);
+		setChartData([]);
+		const chainId = selectedNetworkId ? Number(selectedNetworkId) : loggedOutChain;
+		const API_ENDPOINT = getGraphUrl(chainId);
+		const CONTRACT_ADDRESS = getContractAddress(chainId);
+
+		let id = getBaseCoin(chainId);
+		const BASE_ADDRESS = id ? id : address_0;
+		id = getUSDC(chainId);
+		const USDC_ADDRESS = id ? id : address_0;
+
 		const controller = new AbortController();
 		if (!address && tab === "Launches") {
 			setTab("Explore");
@@ -59,12 +65,10 @@ function Launches() {
 					setChartData(fetchedChartData);
 				})
 				.catch((error) => {
-					setChartData([]);
 					console.log(error);
 				});
 		}
 		if (API_ENDPOINT && CONTRACT_ADDRESS) {
-			setTokens([]);
 			setLoading(true);
 			switch (tab) {
 				case "Launches":
@@ -109,16 +113,18 @@ function Launches() {
 							}
 						});
 			}
+		} else {
+			setLoading(false);
 		}
 
 		return () => {
 			controller.abort();
 		};
-	}, [API_ENDPOINT, CONTRACT_ADDRESS, USDC_ADDRESS, BASE_ADDRESS, address, tab, chainId]);
+	}, [address, tab, selectedNetworkId, loggedOutChain]);
 
 	useEffect(() => {
 		setIsClient(true);
-	}, [chainId]);
+	}, []);
 
 	return (
 		<>

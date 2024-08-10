@@ -1,17 +1,16 @@
 import Image from "next/image";
-
-import EtherscanBadge from "@/components/images/EtherscanBadge";
-import DextoolsBadge from "@/components/images/DextoolsBadge";
-import Website from "@/components/images/Website";
-import Telegram from "@/components/images/Telegram";
-import XBadge from "@/components/images/XBadge";
-
-import coin from "../../../../public/coin.svg";
-import { Token } from "@/api/getToken";
-import { getAbr } from "@/utils/math";
 import { useEffect } from "react";
 import { animate } from "motion";
+
+import EtherscanBadge from "@/components/images/EtherscanBadge";
+import Telegram from "@/components/images/Telegram";
+import Website from "@/components/images/Website";
+import XBadge from "@/components/images/XBadge";
+import { Token } from "@/api/getToken";
+import { getAbr } from "@/utils/math";
 import { getEtherscan } from "@/utils/utils";
+
+import coin from "../../../../public/coin.svg";
 
 const Intro = ({
 	address,
@@ -74,7 +73,6 @@ const Intro = ({
 					{!isOwner && token?.telegram && <Telegram url="token?.telegram" />}
 					{!isOwner && token?.twitter && <XBadge url="token?.twitter" />}
 					<EtherscanBadge url={getEtherscan(chain) + address} />
-					<DextoolsBadge url="https://info.dextools.io/" />
 				</div>
 			</div>
 			<div className="w-full pb-8 border-b border-gray-700">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import Select from "react-select";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "../../../public/safu.svg";
@@ -10,6 +11,11 @@ import { animate, spring } from "motion";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
 
+interface option {
+	value: number;
+	label: string;
+}
+
 function Navigation() {
 	const [isClient, setIsClient] = useState(false);
 	const { address } = useAccount();
@@ -17,6 +23,18 @@ function Navigation() {
 	const { open } = useWeb3Modal();
 	const { chains, switchChain } = useSwitchChain();
 	const chainId = useChainId();
+	const [chainOptions, setChainOptions] = useState<option[]>();
+
+	useEffect(() => {
+		const list: option[] = [];
+		chains.map((chain) =>
+			list.push({
+				value: chain.id,
+				label: chain.name,
+			})
+		);
+		setChainOptions(list);
+	}, [chains]);
 
 	useEffect(() => {
 		setIsClient(true);
@@ -72,15 +90,23 @@ function Navigation() {
 
 							{!address && (
 								<div className="mt-4 flex flex-col items-center">
-									{chains.map((chain) => (
-										<button
-											className={"lg:mr-8 " + (chain.id === chainId ? "text-red-500" : "text-gray-400")}
-											key={chain.id}
-											onClick={() => switchChain({ chainId: chain.id })}
-										>
-											{chain.name}
-										</button>
-									))}
+									{chainOptions && (
+										<Select
+											unstyled={true}
+											defaultValue={chainOptions[1]}
+											inputId="type"
+											classNames={{
+												control: (state) => "bg-neutral-900 p-2 rounded-full 2xl:text-sm",
+												menuList: (state) => "bg-neutral-900 mt-1 rounded-xl 2xl:text-sm",
+												option: (state) => " flex flex-col justify-center px-4 py-2 cursor-pointer",
+											}}
+											options={chainOptions}
+											isSearchable={false}
+											onChange={(value) => {
+												if (value) switchChain({ chainId: value.value });
+											}}
+										/>
+									)}
 								</div>
 							)}
 						</div>
@@ -99,15 +125,24 @@ function Navigation() {
 										Connect Wallet
 									</button>
 								</div>
-								{chains.map((chain) => (
-									<button
-										className={"mr-8 " + (chain.id === chainId ? "text-red-500" : "text-gray-400")}
-										key={chain.id}
-										onClick={() => switchChain({ chainId: chain.id })}
-									>
-										{chain.name}
-									</button>
-								))}
+
+								{chainOptions && (
+									<Select
+										unstyled={true}
+										defaultValue={chainOptions[1]}
+										inputId="type"
+										classNames={{
+											control: (state) => "bg-neutral-900 p-2 rounded-full 2xl:text-sm",
+											menuList: (state) => "bg-neutral-900 mt-1 rounded-xl 2xl:text-sm",
+											option: (state) => " flex flex-col justify-center px-4 py-2 cursor-pointer",
+										}}
+										options={chainOptions}
+										isSearchable={false}
+										onChange={(value) => {
+											if (value) switchChain({ chainId: value.value });
+										}}
+									/>
+								)}
 							</>
 						)}
 					</div>

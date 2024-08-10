@@ -3,27 +3,35 @@ import { fetchSafu } from "@/api/getSafu";
 import { getAbr } from "@/utils/math";
 import { getContractAddress, getGraphUrl } from "@/utils/utils";
 import { useChainId } from "wagmi";
+import { useWeb3ModalState } from "@web3modal/wagmi/react";
 
-const Details = memo(() => {
-	const chainId = useChainId();
-	const API_ENDPOINT = getGraphUrl(chainId);
-	const CONTRACT_ADDRESS = getContractAddress(chainId);
+const Details = () => {
+	const loggedOutChain = useChainId();
+	const { selectedNetworkId } = useWeb3ModalState();
 
 	const [safuTVL, setSafuTVL] = useState(0);
 	const [safuVolume, setSafuVolume] = useState(0);
 	const [safuLaunches, setSafuLaunches] = useState(0);
 
 	useEffect(() => {
+		const chainId = selectedNetworkId ? Number(selectedNetworkId) : loggedOutChain;
+		const API_ENDPOINT = getGraphUrl(chainId);
+		const CONTRACT_ADDRESS = getContractAddress(chainId);
+
 		async function fetchSafuDetails() {
 			if (CONTRACT_ADDRESS && API_ENDPOINT) {
 				const safuDetails = await fetchSafu(CONTRACT_ADDRESS, API_ENDPOINT);
 				setSafuTVL(safuDetails?.totalLiquidityUSD ? safuDetails?.totalLiquidityUSD : 0);
 				setSafuVolume(safuDetails?.totalVolumeUSD ? safuDetails?.totalVolumeUSD : 0);
 				setSafuLaunches(safuDetails?.launchCount ? safuDetails?.launchCount : 0);
+			} else {
+				setSafuTVL(0);
+				setSafuVolume(0);
+				setSafuLaunches(0);
 			}
 		}
 		fetchSafuDetails();
-	}, [CONTRACT_ADDRESS, API_ENDPOINT]);
+	}, [selectedNetworkId, loggedOutChain]);
 	return (
 		<>
 			<div className="flex flex-col max-md:px-4 max-md:mx-auto max-md:text-center">
@@ -40,7 +48,7 @@ const Details = memo(() => {
 			</div>
 		</>
 	);
-});
+};
 Details.displayName = "Launches details";
 
 export default Details;
