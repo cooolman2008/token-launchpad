@@ -14,7 +14,7 @@ export const getContractAddress = ( chainId: number | undefined) => {
         case 421614: return undefined // arbitrumSepolia
         case 11155420: return undefined // optimismSepolia
         case 80002: return undefined // polygonAmoy
-        case 84532: return getAddress("0x6bde6c9e1a71fdae91c475a740b1d4ab36c26ae8") // baseSepolia
+        case 84532: return getAddress("0x2ef0b5716da3f9faa724d02937b93395e8255604") // baseSepolia
         case 97: return undefined // bscTestnet
         case 43114: return undefined // avalanche
         case 168587773: return undefined // blastSepolia
@@ -37,7 +37,7 @@ export const getGraphUrl = ( chainId: number) => {
         case 421614: return undefined // arbitrumSepolia
         case 11155420: return undefined // optimismSepolia
         case 80002: return undefined // polygonAmoy
-        case 84532: return "https://api.studio.thegraph.com/query/82166/safubasesepolia/0.0.2" // baseSepolia
+        case 84532: return "https://api.studio.thegraph.com/query/82166/safubasesepolia/0.0.3" // baseSepolia
         case 97: return undefined // bscTestnet
         case 43114: return undefined // avalanche
         case 168587773: return undefined // blastSepolia
