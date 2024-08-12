@@ -1,15 +1,17 @@
 "use client";
 
-import { useWalletClient, useAccount, useChainId } from "wagmi";
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useWeb3ModalState } from "@web3modal/wagmi/react";
+import { useWalletClient, useAccount, useChainId } from "wagmi";
 import * as Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
-import Details from "@/components/Modules/Launches/Details";
 import Table from "@/components/elements/Table";
+import Details from "@/components/Modules/Launches/Details";
 
 import { getBaseCoin, getContractAddress, getGraphUrl, getUSDC } from "@/utils/utils";
+
 import {
 	fetchTokens,
 	fetchMyTokens,
@@ -19,22 +21,21 @@ import {
 	fetchChartData,
 	DayData,
 } from "@/api/getTokens";
+
 import { getOptions } from "@/config/ChartOptions";
-import { useWeb3ModalState } from "@web3modal/wagmi/react";
 
 function Launches() {
 	const address_0 = "0x0000000000000000000000000000000000000000";
-	const { data: walletClient } = useWalletClient();
 	const { address } = useAccount();
-
 	const loggedOutChain = useChainId();
+	const { data: walletClient } = useWalletClient();
 	const { selectedNetworkId } = useWeb3ModalState();
 
-	const [isClient, setIsClient] = useState(false);
 	const [tab, setTab] = useState("Explore");
+	const [loading, setLoading] = useState(true);
+	const [isClient, setIsClient] = useState(false);
 	const [tokens, setTokens] = useState<Tokens[]>([]);
 	const [chartData, setChartData] = useState<DayData[]>([]);
-	const [loading, setLoading] = useState(true);
 
 	const heading_classes = "text-base xl:text-2xl max-lg:mx-auto lg:mr-8 cursor-pointer ";
 
@@ -44,8 +45,10 @@ function Launches() {
 	};
 
 	useEffect(() => {
+		// clear the data before fetching
 		setTokens([]);
 		setChartData([]);
+
 		const chainId = selectedNetworkId ? Number(selectedNetworkId) : loggedOutChain;
 		const API_ENDPOINT = getGraphUrl(chainId);
 		const CONTRACT_ADDRESS = getContractAddress(chainId);
@@ -56,6 +59,7 @@ function Launches() {
 		const USDC_ADDRESS = id ? id : address_0;
 
 		const controller = new AbortController();
+		// reset tab on logging out
 		if (!address && tab === "Launches") {
 			setTab("Explore");
 		}

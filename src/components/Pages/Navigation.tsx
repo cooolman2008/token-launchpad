@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import Select from "react-select";
 import Link from "next/link";
 import Image from "next/image";
-import logo from "../../../public/safu.svg";
+import Select from "react-select";
+import { animate, spring } from "motion";
+import { useEffect, useState, useRef } from "react";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
+import { useAccount, useSwitchChain } from "wagmi";
+
 import Links from "@/components/Modules/Navigation/Links";
 import Search from "@/components/Modules/Navigation/Search";
-import { animate, spring } from "motion";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { useAccount, useChainId, useSwitchChain } from "wagmi";
+
+import logo from "../../../public/safu.svg";
 
 interface option {
 	value: number;
@@ -17,12 +19,11 @@ interface option {
 }
 
 function Navigation() {
-	const [isClient, setIsClient] = useState(false);
 	const { address } = useAccount();
-	const wrapperRef = useRef<HTMLDivElement>(null);
 	const { open } = useWeb3Modal();
 	const { chains, switchChain } = useSwitchChain();
-	const chainId = useChainId();
+	const [isClient, setIsClient] = useState(false);
+	const wrapperRef = useRef<HTMLDivElement>(null);
 	const [chainOptions, setChainOptions] = useState<option[]>();
 
 	useEffect(() => {
@@ -96,8 +97,10 @@ function Navigation() {
 											defaultValue={chainOptions[1]}
 											inputId="type"
 											classNames={{
-												control: (state) => "bg-neutral-900 p-2 rounded-full 2xl:text-sm",
-												menuList: (state) => "bg-neutral-900 mt-1 rounded-xl 2xl:text-sm",
+												control: (state) =>
+													"bg-neutral-900 px-4 border-x border-gray-600 rounded-full 2xl:text-sm font-medium",
+												menuList: (state) =>
+													"bg-neutral-900 mt-1 rounded-xl 2xl:text-sm font-light border-x border-gray-600",
 												option: (state) => " flex flex-col justify-center px-4 py-2 cursor-pointer",
 											}}
 											options={chainOptions}
@@ -132,9 +135,12 @@ function Navigation() {
 										defaultValue={chainOptions[1]}
 										inputId="type"
 										classNames={{
-											control: (state) => "bg-neutral-900 p-2 rounded-full 2xl:text-sm",
-											menuList: (state) => "bg-neutral-900 mt-1 rounded-xl 2xl:text-sm",
-											option: (state) => " flex flex-col justify-center px-4 py-2 cursor-pointer",
+											control: (state) =>
+												"bg-neutral-900 px-4 border-x border-gray-600 rounded-full 2xl:text-sm font-medium",
+											menuList: (state) =>
+												"bg-neutral-900 mt-1 rounded-xl 2xl:text-sm font-light border-x border-gray-600",
+											option: (state) =>
+												" flex flex-col justify-center px-4 py-2 cursor-pointer border-b border-gray-600/20",
 										}}
 										options={chainOptions}
 										isSearchable={false}

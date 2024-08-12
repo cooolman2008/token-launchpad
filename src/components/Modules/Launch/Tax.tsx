@@ -1,29 +1,79 @@
+import { useCallback, useEffect, useState } from "react";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { animate, spring } from "motion";
-import { useEffect, useState } from "react";
 import Select from "react-select";
 
 import TextField from "@/components/elements/TextField";
+import Arrow from "@/components/elements/Arrow";
+
 import { LaunchForm } from "@/utils/launchHelper";
+import { scrollTo } from "@/utils/uiUtils";
 
 const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; errors: FieldErrors<LaunchForm> }) => {
-	const [isLoaded, setIsLoaded] = useState(false);
 	const [dropStyle, setDropStyle] = useState(1);
+	const [tax, setTax] = useState(false);
 
 	const taxOptions = [
 		{ value: "hybrid", label: "Hybrid" },
 		{ value: "count", label: "Count" },
 		{ value: "interval", label: "Interval" },
 	];
-	useEffect(() => {
-		animate("#tax", { maxHeight: "600px" }, { easing: spring({ stiffness: 300, damping: 16, mass: 0.4 }), delay: 0.1 });
-		setTimeout(() => {
-			setIsLoaded(true);
-		}, 200);
+
+	const is_error = useCallback(() => {
+		if (
+			errors.maxBuyTax ||
+			errors.maxSellTax ||
+			errors.minBuyTax ||
+			errors.minSellTax ||
+			errors.initTaxType ||
+			errors.countInterval ||
+			errors.initInterval ||
+			errors.lpTax
+		)
+			return true;
+	}, [errors]);
+
+	const close = useCallback(() => {
+		animate("#tax_arrow", { rotate: 0 }, { easing: "ease-in-out", duration: 0.5, direction: "alternate" });
+		animate("#tax", { maxHeight: 0, opacity: 0 }, { easing: "ease-in-out" });
 	}, []);
+
+	const open = useCallback(() => {
+		scrollTo("tax_container");
+		animate("#tax_arrow", { rotate: [0, -180] }, { easing: "ease-in-out", duration: 0.5, direction: "alternate" });
+		animate(
+			"#tax",
+			{ maxHeight: "600px", opacity: 1 },
+			{ easing: spring({ stiffness: 300, damping: 16, mass: 0.4 }), delay: 0.1 }
+		);
+	}, []);
+
+	useEffect(() => {
+		if (tax) {
+			open();
+		} else {
+			close();
+		}
+		if (errors && is_error() && !tax) {
+			setTax(true);
+		}
+	}, [close, errors, is_error, open, tax]);
 	return (
-		<>
-			<div id="tax" className={"flex flex-wrap max-h-0" + (!isLoaded && " overflow-hidden")}>
+		<div id="tax_container" className="border-b border-gray-700 py-8">
+			<div className="flex mb-1">
+				<Arrow
+					onClick={() => {
+						setTax(!tax);
+					}}
+					checked={tax}
+					id="tax_arrow"
+				/>
+				<h3 className="text-2xl mb-1">Modify Tokenomics</h3>
+			</div>
+			<p className="text-sm text-gray-500 mb-4">
+				Define your <b className="font-bold text-gray-400">tokenomics</b>.
+			</p>
+			<div id="tax" className={"flex flex-wrap max-h-0"}>
 				<TextField
 					label="Initial Buy Tax"
 					id="maxbtax"
@@ -32,12 +82,12 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 					{...register("maxBuyTax", {
 						required: true,
 						pattern: /^[0-9]+$/i,
-						max: 40,
 						min: 0,
+						max: 40,
 					})}
 					isPercent={true}
 					isError={errors.maxBuyTax ? true : false}
-					error="Tax can only be between 0 to 40."
+					error="Tax can only be between 0 to 40%"
 					width="w-24"
 					labelWidth="grow"
 				/>
@@ -49,12 +99,12 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 					{...register("maxSellTax", {
 						required: true,
 						pattern: /^[0-9]+$/i,
-						max: 40,
 						min: 0,
+						max: 40,
 					})}
 					isPercent={true}
 					isError={errors.maxSellTax ? true : false}
-					error="Tax can only be between 0 to 40."
+					error="Tax can only be between 0 to 40%"
 					width="w-24"
 					labelWidth="grow"
 				/>
@@ -67,12 +117,12 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 						{...register("minBuyTax", {
 							required: true,
 							pattern: /^[0-9]+$/i,
-							max: 6,
 							min: 0,
+							max: 6,
 						})}
 						isPercent={true}
 						isError={errors.minBuyTax ? true : false}
-						error="Tax can only be between 0 to 40."
+						error="Tax can only be between 0 to 6%"
 						width="w-24"
 						labelWidth="grow"
 					/>
@@ -84,12 +134,12 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 						{...register("minSellTax", {
 							required: true,
 							pattern: /^[0-9]+$/i,
-							max: 6,
 							min: 0,
+							max: 6,
 						})}
 						isPercent={true}
 						isError={errors.minSellTax ? true : false}
-						error="Tax can only be between 0 to 40."
+						error="Tax can only be between 0 to 6%"
 						width="w-24"
 						labelWidth="grow"
 					/>
@@ -124,7 +174,7 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 							}}
 						/>
 					</div>
-					{dropStyle < 2 && (
+					{dropStyle !== 1 && (
 						<TextField
 							label="Buy Count"
 							id="countinterval"
@@ -133,16 +183,16 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 							{...register("countInterval", {
 								required: true,
 								pattern: /^[0-9]+$/i,
-								max: 7200,
 								min: 0,
+								max: 100,
 							})}
 							isError={errors.countInterval ? true : false}
-							error="Interval should be between 0-60."
+							error="Count should be below 100"
 							width="w-24"
 							labelWidth="grow"
 						/>
 					)}
-					{dropStyle !== 1 && (
+					{dropStyle < 2 && (
 						<TextField
 							label="Interval in Seconds"
 							id="initinterval"
@@ -151,11 +201,11 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 							{...register("initInterval", {
 								required: true,
 								pattern: /^[0-9]+$/i,
-								max: 100,
 								min: 0,
+								max: 7200,
 							})}
 							isError={errors.initInterval ? true : false}
-							error="Interval should be between 0-60."
+							error="Interval should be between 0-7200(2Hours)"
 							width="w-24"
 							labelWidth="grow"
 						/>
@@ -169,17 +219,17 @@ const Tax = ({ register, errors }: { register: UseFormRegister<LaunchForm>; erro
 					{...register("lpTax", {
 						required: true,
 						pattern: /^[0-9]+$/i,
-						max: 50,
 						min: 0,
+						max: 50,
 					})}
 					isPercent={true}
 					isError={errors.lpTax ? true : false}
-					error="Tax can only be between 0 to 20."
+					error="Buy back tax should be below 50%"
 					width="w-24"
 					labelWidth="grow"
 				/>
 			</div>
-		</>
+		</div>
 	);
 };
 

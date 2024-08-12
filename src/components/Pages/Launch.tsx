@@ -1,28 +1,28 @@
 "use client";
 
-import { useAccount, useWriteContract, useWalletClient, useWaitForTransactionReceipt, useChainId } from "wagmi";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Select from "react-select";
+import { useEffect, useState } from "react";
+import { getAddress } from "viem";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
+import { useAccount, useWriteContract, useWalletClient, useWaitForTransactionReceipt, useChainId } from "wagmi";
 import { animate } from "motion";
-
-import { LaunchForm, updateFields } from "@/utils/launchHelper";
-import { getContractAddress, getRouterAddress } from "@/utils/utils";
+import Select from "react-select";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 import Loading from "@/components/elements/Loading";
 import Arrow from "@/components/elements/Arrow";
 import Modal from "@/components/elements/Modal";
-
 import Advanced from "@/components/Modules/Launch/Advanced";
 import Premium from "@/components/Modules/Launch/Premium";
 import Basic from "@/components/Modules/Launch/Basic";
 import Tax from "@/components/Modules/Launch/Tax";
 
+import { LaunchForm, updateFields } from "@/utils/launchHelper";
+import { getContractAddress, getRouterAddress } from "@/utils/utils";
+
 import templateOptions from "../../static/templates.json";
+
 import { managerAbi } from "@/abi/managerAbi";
-import { getAddress } from "viem";
 
 function Launch() {
 	const { data: walletClient } = useWalletClient();
@@ -35,8 +35,6 @@ function Launch() {
 	const CONTRACT_ADDRESS = getContractAddress(chainId);
 
 	const [isClient, setIsClient] = useState(false);
-	const [tax, setTax] = useState(false);
-	const [advanced, setAdvanced] = useState(false);
 	const [premium, setPremium] = useState(false);
 	const [template, setTemplate] = useState(templateOptions.templates[0]);
 	const [setting, setSetting] = useState(false);
@@ -206,80 +204,9 @@ function Launch() {
 								/>
 							</div>
 						</div>
-						<div className="border-b border-gray-700 py-8">
-							<h3 className="text-2xl mb-1">Customise Token</h3>
-							<p className="text-sm text-gray-500 mb-4">
-								Enter wallet address or <b className="font-bold text-gray-400"> splitter contract </b> address as your
-								tax wallet.
-							</p>
-							<Basic register={register} setValue={setValue} errors={errors} />
-						</div>
-						<div id="tax_container" className="border-b border-gray-700 py-8">
-							<div className="flex mb-1">
-								<Arrow
-									onClick={(event) => {
-										if (tax) {
-											animate(
-												event.currentTarget,
-												{ rotate: 0 },
-												{ easing: "ease-in-out", duration: 0.5, direction: "alternate" }
-											);
-											animate("#tax", { maxHeight: 0 }, { easing: "ease-in-out" });
-											setTimeout(() => {
-												setTax(!tax);
-											}, 300);
-										} else {
-											scrollTo("tax_container");
-											animate(
-												event.currentTarget,
-												{ rotate: [0, -180] },
-												{ easing: "ease-in-out", duration: 0.5, direction: "alternate" }
-											);
-											setTax(!tax);
-										}
-									}}
-									checked={tax}
-								/>
-								<h3 className="text-2xl mb-1">Modify Tokenomics</h3>
-							</div>
-							<p className="text-sm text-gray-500 mb-4">
-								Define your <b className="font-bold text-gray-400">tokenomics</b>.
-							</p>
-							{tax && <Tax register={register} errors={errors} />}
-						</div>
-						<div id="advanced_container" className="border-b border-gray-700 py-8">
-							<div className="flex mb-1">
-								<Arrow
-									onClick={(event) => {
-										if (advanced) {
-											animate(
-												event.currentTarget,
-												{ rotate: 0 },
-												{ easing: "ease-in-out", duration: 0.5, direction: "alternate" }
-											);
-											animate("#advanced", { maxHeight: 0 }, { easing: "ease-in-out" });
-											setTimeout(() => {
-												setAdvanced(!advanced);
-											}, 200);
-										} else {
-											scrollTo("advanced_container");
-											animate(
-												event.currentTarget,
-												{ rotate: [0, -180] },
-												{ easing: "ease-in-out", duration: 0.5, direction: "alternate" }
-											);
-											setAdvanced(!advanced);
-										}
-									}}
-									checked={advanced}
-								/>
-								<h3 className="text-2xl mb-1">Advanced Settings</h3>
-							</div>
-							<p className="text-sm text-gray-500 mb-4">
-								If you <b className="font-bold text-gray-400">know</b> what you are doing, configure the settings.
-							</p>
-							{advanced && <Advanced register={register} getValues={getValues} errors={errors} />}
-						</div>
+						<Basic register={register} setValue={setValue} errors={errors} />
+						<Tax register={register} errors={errors} />
+						<Advanced register={register} getValues={getValues} errors={errors} />
 						<div id="premium_container" className="py-8">
 							<div className="flex mb-1">
 								<Arrow
