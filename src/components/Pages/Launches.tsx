@@ -137,7 +137,7 @@ function Launches() {
 					<div className="w-full flex mt-12 max-md:mb-12 justify-between flex-wrap">
 						<Details />
 					</div>
-					{chartData.length > 0 && (
+					{chartData.length > 3 && (
 						<div className="w-full flex justify-between max-md:hidden">
 							<HighchartsReact highcharts={Highcharts} options={getOptions("tvl", chartData)} />
 							<HighchartsReact highcharts={Highcharts} options={getOptions("volume", chartData)} />

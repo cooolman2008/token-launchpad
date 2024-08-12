@@ -137,14 +137,13 @@ const LaunchPresale = ({
 										defaultValue="80"
 										placeholder="0"
 										{...register("liqPercent", {
-											required: true,
-											pattern: /^[0-9]+$/i,
-											min: 80,
-											max: 100,
+											required: { value: true, message: "Liquidity share can't be empty" },
+											pattern: { value: /^[0-9]+$/i, message: "Liquidity share should be a number" },
+											min: { value: 80, message: "Liquidity share should be minimum 80% of presale" },
+											max: { value: 100, message: "Liquidity share should be below 100%" },
 										})}
 										isPercent={true}
-										isError={errors.liqPercent ? true : false}
-										error="Liquidity share should be between 80-100%"
+										error={errors.liqPercent}
 										width="w-24"
 										labelWidth="grow"
 										containerWidth="w-full md:w-1/2"
@@ -152,16 +151,15 @@ const LaunchPresale = ({
 									<TextField
 										label="Duration"
 										id="duration"
-										{...register("duration", {
-											required: true,
-											pattern: /^[0-9]+$/i,
-											min: 1,
-											max: 30,
-										})}
 										defaultValue={7}
 										placeholder="10"
-										isError={errors.duration ? true : false}
-										error="Duration should be within 1-30 days"
+										{...register("duration", {
+											required: { value: true, message: "Duration can't be empty" },
+											pattern: { value: /^[0-9]+$/i, message: "Duration should be a number" },
+											min: { value: 1, message: "Duration should be minimum 1 day" },
+											max: { value: 30, message: "Duration should be below 30 days" },
+										})}
+										error={errors.duration}
 										width="w-24"
 										labelWidth="grow"
 										containerWidth="w-full md:w-1/2 "
@@ -173,13 +171,12 @@ const LaunchPresale = ({
 										placeholder="2"
 										defaultValue={2}
 										{...register("cliffPeriod", {
-											required: true,
-											pattern: /^[0-9]+$/i,
-											min: 1,
-											max: 30,
+											required: { value: true, message: "Cliff period can't be empty" },
+											pattern: { value: /^[0-9]+$/i, message: "Cliff period should be a number" },
+											min: { value: 1, message: "Cliff period should be minimum 1 day" },
+											max: { value: 30, message: "Cliff period should be below 30 days" },
 										})}
-										isError={errors.cliffPeriod ? true : false}
-										error="Minimum of 1 day Cliff period is needed."
+										error={errors.cliffPeriod}
 										width="w-24"
 										labelWidth="grow"
 										containerWidth="w-full md:w-1/2"
@@ -190,13 +187,12 @@ const LaunchPresale = ({
 										placeholder="7"
 										defaultValue={7}
 										{...register("vestingPeriod", {
-											required: true,
-											pattern: /^[0-9]+$/i,
-											min: 7,
-											max: 30,
+											required: { value: true, message: "Vesting period can't be empty" },
+											pattern: { value: /^[0-9]+$/i, message: "Vesting period should be a number" },
+											min: { value: 7, message: "Vesting period should be minimum 7 days" },
+											max: { value: 30, message: "Vesting period should be below 30 days" },
 										})}
-										isError={errors.vestingPeriod ? true : false}
-										error="Minimum of 7 day Vesting period is needed."
+										error={errors.vestingPeriod}
 										width="w-24"
 										labelWidth="grow"
 										containerWidth="w-full md:w-1/2 "
@@ -208,11 +204,11 @@ const LaunchPresale = ({
 										defaultValue="1"
 										placeholder="0"
 										{...register("maxEth", {
-											required: true,
-											pattern: /^[0-9]+$/i,
+											required: { value: true, message: "ETH hardcap can't be empty" },
+											pattern: { value: /^[0-9]+$/i, message: "ETH hardcap should be a number" },
+											min: { value: 0, message: "ETH hardcap can't be negative" },
 										})}
-										isError={errors.maxEth ? true : false}
-										error="Maximum ETH is needed"
+										error={errors.maxEth}
 										width="w-24"
 										labelWidth="grow"
 										containerWidth="w-full md:w-1/2"
@@ -223,11 +219,15 @@ const LaunchPresale = ({
 										defaultValue="10000"
 										placeholder="0"
 										{...register("maxBag", {
-											required: true,
-											pattern: /^[0-9]+$/i,
+											required: { value: true, message: "Max bag can't be empty" },
+											pattern: { value: /^[0-9]+$/i, message: "Max bag should be a number" },
+											min: { value: 0, message: "Max bag can't be negative" },
+											max: {
+												value: Number(getValues("percent") * 0.1),
+												message: "Max bag should be below 10% of hardcap",
+											},
 										})}
-										isError={errors.maxBag ? true : false}
-										error="Max bag should be less than 10% of hardcap"
+										error={errors.maxBag}
 										width="w-32"
 										labelWidth="grow"
 										containerWidth="w-full md:w-1/2 "
@@ -239,14 +239,14 @@ const LaunchPresale = ({
 										defaultValue="10"
 										placeholder="0"
 										{...register("percent", {
-											required: true,
-											pattern: /^[0-9]+$/i,
-											min: 1,
-											max: 100,
+											required: { value: true, message: "Token hardcap can't be empty" },
+											pattern: { value: /^[0-9]+$/i, message: "Token hardcap should be a number" },
+											min: { value: 1, message: "Token hardcap can't be negative" },
+											max: { value: 100, message: "Token hardcap should be below 100%" },
 										})}
 										isPercent={true}
 										isError={errors.percent ? true : false}
-										error="Percentage share should be between 1-100%"
+										error={errors.percent}
 										width="w-24"
 										labelWidth="grow"
 										containerWidth="w-full md:w-1/2"
@@ -260,14 +260,9 @@ const LaunchPresale = ({
 										defaultValue="2.5"
 										placeholder="0"
 										{...register("saftcap", {
-											required: true,
-											min: 1,
-											max: 100,
 											disabled: true,
 										})}
 										isPercent={true}
-										isError={errors.percent ? true : false}
-										error="Percentage share should be between 1-100%"
 										width="w-24"
 										labelWidth="grow"
 										containerWidth="w-full md:w-1/2 "

@@ -5,12 +5,10 @@ import { useEffect, useState } from "react";
 import { getAddress } from "viem";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useAccount, useWriteContract, useWalletClient, useWaitForTransactionReceipt, useChainId } from "wagmi";
-import { animate } from "motion";
 import Select from "react-select";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import Loading from "@/components/elements/Loading";
-import Arrow from "@/components/elements/Arrow";
 import Modal from "@/components/elements/Modal";
 import Advanced from "@/components/Modules/Launch/Advanced";
 import Premium from "@/components/Modules/Launch/Premium";
@@ -23,6 +21,13 @@ import { getContractAddress, getRouterAddress } from "@/utils/utils";
 import templateOptions from "../../static/templates.json";
 
 import { managerAbi } from "@/abi/managerAbi";
+import { AnimationOptionsWithOverrides } from "motion";
+
+export const arrowOptions: AnimationOptionsWithOverrides = {
+	easing: "ease-in-out",
+	duration: 0.5,
+	direction: "alternate",
+};
 
 function Launch() {
 	const { data: walletClient } = useWalletClient();
@@ -35,22 +40,14 @@ function Launch() {
 	const CONTRACT_ADDRESS = getContractAddress(chainId);
 
 	const [isClient, setIsClient] = useState(false);
-	const [premium, setPremium] = useState(false);
+	const [paid, setPaid] = useState(false);
+	const [initTaxType, setInitTaxType] = useState(1);
 	const [template, setTemplate] = useState(templateOptions.templates[0]);
 	const [setting, setSetting] = useState(false);
 	const [error, setError] = useState("");
 
 	const clear = () => {
 		setError("");
-	};
-
-	const scrollTo = (id: string) => {
-		const ele = document.getElementById(id);
-		if (ele) {
-			ele.scrollIntoView({
-				behavior: "smooth",
-			});
-		}
 	};
 
 	// contract call for token launch.
@@ -109,7 +106,7 @@ function Launch() {
 				isFreeTier: true,
 				minLiq: BigInt(0),
 				supply: BigInt(formData.supply),
-				initTaxType: BigInt(0),
+				initTaxType: BigInt(initTaxType),
 				initInterval: BigInt(formData.initInterval ? formData.initInterval : template.initInterval),
 				countInterval: BigInt(formData.countInterval ? formData.countInterval : template.initInterval),
 				maxBuyTax: BigInt(formData.maxBuyTax ? formData.maxBuyTax : template.maxBuyTax),
@@ -205,52 +202,18 @@ function Launch() {
 							</div>
 						</div>
 						<Basic register={register} setValue={setValue} errors={errors} />
-						<Tax register={register} errors={errors} />
+						<Tax register={register} getValues={getValues} errors={errors} setInitTaxType={setInitTaxType} />
 						<Advanced register={register} getValues={getValues} errors={errors} />
-						<div id="premium_container" className="py-8">
-							<div className="flex mb-1">
-								<Arrow
-									onClick={(event) => {
-										if (premium) {
-											animate(
-												event.currentTarget,
-												{ rotate: 0 },
-												{ easing: "ease-in-out", duration: 0.5, direction: "alternate" }
-											);
-											animate("#premium", { maxHeight: 0 }, { easing: "ease-in-out" });
-											setTimeout(() => {
-												setPremium(!premium);
-											}, 300);
-										} else {
-											scrollTo("premium_container");
-											animate(
-												event.currentTarget,
-												{ rotate: [0, -180] },
-												{ easing: "ease-in-out", duration: 0.5, direction: "alternate" }
-											);
-											setPremium(!premium);
-										}
-									}}
-									checked={premium}
-								/>
-								<h3 className="text-2xl mb-1">Go Premium</h3>
-							</div>
-							<p className="text-sm text-gray-500 mb-4">
-								Pay once and access <b className="font-bold text-gray-400">premium features</b>.
-							</p>
-							{premium && <Premium register={register} errors={errors} />}
-						</div>
-						{walletClient ? (
-							<div className="w-full flex justify-center mt-4">
+						<Premium register={register} errors={errors} setPaid={setPaid} />
+						<div className="w-full flex justify-center mt-4">
+							{walletClient ? (
 								<input type="submit" value="Launch" className="safu-button-primary" />
-							</div>
-						) : (
-							<div className="w-full flex justify-center mt-4">
+							) : (
 								<button className="mr-8 safu-soft-button" onClick={() => open()}>
 									Connect Wallet
 								</button>
-							</div>
-						)}
+							)}
+						</div>
 					</form>
 				</>
 			)}

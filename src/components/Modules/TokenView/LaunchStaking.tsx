@@ -82,14 +82,13 @@ const LaunchStaking = ({
 								defaultValue="10"
 								placeholder="0"
 								{...register("share", {
-									required: true,
-									pattern: /^[0-9]+$/i,
-									min: 0,
-									max: 20,
+									required: { value: true, message: "Share can't be empty" },
+									pattern: { value: /^[0-9]+$/i, message: "Share should be a number" },
+									min: { value: 0, message: "Share can't be negative" },
+									max: { value: 20, message: "Share should be below 20%" },
 								})}
 								isPercent={true}
-								isError={errors.share ? true : false}
-								error="Share can be of maximum 20%"
+								error={errors.share}
 								width="w-24"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"
@@ -99,15 +98,14 @@ const LaunchStaking = ({
 								label="Timeout"
 								id="days"
 								{...register("withdraw", {
-									required: true,
-									pattern: /^[0-9]+$/i,
-									min: 2,
-									max: 10,
+									required: { value: true, message: "Timeout can't be empty" },
+									pattern: { value: /^[0-9]+$/i, message: "Timeout should be a number" },
+									min: { value: 2, message: "Timeout should be minimum 2 days" },
+									max: { value: 10, message: "Timeout should be below 10 days" },
 								})}
 								defaultValue={2}
 								placeholder="10"
-								isError={errors.withdraw ? true : false}
-								error="Timeout should be within 2-10 days"
+								error={errors.withdraw}
 								width="w-20"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"

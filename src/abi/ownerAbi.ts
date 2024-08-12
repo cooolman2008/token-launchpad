@@ -306,6 +306,11 @@ export const ownerAbi = [
               "internalType":"address",
               "name":"router",
               "type":"address"
+            },
+            {
+              "internalType": "address",
+              "name": "presale",
+              "type": "address"
             }
           ],
           "internalType":"struct IOwnership.LPDetails",

@@ -28,12 +28,12 @@ const Basic = ({
 					id="name"
 					placeholder="SAFU"
 					{...register("name", {
-						required: true,
-						pattern: /^[A-Za-z. ]+$/i,
+						required: { value: true, message: "Name can't be empty" },
+						maxLength: { value: 30, message: "Name can't be more than 30 characters" },
+						pattern: { value: /^[A-Za-z0-9. ]+$/i, message: "Name should only have alphabets/numbers/dots(.)" },
 					})}
-					isError={errors.name ? true : false}
-					error="We need an alphabets only name to deploy the token."
-					width="w-48 lg:grow"
+					error={errors.name}
+					width="w-40 md:w-48 lg:grow"
 					labelWidth="grow lg:grow-0"
 				/>
 				<TextField
@@ -41,12 +41,11 @@ const Basic = ({
 					id="symbol"
 					placeholder="USDC"
 					{...register("symbol", {
-						required: true,
-						maxLength: 8,
-						pattern: /^[A-Za-z]+$/i,
+						required: { value: true, message: "Symbol can't be empty" },
+						maxLength: { value: 8, message: "Name can't be more than 8 characters" },
+						pattern: { value: /^[A-Za-z0-9. ]+$/i, message: "Symbol should only have alphabets/numbers/dots(.)" },
 					})}
-					isError={errors.symbol ? true : false}
-					error="Symbol needs to be all alphabetic * below 8 chars."
+					error={errors.symbol}
 					width="w-40 lg:grow"
 					labelWidth="grow lg:grow-0"
 				/>
@@ -55,18 +54,17 @@ const Basic = ({
 					id="supply"
 					placeholder="1000000"
 					{...register("supply", {
-						required: true,
-						min: 1000000,
-						max: 1000000000000000,
-						pattern: /^[0-9]+$/i,
+						required: { value: true, message: "Supply can't be empty" },
+						min: { value: 1000000, message: "Supply should be minimum 1 Million" },
+						max: { value: 1000000000000000, message: "Supply should be below 1 quadrillion" },
+						pattern: { value: /^[0-9]+$/i, message: "Supply should be a number" },
 						onChange: (event) => {
 							const supply = event.target.value;
 							setValue("maxSwap", Number(supply) * 0.01);
 							setValue("taxSwapThreshold", Number(supply) * 0.0001);
 						},
 					})}
-					isError={errors.supply ? true : false}
-					error="Supply should be minimum 1Million."
+					error={errors.supply}
 					width="w-48 lg:grow"
 					labelWidth="grow lg:grow-0"
 				/>
@@ -76,12 +74,11 @@ const Basic = ({
 					defaultValue={address}
 					placeholder="0xXXXXXXXXXXXXXXXXXXXXXXXXX"
 					{...register("taxWallet", {
-						required: true,
-						minLength: 42,
-						pattern: /^[A-Za-z0-9]+$/i,
+						required: { value: true, message: "Tax Wallet can't be empty" },
+						minLength: { value: 42, message: "Tax Wallet not valid" },
+						pattern: { value: /^[A-Za-z0-9]+$/i, message: "Tax Wallet not valid" },
 					})}
-					isError={errors.taxWallet ? true : false}
-					error="Tax wallet should be a valid wallet."
+					error={errors.taxWallet}
 					width="w-48 md:w-56 lg:grow"
 					labelWidth="grow lg:grow-0"
 				/>

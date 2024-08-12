@@ -94,7 +94,7 @@ function Navigation() {
 									{chainOptions && (
 										<Select
 											unstyled={true}
-											defaultValue={chainOptions[1]}
+											defaultValue={chainOptions[0]}
 											inputId="type"
 											classNames={{
 												control: (state) =>
@@ -132,7 +132,7 @@ function Navigation() {
 								{chainOptions && (
 									<Select
 										unstyled={true}
-										defaultValue={chainOptions[1]}
+										defaultValue={chainOptions[0]}
 										inputId="type"
 										classNames={{
 											control: (state) =>

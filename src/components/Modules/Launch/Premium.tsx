@@ -1,30 +1,67 @@
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { animate, spring } from "motion";
-import { useEffect, useState } from "react";
 import Select from "react-select";
 
 import TextField from "@/components/elements/TextField";
-import { LaunchForm } from "@/utils/launchHelper";
+import Arrow from "@/components/elements/Arrow";
+import { arrowOptions } from "@/components/Pages/Launch";
 
-const Premium = ({ register, errors }: { register: UseFormRegister<LaunchForm>; errors: FieldErrors<LaunchForm> }) => {
-	const [isLoaded, setIsLoaded] = useState(false);
+import { LaunchForm } from "@/utils/launchHelper";
+import { scrollTo } from "@/utils/uiUtils";
+
+const Premium = ({
+	register,
+	errors,
+	setPaid,
+}: {
+	register: UseFormRegister<LaunchForm>;
+	errors: FieldErrors<LaunchForm>;
+	setPaid: Dispatch<SetStateAction<boolean>>;
+}) => {
+	const [premium, setPremium] = useState(false);
 	const payOptions = [
 		{ value: "eth", label: "ETH" },
 		{ value: "safu", label: "SAFU" },
 	];
-	useEffect(() => {
+
+	const close = useCallback(() => {
+		animate("#premium_arrow", { rotate: 0 }, arrowOptions);
+		animate("#premium", { maxHeight: 0, opacity: 0 }, { easing: "ease-in-out" });
+	}, []);
+
+	const open = useCallback(() => {
+		scrollTo("premium_container");
+		animate("#premium_arrow", { rotate: [0, -180] }, arrowOptions);
 		animate(
 			"#premium",
-			{ maxHeight: "110px" },
+			{ maxHeight: "110px", opacity: 1 },
 			{ easing: spring({ stiffness: 300, damping: 16, mass: 0.4 }), delay: 0.1 }
 		);
-		setTimeout(() => {
-			setIsLoaded(true);
-		}, 200);
 	}, []);
+	useEffect(() => {
+		if (premium) {
+			open();
+		} else {
+			close();
+		}
+	}, [close, open, premium]);
 	return (
-		<>
-			<div id="premium" className={"flex flex-wrap max-h-0" + (!isLoaded && " overflow-hidden")}>
+		<div id="premium_container" className="py-8">
+			<div className="flex mb-1">
+				<Arrow
+					id="premium_arrow"
+					onClick={() => {
+						setPremium(!premium);
+					}}
+					checked={premium}
+				/>
+				<h3 className="text-2xl mb-1">Go Premium</h3>
+			</div>
+			<p className="text-sm text-gray-500 mb-4">
+				Pay once and access <b className="font-bold text-gray-400">premium features</b>.
+			</p>
+			<div id="premium" className="flex flex-wrap max-h-0">
 				<div className="w-full md:w-1/2 2xl:w-1/3 flex md:pr-4 2xl:pr-12 items-center flex-wrap mb-4">
 					<label htmlFor="pay" className="text-xl text-gray-400 pr-4 grow">
 						Currency
@@ -48,17 +85,14 @@ const Premium = ({ register, errors }: { register: UseFormRegister<LaunchForm>; 
 					defaultValue={0.2}
 					disabled={true}
 					{...register("amount", {
-						max: 10,
-						min: 0,
 						pattern: /^[0-9]+$/i,
 					})}
-					isError={errors.preventSwap ? true : false}
-					error="Please provide a valid limit."
+					error={errors.amount}
 					width="w-24"
 					labelWidth="grow"
 				/>
 			</div>
-		</>
+		</div>
 	);
 };
 

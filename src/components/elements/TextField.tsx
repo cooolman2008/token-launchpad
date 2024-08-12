@@ -1,13 +1,15 @@
 import type { ComponentProps, LegacyRef } from "react";
 import { forwardRef } from "react";
+import { FieldError, FieldErrors } from "react-hook-form";
+import { LaunchForm } from "@/utils/launchHelper";
 
 interface TextFieldProps extends ComponentProps<"input"> {
 	label: string;
 	id: string;
 	disabled?: boolean;
 	isPercent?: boolean;
-	isError: boolean;
-	error: string;
+	isError?: boolean;
+	error?: FieldError;
 	containerWidth?: string;
 	width: string;
 	labelWidth?: string;
@@ -55,13 +57,13 @@ const TextField = forwardRef(
 									"block w-full rounded-xl ps-3 pe-3 py-1.5 shadow-sm placeholder:text-gray-400 bg-neutral-900 outline-0 2xl:text-sm " +
 									(disabled
 										? "text-gray-400"
-										: "text-white " + (isError ? "border-x border-pink-500" : "border-l border-gray-600"))
+										: "text-white " + (error ? "border-x border-pink-500" : "border-l border-gray-600"))
 								}
 								disabled={disabled}
 								{...rest}
 							/>
-							{(isError || isPercent) && (
-								<div className="absolute inset-y-0 right-0 flex items-center pr-4">
+							{(error || isPercent) && (
+								<div className="absolute inset-y-0 right-0 flex items-center rounded-full bg-neutral-900 mr-2 px-1">
 									{isPercent ? (
 										"%"
 									) : (
@@ -83,7 +85,7 @@ const TextField = forwardRef(
 							)}
 						</div>
 					</div>
-					{isError && <p className="mt-2 text-pink-600 text-sm text-right">{error}</p>}
+					{error && <p className="mt-2 text-pink-600 text-sm text-right">{error?.message}</p>}
 				</div>
 			</>
 		);

@@ -112,15 +112,11 @@ const StartTrading = ({
 								defaultValue="0.1"
 								placeholder="0"
 								{...register("liq", {
-									valueAsNumber: true,
-									required: {
-										value: true,
-										message: "Value needed",
-									},
-									validate: (value) => value + Number(balance) > 0.05 || "Min liq needed",
+									required: { value: true, message: "Liquidity can't be empty" },
+									pattern: { value: /^[0-9]+$/i, message: "Liquidity should be a number" },
+									validate: (value) => value + Number(balance) > 0.05 || "Total Liquidity should be minimum 0.05",
 								})}
-								isError={errors.liq ? true : false}
-								error={errors.liq?.message ? errors.liq?.message : "Some error"}
+								error={errors.liq}
 								width="w-20"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"
@@ -130,15 +126,14 @@ const StartTrading = ({
 								label="Lock Days"
 								id="days"
 								{...register("lockPeriod", {
-									required: showLock,
-									pattern: /^[0-9]+$/i,
-									min: !showLock ? 0 : 30,
+									required: { value: showLock, message: "Lock Days can't be empty" },
+									pattern: { value: /^[0-9]+$/i, message: "Lock Days should be a number" },
+									min: { value: !showLock ? 0 : 30, message: "Lock Days shoud be minimum 30 days" },
 								})}
 								defaultValue={30}
 								disabled={!showLock}
 								placeholder="0"
-								isError={errors.lockPeriod ? true : false}
-								error="Minimum 30 days required"
+								error={errors.lockPeriod}
 								width="w-20"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"

@@ -114,14 +114,13 @@ const LPChanges = ({
 							label="Lock"
 							id="lock"
 							{...register("ldays", {
-								required: true,
-								pattern: /^[0-9]+$/i,
-								min: 30,
+								required: { value: true, message: "Lock Days can't be empty" },
+								pattern: { value: /^[0-9]+$/i, message: "Lock Days should be a number" },
+								min: { value: 30, message: "Lock Days shoud be minimum 30 days" },
 							})}
 							placeholder="30"
 							defaultValue="30"
-							isError={errors.ldays ? true : false}
-							error="Minimum 30 days required"
+							error={errors.ldays}
 							width="w-20"
 							labelWidth="grow lg:grow-0"
 							containerWidth="w-full md:w-auto"

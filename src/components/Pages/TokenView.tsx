@@ -122,6 +122,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	const fetchTheToken = useCallback(
 		async (controller?: AbortController) => {
 			if (API_ENDPOINT) {
+				setLoading(true);
 				setToken(undefined);
 				fetchToken(params?.slug?.toString(), API_ENDPOINT, controller ? controller.signal : undefined)
 					.then((data) => {

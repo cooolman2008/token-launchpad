@@ -56,7 +56,7 @@ const Limits = ({
 			abi: tokenAbi,
 			functionName: "increaseLimits",
 			account: walletClient?.account,
-			args: [formData.maxtx, formData.maxwallet],
+			args: [formData.maxwallet, formData.maxtx],
 		});
 	};
 	return (
@@ -78,13 +78,12 @@ const Limits = ({
 								placeholder="30"
 								defaultValue={txLimit}
 								{...register("maxtx", {
-									required: true,
-									pattern: /^[0-9]+$/i,
-									min: txLimit,
-									max: 100,
+									required: { value: true, message: "New limit can't be empty" },
+									pattern: { value: /^[0-9]+$/i, message: "New limit should be a number" },
+									min: { value: txLimit, message: "New limit should be more than current limit" },
+									max: { value: 100, message: "New limit should be below 100%" },
 								})}
-								isError={errors.maxtx ? true : false}
-								error="New limit should be within current limit & 100"
+								error={errors.maxtx}
 								width="w-20"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"
@@ -97,13 +96,12 @@ const Limits = ({
 								placeholder="30"
 								defaultValue={walletLimit}
 								{...register("maxwallet", {
-									required: true,
-									pattern: /^[0-9]+$/i,
-									min: walletLimit,
-									max: 100,
+									required: { value: true, message: "New limit can't be empty" },
+									pattern: { value: /^[0-9]+$/i, message: "New limit should be a number" },
+									min: { value: walletLimit, message: "New limit should be more than current limit" },
+									max: { value: 100, message: "New limit should be below 100%" },
 								})}
-								isError={errors.maxwallet ? true : false}
-								error="New limit should be within current limit & 100"
+								error={errors.maxwallet}
 								width="w-20"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"

@@ -4,6 +4,7 @@ import { animate, spring } from "motion";
 
 import TextField from "@/components/elements/TextField";
 import Arrow from "@/components/elements/Arrow";
+import { arrowOptions } from "@/components/Pages/Launch";
 
 import { LaunchForm } from "@/utils/launchHelper";
 import { scrollTo } from "@/utils/uiUtils";
@@ -25,13 +26,13 @@ const Advanced = ({
 	}, [errors]);
 
 	const close = useCallback(() => {
-		animate("#advanced_arrow", { rotate: 0 }, { easing: "ease-in-out", duration: 0.5, direction: "alternate" });
+		animate("#advanced_arrow", { rotate: 0 }, arrowOptions);
 		animate("#advanced", { maxHeight: 0, opacity: 0 }, { easing: "ease-in-out" });
 	}, []);
 
 	const open = useCallback(() => {
 		scrollTo("advanced_container");
-		animate("#advanced_arrow", { rotate: [0, -180] }, { easing: "ease-in-out", duration: 0.5, direction: "alternate" });
+		animate("#advanced_arrow", { rotate: [0, -180] }, arrowOptions);
 		animate(
 			"#advanced",
 			{ maxHeight: "340px", opacity: 1 },
@@ -72,12 +73,12 @@ const Advanced = ({
 					isPercent={true}
 					placeholder="0"
 					{...register("maxTx", {
-						pattern: /^[0-9]+$/i,
-						min: 0,
-						max: 100,
+						required: { value: true, message: "Limit can't be empty" },
+						pattern: { value: /^[0-9]+$/i, message: "Limit should be a number" },
+						min: { value: 0, message: "Limit can't be negative" },
+						max: { value: 100, message: "Limit should be below 100%" },
 					})}
-					isError={errors.maxTx ? true : false}
-					error="Limit should be below 100%"
+					error={errors.maxTx}
 					width="w-20"
 					labelWidth="grow"
 				/>
@@ -87,12 +88,12 @@ const Advanced = ({
 					isPercent={true}
 					placeholder="0"
 					{...register("maxWallet", {
-						pattern: /^[0-9]+$/i,
-						min: 0,
-						max: 100,
+						required: { value: true, message: "Limit can't be empty" },
+						pattern: { value: /^[0-9]+$/i, message: "Limit should be a number" },
+						min: { value: 0, message: "Limit can't be negative" },
+						max: { value: 100, message: "Limit should be below 100%" },
 					})}
-					isError={errors.maxWallet ? true : false}
-					error="Limit should be below 100%"
+					error={errors.maxWallet}
 					width="w-20"
 					labelWidth="grow"
 				/>
@@ -100,13 +101,15 @@ const Advanced = ({
 					label="Tax Swap Threshold"
 					id="taxSwapThreshold"
 					{...register("taxSwapThreshold", {
-						required: true,
-						pattern: /^[0-9]+$/i,
-						min: Number(getValues("supply")) * 0.00001,
-						max: Number(getValues("supply")) * 0.01,
+						required: { value: true, message: "Threshold can't be empty" },
+						pattern: { value: /^[0-9]+$/i, message: "Threshold should be a number" },
+						min: {
+							value: Number(getValues("supply")) * 0.00001,
+							message: "Threshold should be minimum 0.0001% of Supply",
+						},
+						max: { value: Number(getValues("supply")) * 0.01, message: "Threshold should be below 0.1% of Supply" },
 					})}
-					isError={errors.taxSwapThreshold ? true : false}
-					error="Limit should be 0.0001% to 0.1% of supply"
+					error={errors.taxSwapThreshold}
 					width="w-24"
 					labelWidth="grow"
 				/>
@@ -115,13 +118,13 @@ const Advanced = ({
 					id="maxSwap"
 					placeholder="10000"
 					{...register("maxSwap", {
-						required: true,
-						pattern: /^[0-9]+$/i,
-						min: Number(getValues("supply")) * 0.01,
-						max: Number(getValues("supply")) * 0.02,
+						required: { value: true, message: "Max Tax Swap can't be empty" },
+						pattern: { value: /^[0-9]+$/i, message: "Max Tax Swap should be a number" },
+						min: { value: Number(getValues("supply")) * 0.01, message: "Max Tax Swap should be minimum 1% of Supply" },
+						max: { value: Number(getValues("supply")) * 0.02, message: "Max Tax Swap should be below 2% of Supply" },
 					})}
 					isError={errors.maxSwap ? true : false}
-					error="Limit should be 1% to 2% of supply"
+					error={errors.maxSwap}
 					width="w-24"
 					labelWidth="grow"
 				/>
@@ -130,13 +133,13 @@ const Advanced = ({
 					id="preventSwap"
 					placeholder="10"
 					{...register("preventSwap", {
-						pattern: /^[0-9]+$/i,
-						min: 0,
-						max: 50,
+						required: { value: true, message: "Threshold can't be empty" },
+						pattern: { value: /^[0-9]+$/i, message: "Threshold should be a number" },
+						min: { value: 0, message: "Threshold can't be negative" },
+						max: { value: 100, message: "Threshold should be below 50%" },
 					})}
-					isError={errors.preventSwap ? true : false}
-					error="Prevent swap should be below 50"
-					width="w-14"
+					error={errors.preventSwap}
+					width="w-20"
 					labelWidth="grow"
 				/>
 			</div>

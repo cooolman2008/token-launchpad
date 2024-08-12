@@ -82,8 +82,6 @@ const Promote = ({ contractAddress, safuAddress }: { contractAddress: `0x${strin
 								valueAsNumber: true,
 								disabled: true,
 							})}
-							isError={errors.cost ? true : false}
-							error="Minimum 30 days required"
 							width="w-20"
 							labelWidth="grow lg:grow-0"
 							containerWidth="w-full md:w-auto"
@@ -94,15 +92,14 @@ const Promote = ({ contractAddress, safuAddress }: { contractAddress: `0x${strin
 							id="times"
 							placeholder="0"
 							{...register("times", {
-								required: true,
-								pattern: /^[0-9]+$/i,
-								min: 1,
+								required: { value: true, message: "Count can't be empty" },
+								pattern: { value: /^[0-9]+$/i, message: "Count should be a number" },
+								min: { value: 1, message: "Count shoud be minimum 1 time" },
 							})}
 							onKeyUp={() => {
 								setPrice(Number((Number(getValues("times")) * promoCost).toFixed(4)));
 							}}
-							isError={errors.times ? true : false}
-							error="Minimum 30 days required"
+							error={errors.times}
 							width="w-20"
 							labelWidth="grow lg:grow-0"
 							containerWidth="w-full md:w-auto"

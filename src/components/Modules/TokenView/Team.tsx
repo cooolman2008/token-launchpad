@@ -128,11 +128,12 @@ const Team = ({
 										placeholder="30"
 										defaultValue={30}
 										{...register("cliffPeriod", {
-											required: true,
-											min: 30,
+											required: { value: true, message: "Cliff period can't be empty" },
+											pattern: { value: /^[0-9]+$/i, message: "Cliff period should be a number" },
+											min: { value: 30, message: "Cliff period should be minimum 30 days" },
+											max: { value: 10000, message: "Cliff period should be below 10000 days" },
 										})}
-										isError={errors.cliffPeriod ? true : false}
-										error="Minimum of 30 days Cliff period is needed."
+										error={errors.cliffPeriod}
 										width="w-24"
 										labelWidth="grow"
 										containerWidth="w-full md:w-1/2"
@@ -143,11 +144,12 @@ const Team = ({
 										placeholder="30"
 										defaultValue={30}
 										{...register("vestingPeriod", {
-											required: true,
-											min: 30,
+											required: { value: true, message: "Vesting period can't be empty" },
+											pattern: { value: /^[0-9]+$/i, message: "Vesting period should be a number" },
+											min: { value: 30, message: "Vesting period should be minimum 30 days" },
+											max: { value: 10000, message: "Vesting period should be below 10000 days" },
 										})}
-										isError={errors.vestingPeriod ? true : false}
-										error="Minimum of 30 days Vesting period is needed."
+										error={errors.vestingPeriod}
 										width="w-24"
 										labelWidth="grow"
 										containerWidth="w-full md:w-1/2 "
@@ -162,12 +164,11 @@ const Team = ({
 									defaultValue=""
 									placeholder="0xXXXXXXXXXXXXXXXXXXXXXXXXX"
 									{...register("team1", {
-										required: true,
-										minLength: 42,
-										pattern: /^[A-Za-z0-9]+$/i,
+										required: { value: true, message: "Team Wallet can't be empty" },
+										minLength: { value: 42, message: "Team Wallet not valid" },
+										pattern: { value: /^[A-Za-z0-9]+$/i, message: "Team Wallet not valid" },
 									})}
-									isError={errors.team1 ? true : false}
-									error="Please provide a valid wallet address."
+									error={errors.team1}
 									width="w-48"
 									labelWidth="grow"
 									containerWidth="w-full md:w-1/2"
@@ -177,14 +178,13 @@ const Team = ({
 									id="team1p"
 									placeholder="0"
 									{...register("team1p", {
-										required: true,
-										pattern: /^[0-9]+$/i,
-										max: 20,
-										min: 0,
+										required: { value: true, message: "Share can't be empty" },
+										pattern: { value: /^[0-9]+$/i, message: "Share should be a number" },
+										min: { value: 0, message: "Share can't be negative" },
+										max: { value: 20, message: "Share should be below 20%" },
 									})}
 									isPercent={true}
-									isError={errors.team1p ? true : false}
-									error="Share cannot be more than 1%."
+									error={errors.team1p}
 									width="w-24"
 									labelWidth="grow"
 									containerWidth="w-full md:w-1/2 "
