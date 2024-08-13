@@ -149,7 +149,7 @@ const StartTrading = ({
 											{...register("shouldBurn")}
 											onChange={() => {
 												setShowLock((showLock) => !showLock);
-												setValue("lockPeriod", BigInt(0));
+												setValue("lockPeriod", showLock ? BigInt(0) : BigInt(30));
 											}}
 											defaultChecked={false}
 										/>

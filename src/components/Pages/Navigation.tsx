@@ -6,7 +6,7 @@ import Select from "react-select";
 import { animate, spring } from "motion";
 import { useEffect, useState, useRef } from "react";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { useAccount, useSwitchChain } from "wagmi";
+import { useAccount, useChainId, useSwitchChain } from "wagmi";
 
 import Links from "@/components/Modules/Navigation/Links";
 import Search from "@/components/Modules/Navigation/Search";
@@ -22,6 +22,7 @@ function Navigation() {
 	const { address } = useAccount();
 	const { open } = useWeb3Modal();
 	const { chains, switchChain } = useSwitchChain();
+	const loggedOutChain = useChainId();
 	const [isClient, setIsClient] = useState(false);
 	const wrapperRef = useRef<HTMLDivElement>(null);
 	const [chainOptions, setChainOptions] = useState<option[]>();
@@ -132,7 +133,9 @@ function Navigation() {
 								{chainOptions && (
 									<Select
 										unstyled={true}
-										defaultValue={chainOptions[0]}
+										defaultValue={chainOptions.find((obj) => {
+											return obj.value === loggedOutChain;
+										})}
 										inputId="type"
 										classNames={{
 											control: (state) =>
