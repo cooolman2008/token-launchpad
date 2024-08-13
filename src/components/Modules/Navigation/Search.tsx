@@ -1,6 +1,35 @@
 "use client";
 
+import { useWeb3ModalState } from "@web3modal/wagmi/react";
+import { useChainId } from "wagmi";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { searchTokens } from "@/api/searchToken";
+import { getGraphUrl } from "@/utils/utils";
+
+interface SearchForm {
+	param: string;
+}
+
 function Search() {
+	const loggedOutChain = useChainId();
+	const { selectedNetworkId } = useWeb3ModalState();
+
+	const search = (param: string) => {
+		const chainId = selectedNetworkId ? Number(selectedNetworkId) : loggedOutChain;
+		const API_ENDPOINT = getGraphUrl(chainId);
+		if (API_ENDPOINT) searchTokens(param, API_ENDPOINT);
+	};
+
+	// handle form & fire launch token with the form details
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<SearchForm>();
+	const onSubmit: SubmitHandler<SearchForm> = (formData) => {
+		search(formData.param);
+	};
+
 	return (
 		<div className="w-full lg:w-1/4 flex mx-auto mb-8 lg:mb-0 rounded-3xl border border-neutral-700 hover:border-neutral-600">
 			<div className="inset-y-0 right-0 flex items-center pl-3">
@@ -15,9 +44,12 @@ function Search() {
 				</svg>
 			</div>
 			<input
+				id="search"
 				type="text"
-				id="amount"
 				placeholder="Search Tokens"
+				{...register("param", {
+					required: { value: true, message: "Share can't be empty" },
+				})}
 				className="block w-full rounded-xl ps-3 pe-3 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-transparent outline-0 sm:text-md pb-0.5"
 			/>
 		</div>

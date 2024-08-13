@@ -1,6 +1,6 @@
-import { useWriteContract, useWalletClient, useReadContract } from "wagmi";
+import { useWriteContract, useWalletClient } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { parseEther, formatEther } from "viem";
+import { parseEther } from "viem";
 import { useEffect, useState } from "react";
 
 import TextField from "@/components/elements/TextField";
@@ -12,17 +12,17 @@ interface PromoteForm {
 	times: bigint;
 }
 
-const Promote = ({ contractAddress, safuAddress }: { contractAddress: `0x${string}`; safuAddress: `0x${string}` }) => {
+const Promote = ({
+	contractAddress,
+	safuAddress,
+	promoCost,
+}: {
+	contractAddress: `0x${string}`;
+	safuAddress: `0x${string}`;
+	promoCost: number;
+}) => {
 	const { data: walletClient } = useWalletClient();
-	const [promoCost, setPromoCost] = useState(0);
 	const [price, setPrice] = useState(0);
-
-	// get LP details.
-	const { data: launcherData, refetch } = useReadContract({
-		address: safuAddress,
-		abi: helperAbi,
-		functionName: "getLauncherDetails",
-	});
 
 	// contract call to promote the token.
 	const { writeContract: promote } = useWriteContract({
@@ -58,11 +58,10 @@ const Promote = ({ contractAddress, safuAddress }: { contractAddress: `0x${strin
 	};
 
 	useEffect(() => {
-		if (launcherData) {
-			setPromoCost(Number(formatEther(launcherData.promoCostEth)));
-			setValue("cost", Number(formatEther(launcherData.promoCostEth)));
+		if (promoCost) {
+			setValue("cost", promoCost);
 		}
-	}, [launcherData, setValue]);
+	}, [promoCost, setValue]);
 
 	return (
 		<div className="w-full py-8 border-b border-gray-700">

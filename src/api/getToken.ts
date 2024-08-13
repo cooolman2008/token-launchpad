@@ -27,6 +27,7 @@ interface Pair {
 export interface Token {
     name: string;
     totalSupply: number;
+    isFree: boolean;
     presale: string;
     presaleStatus: string;
     cliffPeriod:number; 
@@ -79,6 +80,7 @@ export async function fetchToken(id: string, api_endpoint: string, signal?: Abor
           token(id: "${id.toLowerCase()}") {
             name
             totalSupply
+            isFree
             presale
             presaleStatus
             cliffPeriod

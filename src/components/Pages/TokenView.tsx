@@ -3,7 +3,7 @@
 import { useWalletClient, useAccount, useReadContract, useChainId } from "wagmi";
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { isAddress, getAddress } from "viem";
+import { isAddress, getAddress, formatEther } from "viem";
 
 import { fetchToken, Token, TeamMember, LPDetails } from "@/api/getToken";
 
@@ -28,6 +28,7 @@ import PresaleUser from "@/components/Modules/TokenView/PresaleUser";
 import Loading from "@/components/elements/Loading";
 
 import { ownerAbi } from "@/abi/ownerAbi";
+import { helperAbi } from "@/abi/helperAbi";
 
 function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	const address_0 = "0x0000000000000000000000000000000000000000";
@@ -53,6 +54,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	const [lp, setLp] = useState<LPDetails>();
 	const [success, setSuccess] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [promoCost, setPromoCost] = useState(0);
 
 	const clear = () => {
 		setSuccess("");
@@ -98,6 +100,19 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 			}
 		}
 	}, [LPData]);
+
+	// get Promo costs from SAFU launcher.
+	const { data: launcherData } = useReadContract({
+		address: CONTRACT_ADDRESS,
+		abi: helperAbi,
+		functionName: "getLauncherDetails",
+	});
+
+	useEffect(() => {
+		if (launcherData) {
+			setPromoCost(Number(formatEther(launcherData.promoCostEth)));
+		}
+	}, [launcherData]);
 
 	const checkIfTeam = useCallback((team: TeamMember[], address: `0x${string}`) => {
 		let members = [] as TeamMember[];
@@ -254,7 +269,9 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 													address={address}
 												/>
 											)}
-											{CONTRACT_ADDRESS && <Promote contractAddress={params?.slug} safuAddress={CONTRACT_ADDRESS} />}
+											{CONTRACT_ADDRESS && (
+												<Promote contractAddress={params?.slug} safuAddress={CONTRACT_ADDRESS} promoCost={promoCost} />
+											)}
 										</>
 									)}
 								</div>
@@ -292,6 +309,8 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 											twitter={token?.twitter ? token?.twitter : ""}
 											website={token?.website ? token?.website : ""}
 											setSuccess={setSuccess}
+											promoCost={promoCost}
+											isFree={token?.isFree}
 										/>
 									)}
 								</div>

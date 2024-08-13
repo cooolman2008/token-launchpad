@@ -6,6 +6,7 @@ import InformationTip from "@/components/elements/InformationTip";
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
 import { ownerAbi } from "@/abi/ownerAbi";
+import { parseEther } from "viem";
 
 interface SocialsForm {
 	telegram: string;
@@ -20,12 +21,16 @@ const SetSocials = memo(
 		website,
 		twitter,
 		setSuccess,
+		promoCost,
+		isFree,
 	}: {
 		contractAddress: `0x${string}`;
 		telegram: string;
 		website: string;
 		twitter: string;
 		setSuccess: Dispatch<SetStateAction<string>>;
+		promoCost: number;
+		isFree: boolean;
 	}) => {
 		const { data: walletClient } = useWalletClient();
 		const [error, setError] = useState("");
@@ -60,6 +65,7 @@ const SetSocials = memo(
 				functionName: "setSocials",
 				account: walletClient?.account,
 				args: [formData.telegram, formData.twitter, formData.website],
+				value: isFree ? parseEther((promoCost * 2).toString()) : BigInt(0),
 			});
 		};
 		return (

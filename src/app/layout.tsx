@@ -9,6 +9,8 @@ import Navigation from "@/components/Pages/Navigation";
 import { Plus_Jakarta_Sans } from "next/font/google";
 const plus_Jakarta_Sans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
+import { GoogleAnalytics } from "@next/third-parties/google";
+
 export const metadata: Metadata = {
 	title: "SAFU Launcher",
 	description: "Fully on chain erc20 token launcher",
@@ -30,6 +32,7 @@ export default function RootLayout({
 					</main>
 				</Web3ModalProvider>
 			</body>
+			<GoogleAnalytics gaId="G-MVTHDGRPLN" />
 		</html>
 	);
 }
