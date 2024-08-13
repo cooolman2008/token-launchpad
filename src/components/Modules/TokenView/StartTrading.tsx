@@ -113,7 +113,7 @@ const StartTrading = ({
 								placeholder="0"
 								{...register("liq", {
 									required: { value: true, message: "Liquidity can't be empty" },
-									pattern: { value: /^[0-9]+$/i, message: "Liquidity should be a number" },
+									pattern: { value: /^[0-9.]+$/i, message: "Liquidity should be a number" },
 									validate: (value) => value + Number(balance) > 0.05 || "Total Liquidity should be minimum 0.05",
 								})}
 								error={errors.liq}

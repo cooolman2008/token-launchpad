@@ -91,7 +91,7 @@ const Tax = ({
 					placeholder="40"
 					{...register("maxBuyTax", {
 						required: { value: true, message: "Initial Buy Tax can't be empty" },
-						pattern: { value: /^[0-9]+$/i, message: "Tax should be a number" },
+						pattern: { value: /^[0-9.]+$/i, message: "Tax should be a number" },
 						min: {
 							value: Number(getValues("minBuyTax")),
 							message: "Initial tax should be greater or equal than final tax",
@@ -110,7 +110,7 @@ const Tax = ({
 					placeholder="40"
 					{...register("maxSellTax", {
 						required: { value: true, message: "Initial Sell Tax can't be empty" },
-						pattern: { value: /^[0-9]+$/i, message: "Tax should be a number" },
+						pattern: { value: /^[0-9.]+$/i, message: "Tax should be a number" },
 						min: {
 							value: Number(getValues("minSellTax")),
 							message: "Initial tax should be greater than or equal final tax",
@@ -130,7 +130,7 @@ const Tax = ({
 						placeholder="0"
 						{...register("minBuyTax", {
 							required: { value: true, message: "Final buy Tax can't be empty" },
-							pattern: { value: /^[0-9]+$/i, message: "Tax should be a number" },
+							pattern: { value: /^[0-9.]+$/i, message: "Tax should be a number" },
 							min: { value: 0, message: "Tax can't be negative" },
 							max: { value: 6, message: "Final tax should be below 6%" },
 						})}
@@ -147,7 +147,7 @@ const Tax = ({
 						placeholder="0"
 						{...register("minSellTax", {
 							required: { value: true, message: "Final Sell Tax can't be empty" },
-							pattern: { value: /^[0-9]+$/i, message: "Tax should be a number" },
+							pattern: { value: /^[0-9.]+$/i, message: "Tax should be a number" },
 							min: { value: 0, message: "Tax can't be negative" },
 							max: { value: 6, message: "Final tax should be below 6%" },
 						})}
@@ -234,7 +234,7 @@ const Tax = ({
 					placeholder="0"
 					{...register("lpTax", {
 						required: { value: true, message: "Buy Back Tax can't be empty" },
-						pattern: { value: /^[0-9]+$/i, message: "Tax should be a number" },
+						pattern: { value: /^[0-9.]+$/i, message: "Tax should be a number" },
 						min: { value: 0, message: "Tax can't be negative" },
 						max: { value: 50, message: "Buy back tax should be below 50%" },
 					})}

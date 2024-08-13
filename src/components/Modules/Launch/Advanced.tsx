@@ -74,7 +74,7 @@ const Advanced = ({
 					placeholder="0"
 					{...register("maxTx", {
 						required: { value: true, message: "Limit can't be empty" },
-						pattern: { value: /^[0-9]+$/i, message: "Limit should be a number" },
+						pattern: { value: /^[0-9.]+$/i, message: "Limit should be a number" },
 						min: { value: 0, message: "Limit can't be negative" },
 						max: { value: 100, message: "Limit should be below 100%" },
 					})}
@@ -89,7 +89,7 @@ const Advanced = ({
 					placeholder="0"
 					{...register("maxWallet", {
 						required: { value: true, message: "Limit can't be empty" },
-						pattern: { value: /^[0-9]+$/i, message: "Limit should be a number" },
+						pattern: { value: /^[0-9.]+$/i, message: "Limit should be a number" },
 						min: { value: 0, message: "Limit can't be negative" },
 						max: { value: 100, message: "Limit should be below 100%" },
 					})}

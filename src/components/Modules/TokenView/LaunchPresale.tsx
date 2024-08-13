@@ -138,7 +138,7 @@ const LaunchPresale = ({
 										placeholder="0"
 										{...register("liqPercent", {
 											required: { value: true, message: "Liquidity share can't be empty" },
-											pattern: { value: /^[0-9]+$/i, message: "Liquidity share should be a number" },
+											pattern: { value: /^[0-9.]+$/i, message: "Liquidity share should be a number" },
 											min: { value: 80, message: "Liquidity share should be minimum 80% of presale" },
 											max: { value: 100, message: "Liquidity share should be below 100%" },
 										})}
@@ -205,7 +205,7 @@ const LaunchPresale = ({
 										placeholder="0"
 										{...register("maxEth", {
 											required: { value: true, message: "ETH hardcap can't be empty" },
-											pattern: { value: /^[0-9]+$/i, message: "ETH hardcap should be a number" },
+											pattern: { value: /^[0-9.]+$/i, message: "ETH hardcap should be a number" },
 											min: { value: 0, message: "ETH hardcap can't be negative" },
 										})}
 										error={errors.maxEth}
@@ -220,7 +220,7 @@ const LaunchPresale = ({
 										placeholder="0"
 										{...register("maxBag", {
 											required: { value: true, message: "Max bag can't be empty" },
-											pattern: { value: /^[0-9]+$/i, message: "Max bag should be a number" },
+											pattern: { value: /^[0-9.]+$/i, message: "Max bag should be a number" },
 											min: { value: 0, message: "Max bag can't be negative" },
 											max: {
 												value: Number(getValues("percent") * 0.1),
@@ -240,7 +240,7 @@ const LaunchPresale = ({
 										placeholder="0"
 										{...register("percent", {
 											required: { value: true, message: "Token hardcap can't be empty" },
-											pattern: { value: /^[0-9]+$/i, message: "Token hardcap should be a number" },
+											pattern: { value: /^[0-9.]+$/i, message: "Token hardcap should be a number" },
 											min: { value: 1, message: "Token hardcap can't be negative" },
 											max: { value: 100, message: "Token hardcap should be below 100%" },
 										})}

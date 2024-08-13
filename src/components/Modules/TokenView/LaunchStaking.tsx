@@ -83,7 +83,7 @@ const LaunchStaking = ({
 								placeholder="0"
 								{...register("share", {
 									required: { value: true, message: "Share can't be empty" },
-									pattern: { value: /^[0-9]+$/i, message: "Share should be a number" },
+									pattern: { value: /^[0-9.]+$/i, message: "Share should be a number" },
 									min: { value: 0, message: "Share can't be negative" },
 									max: { value: 20, message: "Share should be below 20%" },
 								})}

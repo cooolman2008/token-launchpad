@@ -79,7 +79,7 @@ const Limits = ({
 								defaultValue={txLimit}
 								{...register("maxtx", {
 									required: { value: true, message: "New limit can't be empty" },
-									pattern: { value: /^[0-9]+$/i, message: "New limit should be a number" },
+									pattern: { value: /^[0-9.]+$/i, message: "New limit should be a number" },
 									min: { value: txLimit, message: "New limit should be more than current limit" },
 									max: { value: 100, message: "New limit should be below 100%" },
 								})}
@@ -97,7 +97,7 @@ const Limits = ({
 								defaultValue={walletLimit}
 								{...register("maxwallet", {
 									required: { value: true, message: "New limit can't be empty" },
-									pattern: { value: /^[0-9]+$/i, message: "New limit should be a number" },
+									pattern: { value: /^[0-9.]+$/i, message: "New limit should be a number" },
 									min: { value: walletLimit, message: "New limit should be more than current limit" },
 									max: { value: 100, message: "New limit should be below 100%" },
 								})}
