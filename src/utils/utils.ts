@@ -10,7 +10,7 @@ export const getContractAddress = ( chainId: number | undefined) => {
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
-        case 17000: return getAddress("0xe165a1453bedcc0a33c2e2f04bca5231f6775a82") // holskey
+        case 17000: return getAddress("0x57f2df524afc36bc58a32e6c7f94a42fa7175479") // holeskey
         case 421614: return undefined // arbitrumSepolia
         case 11155420: return undefined // optimismSepolia
         case 80002: return "0x686977da4b81ef80bc4f12d8587bf793f610ff21" // polygonAmoy
@@ -33,7 +33,7 @@ export const getGraphUrl = ( chainId: number) => {
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
-        case 17000: return "https://api.studio.thegraph.com/query/82166/safulauncher/0.0.11" // holskey
+        case 17000: return "https://api.studio.thegraph.com/query/82166/safulauncher/0.0.12" // holeskey
         case 421614: return undefined // arbitrumSepolia
         case 11155420: return undefined // optimismSepolia
         case 80002: return "https://api.studio.thegraph.com/query/82166/safupolygontest/0.0.1" // polygonAmoy
@@ -65,7 +65,7 @@ export const getRouters = ( chainId: number) => {
         },{
             value: "0xe75850fc641b0930a3b6e6dbf1d0926ee9898645",
             label: "Pancakeswap Router"
-        }] // holskey
+        }] // holeskey
         case 421614: return [] // arbitrumSepolia
         case 11155420: return [] // optimismSepolia
         case 80002: return [{
@@ -124,7 +124,7 @@ export const getRouterAddress = ( chainId: number) => {
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
-        case 17000: return getAddress("0xe75850fc641b0930a3b6e6dbf1d0926ee9898645") // holskey
+        case 17000: return getAddress("0xe75850fc641b0930a3b6e6dbf1d0926ee9898645") // holeskey
         case 421614: return undefined // arbitrumSepolia
         case 11155420: return undefined // optimismSepolia
         case 80002: return "0x51f0dbdfc17bdf9c2a7b68937c1b9925a35232c3" // polygonAmoy
@@ -147,7 +147,7 @@ export const getBaseCoin = ( chainId: number) => {
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
-        case 17000: return getAddress("0x94373a4919b3240d86ea41593d5eba789fef3848") // holskey
+        case 17000: return getAddress("0x94373a4919b3240d86ea41593d5eba789fef3848") // holeskey
         case 421614: return undefined // arbitrumSepolia
         case 11155420: return undefined // optimismSepolia
         case 80002: return "0xdcac497cde43919298ac2a7dd25e4c6e55a9fa0c" // polygonAmoy
@@ -170,7 +170,7 @@ export const getUSDC = ( chainId: number) => {
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
-        case 17000: return getAddress("0xc76d5911607fa20f742202a806944d9e1c198725") // holskey
+        case 17000: return getAddress("0xc76d5911607fa20f742202a806944d9e1c198725") // holeskey
         case 421614: return undefined // arbitrumSepolia
         case 11155420: return undefined // optimismSepolia
         case 80002: return "0xf95f74ad5b4249e25e6be64787872c88bc28d531" // polygonAmoy
@@ -193,7 +193,7 @@ export const getEtherscan = ( chainId: number) =>{
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
-        case 17000: return "https://holesky.etherscan.io/token/" // holskey
+        case 17000: return "https://holesky.etherscan.io/token/" // holeskey
         case 421614: return undefined // arbitrumSepolia
         case 11155420: return undefined // optimismSepolia
         case 80002: return "https://amoy.polygonscan.com/token/" // polygonAmoy
