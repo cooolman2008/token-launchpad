@@ -128,7 +128,14 @@ const LaunchPresale = ({
 			<div className="w-full py-8 border-b border-gray-700">
 				{presaleAddress !== "0x0000000000000000000000000000000000000000" ? (
 					<>
-						<h2 className="text-xl mb-1">Start your Presales</h2>
+						<div className="flex justify-between items-center">
+							<h2 className="text-xl mb-1">Start your Presales</h2>
+							{totalSupply > 0 && (
+								<span className="text-xl font-medium text-gray-400">
+									<b className="font-bold text-gray-500">Supply:</b> {Number(totalSupply)}
+								</span>
+							)}
+						</div>
 						<p className="text-sm text-gray-500 mb-4">
 							Setup presale for your token.
 							<br />
