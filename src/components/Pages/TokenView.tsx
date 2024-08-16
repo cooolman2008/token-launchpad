@@ -223,6 +223,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 													contractAddress={params?.slug}
 													setSuccess={setSuccess}
 													presaleAddress={getAddress(token?.presale)}
+													totalSupply={token?.totalSupply}
 												/>
 											)}
 											{presale !== 0 && token?.presale && (

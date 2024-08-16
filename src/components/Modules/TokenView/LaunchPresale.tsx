@@ -1,6 +1,6 @@
 import { useWriteContract, useWalletClient, useChainId } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useState, SetStateAction, Dispatch } from "react";
+import { useState, SetStateAction, Dispatch, useEffect } from "react";
 import { parseEther } from "viem";
 
 import TextField from "@/components/elements/TextField";
@@ -19,17 +19,19 @@ interface PresaleForm {
 	vestingPeriod: number;
 	maxEth: number;
 	maxBag: number;
-	saftcap: number;
+	softcap: number;
 }
 
 const LaunchPresale = ({
 	contractAddress,
 	presaleAddress,
 	setSuccess,
+	totalSupply,
 }: {
 	contractAddress: `0x${string}`;
 	presaleAddress?: `0x${string}`;
 	setSuccess: Dispatch<SetStateAction<string>>;
+	totalSupply: number;
 }) => {
 	const { data: walletClient } = useWalletClient();
 	const [error, setError] = useState("");
@@ -112,6 +114,10 @@ const LaunchPresale = ({
 			});
 		}
 	};
+
+	useEffect(() => {
+		setValue("maxBag", totalSupply * 0.01);
+	}, [setValue, totalSupply]);
 	return (
 		<>
 			{launching && <Loading msg="Launching a presale contract..." />}
@@ -251,7 +257,7 @@ const LaunchPresale = ({
 										labelWidth="grow"
 										containerWidth="w-full md:w-1/2"
 										onKeyUp={() => {
-											setValue("saftcap", getValues("percent") * 0.25);
+											setValue("softcap", getValues("percent") * 0.25);
 										}}
 									/>
 									<TextField
@@ -259,7 +265,7 @@ const LaunchPresale = ({
 										id="softcap"
 										defaultValue="2.5"
 										placeholder="0"
-										{...register("saftcap", {
+										{...register("softcap", {
 											disabled: true,
 										})}
 										isPercent={true}
