@@ -136,7 +136,7 @@ const PresaleUser = ({
 			const finish = Number(presale?.finishTs);
 			const duration = Number(presale?.duration) * 86400;
 			const cliff = Number(presale?.cliffPeriod) * 86400;
-			const now = Math.floor(Date.now() / 1000) + 8 * 86400;
+			const now = Math.floor(Date.now() / 1000);
 			switch (presale?.status) {
 				case BigInt(1):
 					if (now > start + duration) {
