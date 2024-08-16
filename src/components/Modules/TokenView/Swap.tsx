@@ -161,14 +161,14 @@ const Swap = ({
 			if (tokenIn.address.toUpperCase() === WETH_ADDRESS.toUpperCase()) {
 				console.log({
 					address: routerAddress,
-					functionName: "swapExactETHForTokensSupportingFeeOnTransferTokens",
+					functionName: "swapExactETHForTokens",
 					args: [minAmountOut, [WETH_ADDRESS, contractAddress], address, deadline],
 					value: amountInMax,
 				});
 				swap({
 					address: routerAddress,
 					abi: routerAbi,
-					functionName: "swapExactETHForTokensSupportingFeeOnTransferTokens",
+					functionName: "swapExactETHForTokens",
 					args: [minAmountOut, [WETH_ADDRESS, contractAddress], address, deadline],
 					value: amountInMax,
 				});
@@ -176,13 +176,13 @@ const Swap = ({
 				if (allowance >= amountInMax) {
 					console.log({
 						address: routerAddress,
-						functionName: "swapExactTokensForETHSupportingFeeOnTransferTokens",
+						functionName: "swapExactTokensForETH",
 						args: [amountInMax, minAmountOut, [contractAddress, WETH_ADDRESS], address, deadline],
 					});
 					tokenSwap({
 						address: routerAddress,
 						abi: routerAbi,
-						functionName: "swapExactTokensForETHSupportingFeeOnTransferTokens",
+						functionName: "swapExactTokensForETH",
 						args: [amountInMax, minAmountOut, [contractAddress, WETH_ADDRESS], address, deadline],
 					});
 				} else {
@@ -194,13 +194,13 @@ const Swap = ({
 					}).then(() => {
 						console.log({
 							address: routerAddress,
-							functionName: "swapExactTokensForETHSupportingFeeOnTransferTokens",
+							functionName: "swapExactTokensForETH",
 							args: [amountInMax, minAmountOut, [contractAddress, WETH_ADDRESS], address, deadline],
 						});
 						tokenSwap({
 							address: routerAddress,
 							abi: routerAbi,
-							functionName: "swapExactTokensForETHSupportingFeeOnTransferTokens",
+							functionName: "swapExactTokensForETH",
 							args: [amountInMax, minAmountOut, [contractAddress, WETH_ADDRESS], address, deadline],
 						});
 					});
