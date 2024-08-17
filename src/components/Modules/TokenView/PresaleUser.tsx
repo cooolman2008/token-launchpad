@@ -6,6 +6,7 @@ import Modal from "@/components/elements/Modal";
 
 import { getAbr, getNumber } from "@/utils/math";
 import { presaleAbi } from "@/abi/presaleAbi";
+import { formatEther } from "viem";
 
 interface Presale {
 	softcap: bigint;
@@ -51,6 +52,7 @@ const PresaleUser = ({
 	});
 
 	useEffect(() => {
+		console.log(presaleData);
 		if (presaleData) {
 			setPresale(presaleData);
 		}
@@ -69,6 +71,7 @@ const PresaleUser = ({
 	});
 
 	useEffect(() => {
+		console.log(clamables);
 		if (clamables && clamables?.length > 0) {
 			setClaimable(clamables[0]);
 			setClaimableDays(clamables[1]);
@@ -124,6 +127,22 @@ const PresaleUser = ({
 		},
 	});
 
+	// contract call to refund the liquidity from the token contract to presale contract.
+	const { isPending: claiming, writeContract: claim } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				getBought();
+				callback();
+				setSuccess("Presales claimed successfully");
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
+		},
+	});
+
 	// 1 - Presale live but duration passed - end presale button.
 	// 2 - Presale successfull but not trading - waiting banner.
 	// 3 - Presale successfull but not trading passed duration - refund presale button.
@@ -137,6 +156,7 @@ const PresaleUser = ({
 			const duration = Number(presale?.duration) * 86400;
 			const cliff = Number(presale?.cliffPeriod) * 86400;
 			const now = Math.floor(Date.now() / 1000);
+
 			switch (presale?.status) {
 				case BigInt(1):
 					if (now > start + duration) {
@@ -169,6 +189,7 @@ const PresaleUser = ({
 			{finishing && <Loading msg="Ending presale..." />}
 			{getting && <Loading msg="Initiating presale token refund..." />}
 			{refunding && <Loading msg="Initiating presale liquidity refund..." />}
+			{claiming && <Loading msg="Initiating presale liquidity refund..." />}
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
 			)}
@@ -257,6 +278,32 @@ const PresaleUser = ({
 									Your tokens are in a cliff period right now! You can claim your tokens once cliff period is over &
 									vesting starts.
 								</h2>
+							</div>
+						</>
+					)}
+					{presaleScene === 5 && (
+						<>
+							<div className="w-full flex flex-wrap justify-center">
+								<h2 className="w-full text-xl text-red-700 font-medium text-center mb-4">
+									Hurray!! Your presale claims are here!
+								</h2>
+								<div className="flex justify-center flex-col">
+									<input
+										className="safu-button-secondary cursor-pointer"
+										type="submit"
+										value={"Claim " + formatEther(claimable)}
+										onClick={() => {
+											if (presaleAddress) {
+												claim({
+													address: presaleAddress,
+													abi: presaleAbi,
+													functionName: "claimTokens",
+													account: walletClient?.account,
+												});
+											}
+										}}
+									/>
+								</div>
 							</div>
 						</>
 					)}

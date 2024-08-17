@@ -92,10 +92,8 @@ const Tax = ({
 					{...register("maxBuyTax", {
 						required: { value: true, message: "Initial Buy Tax can't be empty" },
 						pattern: { value: /^[0-9.]+$/i, message: "Tax should be a number" },
-						min: {
-							value: Number(getValues("minBuyTax")),
-							message: "Initial tax should be greater or equal than final tax",
-						},
+						validate: (value) =>
+							value > Number(getValues("minBuyTax")) || "Initial tax should be greater than or equal to final tax",
 						max: { value: 40, message: "Initial tax should be below 40%" },
 					})}
 					isPercent={true}
@@ -111,10 +109,8 @@ const Tax = ({
 					{...register("maxSellTax", {
 						required: { value: true, message: "Initial Sell Tax can't be empty" },
 						pattern: { value: /^[0-9.]+$/i, message: "Tax should be a number" },
-						min: {
-							value: Number(getValues("minSellTax")),
-							message: "Initial tax should be greater than or equal final tax",
-						},
+						validate: (value) =>
+							value > Number(getValues("minSellTax")) || "Initial tax should be greater than or equal to final tax",
 						max: { value: 40, message: "Initial tax should be below 40%" },
 					})}
 					isPercent={true}

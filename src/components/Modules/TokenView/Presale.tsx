@@ -1,4 +1,4 @@
-import { useWalletClient, useAccount, useReadContract, useWriteContract } from "wagmi";
+import { useWalletClient, useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, SetStateAction, Dispatch, useEffect } from "react";
 import { parseEther } from "viem";
@@ -40,6 +40,7 @@ const Presale = ({
 	const [presale, setPresale] = useState<Presale>();
 	const [bought, setBought] = useState(BigInt(0));
 	const [maxBag, setMaxBag] = useState(0);
+	const [remaining, setRremaining] = useState(0);
 
 	// get presale details.
 	const { data: presaleData, refetch } = useReadContract({
@@ -69,14 +70,18 @@ const Presale = ({
 	}, [clamables]);
 
 	// contract call to buy presale tokens.
-	const { isPending: buying, writeContract: buyTokens } = useWriteContract({
+	const {
+		isPending: buying,
+		writeContract: buyTokens,
+		data: trans,
+	} = useWriteContract({
 		mutation: {
 			onSuccess(res) {
 				console.log(res);
 				setSuccess("Presale tokens bought successfully!");
 				setValue("amount", 0);
-				getBought();
-				refetch();
+				// getBought();
+				// refetch();
 			},
 			onError(error) {
 				console.log(error);
@@ -85,11 +90,24 @@ const Presale = ({
 		},
 	});
 
+	// get the transaction details by waiting for the transaction.
+	const { data: transaction, isLoading: retrieval } = useWaitForTransactionReceipt({
+		hash: trans,
+	});
+
+	useEffect(() => {
+		if (transaction) {
+			getBought();
+			refetch();
+		}
+	}, [transaction]);
+
 	useEffect(() => {
 		if (presale) {
+			setMaxBag(getNumber(presale.maxBag));
 			const remaining = presale.maxBag - bought;
 			const available = presale.hardcap - presale.sold;
-			remaining > available ? setMaxBag(getNumber(available)) : setMaxBag(getNumber(remaining));
+			remaining > available ? setRremaining(getNumber(available)) : setRremaining(getNumber(remaining));
 		}
 	}, [bought, presale]);
 
@@ -130,7 +148,8 @@ const Presale = ({
 								: "text-amber-400")
 						}
 					>
-						<b className="text-sm font-normal text-gray-400">Sold: </b> {presale?.sold ? getNumber(presale?.sold) : "0"}
+						<b className="text-sm font-normal text-gray-400">Sold: </b>{" "}
+						{presale?.sold ? getAbr(getNumber(presale?.sold)) : "0"}
 					</span>
 				</div>
 				<form onSubmit={handleSubmit(onSubmit)} className="mb-4">
@@ -165,9 +184,9 @@ const Presale = ({
 						<div className="flex justify-between mb-4">
 							<span className={"text-sm font-normal " + (errors.amount ? "text-red-600" : "text-gray-400")}>
 								<b className="text-sm font-normal text-gray-400">Wallet limit:</b>{" "}
-								{presale?.maxBag ? getNumber(presale?.maxBag) : "0"}
+								{presale?.maxBag ? getAbr(getNumber(bought)) + " / " + getAbr(getNumber(presale?.maxBag)) : "0"}
 							</span>
-							<span className="text-sm font-normal text-gray-400">You Bought: {bought ? getNumber(bought) : "0"}</span>
+							<span className="text-sm font-normal text-gray-400">Remaining: {remaining ? remaining : "0"}</span>
 						</div>
 						<div className="w-full flex">
 							<input

@@ -103,11 +103,14 @@ const Advanced = ({
 					{...register("taxSwapThreshold", {
 						required: { value: true, message: "Threshold can't be empty" },
 						pattern: { value: /^[0-9]+$/i, message: "Threshold should be a number" },
-						min: {
-							value: Number(getValues("supply")) * 0.00001,
-							message: "Threshold should be minimum 0.0001% of Supply",
+						validate: (value) => {
+							if (value < Number(getValues("supply")) * 0.00001) {
+								return "Threshold should be minimum 0.0001% of Supply";
+							}
+							if (value > Number(getValues("supply")) * 0.001) {
+								return "Threshold should be below 0.1% of Supply";
+							}
 						},
-						max: { value: Number(getValues("supply")) * 0.01, message: "Threshold should be below 0.1% of Supply" },
 					})}
 					error={errors.taxSwapThreshold}
 					width="w-24"
@@ -120,8 +123,14 @@ const Advanced = ({
 					{...register("maxSwap", {
 						required: { value: true, message: "Max Tax Swap can't be empty" },
 						pattern: { value: /^[0-9]+$/i, message: "Max Tax Swap should be a number" },
-						min: { value: Number(getValues("supply")) * 0.01, message: "Max Tax Swap should be minimum 1% of Supply" },
-						max: { value: Number(getValues("supply")) * 0.02, message: "Max Tax Swap should be below 2% of Supply" },
+						validate: (value) => {
+							if (value < Number(getValues("supply")) * 0.01) {
+								return "Max Tax Swap should be minimum 1% of Supply";
+							}
+							if (value > Number(getValues("supply")) * 0.02) {
+								return "Max Tax Swap should be below 2% of Supply";
+							}
+						},
 					})}
 					isError={errors.maxSwap ? true : false}
 					error={errors.maxSwap}

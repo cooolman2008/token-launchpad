@@ -181,8 +181,8 @@ const LaunchPresale = ({
 									<TextField
 										label="Cliff period"
 										id="cliffPeriod"
-										placeholder="2"
-										defaultValue={2}
+										placeholder="1"
+										defaultValue={1}
 										{...register("cliffPeriod", {
 											required: { value: true, message: "Cliff period can't be empty" },
 											pattern: { value: /^[0-9]+$/i, message: "Cliff period should be a number" },
@@ -235,10 +235,9 @@ const LaunchPresale = ({
 											required: { value: true, message: "Max bag can't be empty" },
 											pattern: { value: /^[0-9.]+$/i, message: "Max bag should be a number" },
 											min: { value: 0, message: "Max bag can't be negative" },
-											max: {
-												value: Number(getValues("percent") * 0.1),
-												message: "Max bag should be below 10% of hardcap",
-											},
+											validate: (value) =>
+												value <= Number((getValues("percent") / 100) * totalSupply * 0.1) ||
+												"Max bag should be below 10% of hardcap",
 										})}
 										error={errors.maxBag}
 										width="w-32"

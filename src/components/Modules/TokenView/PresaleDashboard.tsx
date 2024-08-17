@@ -6,6 +6,7 @@ import Modal from "@/components/elements/Modal";
 
 import { getNumber } from "@/utils/math";
 import { presaleAbi } from "@/abi/presaleAbi";
+import { formatEther } from "viem";
 
 interface Presale {
 	softcap: bigint;
@@ -42,7 +43,7 @@ const PresaleDashboard = ({
 
 	useEffect(() => {
 		if (balanceData) {
-			setBalance(Number(balanceData.value));
+			setBalance(Number(formatEther(balanceData.value)));
 		}
 	}, [balanceData]);
 
