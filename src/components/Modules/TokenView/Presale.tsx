@@ -1,7 +1,7 @@
 import { useWalletClient, useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, SetStateAction, Dispatch, useEffect } from "react";
-import { parseEther } from "viem";
+import { formatEther, parseEther } from "viem";
 
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
@@ -9,6 +9,7 @@ import Modal from "@/components/elements/Modal";
 import { getAbr, getNumber } from "@/utils/math";
 import { presaleAbi } from "@/abi/presaleAbi";
 import { animate, AnimationControls } from "motion";
+import { format } from "path";
 
 interface PresaleForm {
 	amount: number;
@@ -40,6 +41,7 @@ const Presale = ({
 	const [bought, setBought] = useState(BigInt(0));
 	const [maxBag, setMaxBag] = useState(0);
 	const [success, setSuccess] = useState("");
+	const [price, setPrice] = useState("");
 	const [remaining, setRremaining] = useState(0);
 	const [trans, setTrans] = useState<`0x${string}`>();
 	const [animation, setAnimation] = useState<AnimationControls>();
@@ -58,7 +60,7 @@ const Presale = ({
 	}, [presaleData]);
 
 	// get user claimable token details.
-	const { data: clamables, refetch: getBought } = useReadContract({
+	const { data: claimables, refetch: getBought } = useReadContract({
 		address: presaleAddress,
 		abi: presaleAbi,
 		functionName: "getClaimableTokens",
@@ -66,10 +68,10 @@ const Presale = ({
 	});
 
 	useEffect(() => {
-		if (clamables && clamables?.length > 0) {
-			setBought(clamables[2]);
+		if (claimables && claimables?.length > 0) {
+			setBought(claimables[2]);
 		}
-	}, [clamables]);
+	}, [claimables]);
 
 	// contract call to buy presale tokens.
 	const { isPending: buying, writeContract: buyTokens } = useWriteContract({
@@ -89,7 +91,11 @@ const Presale = ({
 	});
 
 	// get the transaction details by waiting for the transaction.
-	const { data: transaction, isLoading: retrieval } = useWaitForTransactionReceipt({
+	const {
+		data: transaction,
+		isLoading: retrieval,
+		isError,
+	} = useWaitForTransactionReceipt({
 		hash: trans,
 	});
 
@@ -98,10 +104,10 @@ const Presale = ({
 			animation?.stop();
 			getBought();
 			refetch();
-		} else if (trans) {
+		} else if (isError) {
 			setError("Something went wrong!");
 		}
-	}, [transaction, getBought, refetch, trans, animation]);
+	}, [transaction, getBought, refetch, trans, animation, isError]);
 
 	useEffect(() => {
 		setAnimation(
@@ -218,6 +224,11 @@ const Presale = ({
 									pattern: /^[0-9]+$/i,
 									min: 1,
 									max: maxBag,
+									onChange: (event) => {
+										const amount = parseEther(event.target.value.toString());
+										if (presale?.maxEth && presale?.hardcap)
+											setPrice(formatEther((amount * presale?.maxEth) / presale?.hardcap));
+									},
 								})}
 								className="block w-full rounded-xl pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-3xl"
 							/>
@@ -227,7 +238,11 @@ const Presale = ({
 					{maxBag > 0 && (
 						<div className="flex justify-between flex-wrap">
 							<div className="flex justify-center flex-col mt-2 mr-2 grow">
-								<input className="safu-button-primary cursor-pointer" type="submit" value="Buy" />
+								<input
+									className="safu-button-primary cursor-pointer"
+									type="submit"
+									value={price ? "Buy for " + price : "Buy"}
+								/>
 							</div>
 						</div>
 					)}
