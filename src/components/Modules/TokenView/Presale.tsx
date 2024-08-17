@@ -8,6 +8,7 @@ import Modal from "@/components/elements/Modal";
 
 import { getAbr, getNumber } from "@/utils/math";
 import { presaleAbi } from "@/abi/presaleAbi";
+import { animate, AnimationControls } from "motion";
 
 interface PresaleForm {
 	amount: number;
@@ -26,13 +27,11 @@ interface Presale {
 const Presale = ({
 	symbol,
 	presaleAddress,
-	setSuccess,
 	address,
 }: {
 	symbol: string;
 	presaleAddress: `0x${string}`;
 	address: `0x${string}`;
-	setSuccess: Dispatch<SetStateAction<string>>;
 }) => {
 	const { data: walletClient } = useWalletClient();
 
@@ -40,7 +39,10 @@ const Presale = ({
 	const [presale, setPresale] = useState<Presale>();
 	const [bought, setBought] = useState(BigInt(0));
 	const [maxBag, setMaxBag] = useState(0);
+	const [success, setSuccess] = useState("");
 	const [remaining, setRremaining] = useState(0);
+	const [trans, setTrans] = useState<`0x${string}`>();
+	const [animation, setAnimation] = useState<AnimationControls>();
 
 	// get presale details.
 	const { data: presaleData, refetch } = useReadContract({
@@ -70,18 +72,14 @@ const Presale = ({
 	}, [clamables]);
 
 	// contract call to buy presale tokens.
-	const {
-		isPending: buying,
-		writeContract: buyTokens,
-		data: trans,
-	} = useWriteContract({
+	const { isPending: buying, writeContract: buyTokens } = useWriteContract({
 		mutation: {
 			onSuccess(res) {
 				console.log(res);
-				setSuccess("Presale tokens bought successfully!");
 				setValue("amount", 0);
-				// getBought();
-				// refetch();
+				setTrans(res);
+				setSuccess("Your presale tokens are on it's way!");
+				animation?.play();
 			},
 			onError(error) {
 				console.log(error);
@@ -97,12 +95,27 @@ const Presale = ({
 
 	useEffect(() => {
 		if (transaction) {
+			animation?.stop();
 			getBought();
 			refetch();
+		} else if (trans) {
+			setError("Something went wrong!");
 		}
-	}, [transaction]);
+	}, [transaction, getBought, refetch]);
 
 	useEffect(() => {
+		setAnimation(
+			animate(
+				"#bought",
+				{ opacity: [1, 0.4] },
+				{
+					easing: "ease-in-out",
+					duration: 0.5,
+					direction: "alternate",
+					repeat: Infinity,
+				}
+			)
+		);
 		if (presale) {
 			setMaxBag(getNumber(presale.maxBag));
 			const remaining = presale.maxBag - bought;
@@ -110,6 +123,12 @@ const Presale = ({
 			remaining > available ? setRremaining(getNumber(available)) : setRremaining(getNumber(remaining));
 		}
 	}, [bought, presale]);
+
+	useEffect(() => {
+		if (animation) {
+			animation.stop();
+		}
+	}, [animation]);
 
 	// handle buy form.
 	const {
@@ -135,7 +154,8 @@ const Presale = ({
 
 	return (
 		<>
-			{buying && <Loading msg="Getting the tokens for you..." />}
+			{buying && <Loading msg="Getting presale tokens for you..." />}
+			{success && <Modal msg={success} />}
 			{error && <Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} />}
 			<div className="presale-container mt-12">
 				<div className="flex justify-between mb-2 items-center relative">
@@ -182,7 +202,7 @@ const Presale = ({
 							</div>
 						</div>
 						<div className="flex justify-between mb-4">
-							<span className={"text-sm font-normal " + (errors.amount ? "text-red-600" : "text-gray-400")}>
+							<span className={"text-sm font-normal " + (errors.amount ? "text-red-600" : "text-gray-400")} id="bought">
 								<b className="text-sm font-normal text-gray-400">Wallet limit:</b>{" "}
 								{presale?.maxBag ? getAbr(getNumber(bought)) + " / " + getAbr(getNumber(presale?.maxBag)) : "0"}
 							</span>
