@@ -101,7 +101,7 @@ const Presale = ({
 		} else if (trans) {
 			setError("Something went wrong!");
 		}
-	}, [transaction, getBought, refetch]);
+	}, [transaction, getBought, refetch, trans, animation]);
 
 	useEffect(() => {
 		setAnimation(
