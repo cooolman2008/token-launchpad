@@ -1,7 +1,7 @@
 import { useWriteContract, useWalletClient, useBalance, useChainId } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, useEffect, SetStateAction, Dispatch } from "react";
-import { getAddress, parseEther } from "viem";
+import { formatEther, getAddress, parseEther } from "viem";
 import Select from "react-select";
 
 import TextField from "@/components/elements/TextField";
@@ -13,7 +13,7 @@ import { tokenAbi } from "@/abi/tokenAbi";
 
 interface TradingForm {
 	liq: number;
-	lockPeriod: bigint;
+	lockPeriod: number;
 	shouldBurn: boolean;
 }
 
@@ -73,13 +73,14 @@ const StartTrading = ({
 		formState: { errors },
 	} = useForm<TradingForm>();
 	const onSubmit: SubmitHandler<TradingForm> = (formData) => {
+		console.log(BigInt(formData.lockPeriod));
 		const routerAddr = getAddress(router);
 		write({
 			address: contractAddress,
 			abi: tokenAbi,
 			functionName: "startTrading",
 			account: walletClient?.account,
-			args: [formData.lockPeriod, formData.shouldBurn, routerAddr],
+			args: [BigInt(formData.lockPeriod), formData.shouldBurn, routerAddr],
 			value: parseEther(formData.liq.toString()),
 		});
 	};
@@ -94,7 +95,7 @@ const StartTrading = ({
 					<h2 className="text-xl mb-1">Start trading!</h2>
 					{balance > 0 && (
 						<span className="text-xl font-medium text-slate-200">
-							<b className="font-bold text-gray-500">Available:</b> {Number(balance)} ETH
+							<b className="font-bold text-gray-500">Available:</b> {Number(formatEther(balance))} ETH
 						</span>
 					)}
 				</div>
@@ -149,7 +150,7 @@ const StartTrading = ({
 											{...register("shouldBurn")}
 											onChange={() => {
 												setShowLock((showLock) => !showLock);
-												setValue("lockPeriod", showLock ? BigInt(0) : BigInt(30));
+												setValue("lockPeriod", showLock ? 0 : 30);
 											}}
 											defaultChecked={false}
 										/>

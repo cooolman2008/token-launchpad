@@ -119,7 +119,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 		let id = "";
 		team.forEach((element) => {
 			id = getSecondPart(element.id);
-			if (id === address) {
+			if (id.toLowerCase() === address.toLowerCase()) {
 				setIsTeam(true);
 			}
 			members.push({
@@ -207,7 +207,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 										isPresale={presale === 1}
 										chain={chainId}
 									/>
-									{isTeam && <Claim contractAddress={params?.slug} />}
+									{isTeam && address && <Claim contractAddress={params?.slug} address={address} token={token} />}
 									{isOwner && !isTrading && presale === 0 && (
 										<Team
 											contractAddress={params?.slug}

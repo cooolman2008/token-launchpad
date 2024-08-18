@@ -10,7 +10,7 @@ export const getContractAddress = ( chainId: number | undefined) => {
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
-        case 17000: return getAddress("0x5712131232F321A03E29e90ce1a7e766B3f0746F") // holeskey
+        case 17000: return getAddress("0xfe7509e84d5ac4167d97a4ad4812d9624f7572ba") // holeskey
         case 421614: return undefined // arbitrumSepolia
         case 11155420: return undefined // optimismSepolia
         case 80002: return "0x686977da4b81ef80bc4f12d8587bf793f610ff21" // polygonAmoy
@@ -18,7 +18,7 @@ export const getContractAddress = ( chainId: number | undefined) => {
         case 97: return getAddress("0xe21a4adcaffdce1dfe914ed9a23e716d43e498cc") // bscTestnet
         case 43114: return undefined // avalanche
         case 168587773: return undefined // blastSepolia
-        case 1337: return getAddress("0xa3e5dfe71ae3e6dec4d98fa28821df355d7244b3")
+        case 1337: return getAddress("0xa51807d5a12e7e78148c66dc4851cd33eed1fdfd")
         default: return undefined;
     }
 }
@@ -33,7 +33,7 @@ export const getGraphUrl = ( chainId: number) => {
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
-        case 17000: return "https://api.studio.thegraph.com/query/82166/safulauncher/0.0.16" // holeskey
+        case 17000: return "https://api.studio.thegraph.com/query/82166/safulauncher/0.0.17" // holeskey
         case 421614: return undefined // arbitrumSepolia
         case 11155420: return undefined // optimismSepolia
         case 80002: return "https://api.studio.thegraph.com/query/82166/safupolygontest/0.0.1" // polygonAmoy

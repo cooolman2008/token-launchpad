@@ -51,25 +51,6 @@ export const ownerAbi = [
       "anonymous":false,
       "inputs":[
         {
-          "indexed":true,
-          "internalType":"address",
-          "name":"previousOwner",
-          "type":"address"
-        },
-        {
-          "indexed":true,
-          "internalType":"address",
-          "name":"newOwner",
-          "type":"address"
-        }
-      ],
-      "name":"OwnershipTransferred",
-      "type":"event"
-    },
-    {
-      "anonymous":false,
-      "inputs":[
-        {
           "indexed":false,
           "internalType":"string",
           "name":"telegram",
@@ -114,6 +95,19 @@ export const ownerAbi = [
         }
       ],
       "name":"StakingLaunched",
+      "type":"event"
+    },
+    {
+      "anonymous":false,
+      "inputs":[
+        {
+          "indexed":false,
+          "internalType":"uint256",
+          "name":"share",
+          "type":"uint256"
+        }
+      ],
+      "name":"StakingShareIncreased",
       "type":"event"
     },
     {
@@ -229,6 +223,16 @@ export const ownerAbi = [
           "internalType":"uint256",
           "name":"",
           "type":"uint256"
+        },
+        {
+          "internalType":"uint256",
+          "name":"",
+          "type":"uint256"
+        },
+        {
+          "internalType":"uint256",
+          "name":"",
+          "type":"uint256"
         }
       ],
       "stateMutability":"view",
@@ -308,9 +312,9 @@ export const ownerAbi = [
               "type":"address"
             },
             {
-              "internalType": "address",
-              "name": "presale",
-              "type": "address"
+              "internalType":"address",
+              "name":"presale",
+              "type":"address"
             }
           ],
           "internalType":"struct IOwnership.LPDetails",
@@ -319,6 +323,21 @@ export const ownerAbi = [
         }
       ],
       "stateMutability":"view",
+      "type":"function"
+    },
+    {
+      "inputs":[
+        {
+          "internalType":"uint256",
+          "name":"share",
+          "type":"uint256"
+        }
+      ],
+      "name":"increaseStakingShare",
+      "outputs":[
+        
+      ],
+      "stateMutability":"nonpayable",
       "type":"function"
     },
     {
@@ -419,4 +438,4 @@ export const ownerAbi = [
       "stateMutability":"nonpayable",
       "type":"function"
     }
-  ] as const;
+] as const;
