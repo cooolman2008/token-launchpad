@@ -10,7 +10,7 @@ export const getContractAddress = ( chainId: number | undefined) => {
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
-        case 17000: return getAddress("0xb07a217F9cf421c91f47cFFcC5493C216D8eA5C6") // holeskey
+        case 17000: return getAddress("0x5712131232F321A03E29e90ce1a7e766B3f0746F") // holeskey
         case 421614: return undefined // arbitrumSepolia
         case 11155420: return undefined // optimismSepolia
         case 80002: return "0x686977da4b81ef80bc4f12d8587bf793f610ff21" // polygonAmoy
@@ -33,7 +33,7 @@ export const getGraphUrl = ( chainId: number) => {
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
-        case 17000: return "https://api.studio.thegraph.com/query/82166/safulauncher/0.0.15" // holeskey
+        case 17000: return "https://api.studio.thegraph.com/query/82166/safulauncher/0.0.16" // holeskey
         case 421614: return undefined // arbitrumSepolia
         case 11155420: return undefined // optimismSepolia
         case 80002: return "https://api.studio.thegraph.com/query/82166/safupolygontest/0.0.1" // polygonAmoy
