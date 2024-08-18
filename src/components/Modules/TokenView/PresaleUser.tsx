@@ -193,7 +193,7 @@ const PresaleUser = ({
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
 			)}
-			{bought > 0 && presaleScene > 0 && !isOwner && (
+			{bought > 0 && presaleScene > 0 && (
 				<div className="w-full py-8 border-b border-gray-700">
 					{presaleScene !== 1 && presaleScene !== 2 && presaleScene !== 4 && (
 						<div className="flex mb-1">
@@ -226,7 +226,7 @@ const PresaleUser = ({
 							</div>
 						</>
 					)}
-					{presaleScene === 2 && !isOwner && (
+					{presaleScene === 2 && (
 						<>
 							<div className="w-full flex flex-wrap justify-between">
 								<h2 className="w-full text-md font-normal text-center">
