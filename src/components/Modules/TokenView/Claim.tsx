@@ -97,117 +97,114 @@ const Claim = ({
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
 			)}
-			<div className="w-full py-8 border-b border-gray-700">
-				{status > 0 && (
-					<>
-						<h2 className="text-2xl mb-1">Claim what&#39;s yours</h2>
-						<p className="text-sm text-gray-500 mb-4">
-							You can hit the claim button & get the vested tokens displayed in the button.
-						</p>
-					</>
-				)}
-				{status === 0 && (
-					<>
-						<div className="w-full flex flex-wrap justify-between">
-							<h2 className="w-full text-md text-yellow-500 font-light text-center">
-								Your tokens are in a cliff period right now! You can claim your tokens once cliff period is over &
-								vesting starts.
-							</h2>
-						</div>
-					</>
-				)}
-				{status === 1 && (
-					<>
-						<div className="w-full flex flex-wrap justify-center">
-							<div className="w-full flex flex-col justify-between mb-4">
-								<h2 className="text-2xl font-normal">
-									<b className="font-medium text-gray-500">Bought:</b> {bought} Tokens
-								</h2>
-								<h2 className="text-2xl font-normal">
-									<b className="font-medium text-gray-500">Vested:</b> {claimableDays.toString()}/
-									{token?.vestingPeriod.toString()} Days
-								</h2>
-								<h2 className="text-2xl font-normal">
-									<b className="font-medium text-gray-500">Claimed:</b> {claimedDays.toString()}/
-									{claimableDays.toString()} Days
-								</h2>
-								<h2 className="text-2xl font-normal">
-									<b className="font-medium text-gray-500">To be vested:</b> {remaining.toString()}
-								</h2>
-							</div>
-							<div className="w-full flex justify-center items-end flex-col">
-								<input
-									className="safu-button-secondary cursor-pointer"
-									type="submit"
-									value={"Claim " + getNumber(claimable)}
-									onClick={() => {
-										if (contractAddress) {
-											claim({
-												address: contractAddress,
-												abi: ownerAbi,
-												functionName: "claimTokens",
-												account: walletClient?.account,
-											});
-										}
-									}}
-								/>
-							</div>
-						</div>
-					</>
-				)}
-				{status === 2 && (
-					<>
-						<div className="w-full flex flex-wrap justify-center">
-							<div className="w-full flex flex-col justify-between mb-4">
-								<h2 className="text-2xl font-normal">
-									<b className="font-medium text-gray-500">Bought:</b> {bought} Tokens
-								</h2>
-								<h2 className="text-2xl font-normal">
-									<b className="font-medium text-gray-500">Vested:</b> {claimableDays.toString()}/
-									{token?.vestingPeriod.toString()} Days
-								</h2>
-								<h2 className="text-2xl font-normal">
-									<b className="font-medium text-gray-500">To be vested:</b> {remaining.toString()}
-								</h2>
-							</div>
-							<h2 className="w-full text-xl text-red-500 font-normal text-center">
-								No tokens to claim! Your vesting period has just started!
-							</h2>
-						</div>
-					</>
-				)}
-				{status === 3 && (
-					<>
-						<div className="w-full flex flex-wrap justify-center">
-							<div className="w-full flex flex-col justify-between mb-4">
-								<h2 className="text-2xl font-normal">
-									<b className="font-medium text-gray-500">Bought:</b> {bought} Tokens
-								</h2>
-								<h2 className="text-2xl font-normal">
-									<b className="font-medium text-gray-500">Vested:</b> {claimableDays.toString()}/
-									{token?.vestingPeriod.toString()} Days
-								</h2>
-								<h2 className="text-2xl font-normal">
-									<b className="font-medium text-gray-500">Claimed:</b> {claimedDays.toString()}/
-									{claimableDays.toString()} Days
-								</h2>
-								<h2 className="text-2xl font-normal">
-									<b className="font-medium text-gray-500">To be vested:</b> {remaining.toString()}
-								</h2>
-							</div>
-							<h2 className="w-full text-xl text-red-500 font-normal text-center">
-								No tokens to claim! Wait for them to get vested!
-							</h2>
-						</div>
-					</>
-				)}
 
-				{/* <div className="flex">
-					<div className="flex flex-col">
-						<button className="safu-button-primary">Claim $62.02M</button>
-					</div>
-				</div> */}
-			</div>
+			{token?.vestingPeriod > claimedDays && (
+				<div className="w-full py-8 border-b border-gray-700">
+					{status > 0 && (
+						<>
+							<h2 className="text-2xl mb-1">Claim what&#39;s yours</h2>
+							<p className="text-sm text-gray-500 mb-4">
+								You can hit the claim button & get the vested tokens displayed in the button.
+							</p>
+						</>
+					)}
+					{status === 0 && (
+						<>
+							<div className="w-full flex flex-wrap justify-between">
+								<h2 className="w-full text-md text-yellow-500 font-light text-center">
+									Your tokens are in a cliff period right now! You can claim your tokens once cliff period is over &
+									vesting starts.
+								</h2>
+							</div>
+						</>
+					)}
+					{status === 1 && (
+						<>
+							<div className="w-full flex flex-wrap justify-center">
+								<div className="w-full flex flex-col justify-between mb-4">
+									<h2 className="text-2xl font-normal">
+										<b className="font-medium text-gray-500">Bought:</b> {bought} Tokens
+									</h2>
+									<h2 className="text-2xl font-normal">
+										<b className="font-medium text-gray-500">Vested:</b> {claimableDays.toString()}/
+										{token?.vestingPeriod.toString()} Days
+									</h2>
+									<h2 className="text-2xl font-normal">
+										<b className="font-medium text-gray-500">Claimed:</b> {claimedDays.toString()}/
+										{claimableDays.toString()} Days
+									</h2>
+									<h2 className="text-2xl font-normal">
+										<b className="font-medium text-gray-500">To be vested:</b> {remaining.toString()}
+									</h2>
+								</div>
+								<div className="w-full flex justify-center items-end flex-col">
+									<input
+										className="safu-button-secondary cursor-pointer"
+										type="submit"
+										value={"Claim " + getNumber(claimable)}
+										onClick={() => {
+											if (contractAddress) {
+												claim({
+													address: contractAddress,
+													abi: ownerAbi,
+													functionName: "claimTokens",
+													account: walletClient?.account,
+												});
+											}
+										}}
+									/>
+								</div>
+							</div>
+						</>
+					)}
+					{status === 2 && (
+						<>
+							<div className="w-full flex flex-wrap justify-center">
+								<div className="w-full flex flex-col justify-between mb-4">
+									<h2 className="text-2xl font-normal">
+										<b className="font-medium text-gray-500">Bought:</b> {bought} Tokens
+									</h2>
+									<h2 className="text-2xl font-normal">
+										<b className="font-medium text-gray-500">Vested:</b> {claimableDays.toString()}/
+										{token?.vestingPeriod.toString()} Days
+									</h2>
+									<h2 className="text-2xl font-normal">
+										<b className="font-medium text-gray-500">To be vested:</b> {remaining.toString()}
+									</h2>
+								</div>
+								<h2 className="w-full text-xl text-red-500 font-normal text-center">
+									No tokens to claim! Your vesting period has just started!
+								</h2>
+							</div>
+						</>
+					)}
+					{status === 3 && (
+						<>
+							<div className="w-full flex flex-wrap justify-center">
+								<div className="w-full flex flex-col justify-between mb-4">
+									<h2 className="text-2xl font-normal">
+										<b className="font-medium text-gray-500">Bought:</b> {bought} Tokens
+									</h2>
+									<h2 className="text-2xl font-normal">
+										<b className="font-medium text-gray-500">Vested:</b> {claimableDays.toString()}/
+										{token?.vestingPeriod.toString()} Days
+									</h2>
+									<h2 className="text-2xl font-normal">
+										<b className="font-medium text-gray-500">Claimed:</b> {claimedDays.toString()}/
+										{claimableDays.toString()} Days
+									</h2>
+									<h2 className="text-2xl font-normal">
+										<b className="font-medium text-gray-500">To be vested:</b> {remaining.toString()}
+									</h2>
+								</div>
+								<h2 className="w-full text-xl text-red-500 font-normal text-center">
+									No tokens to claim! Wait for them to get vested!
+								</h2>
+							</div>
+						</>
+					)}
+				</div>
+			)}
 		</>
 	);
 };

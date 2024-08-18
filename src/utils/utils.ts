@@ -13,9 +13,9 @@ export const getContractAddress = ( chainId: number | undefined) => {
         case 17000: return getAddress("0xfe7509e84d5ac4167d97a4ad4812d9624f7572ba") // holeskey
         case 421614: return undefined // arbitrumSepolia
         case 11155420: return undefined // optimismSepolia
-        case 80002: return "0x686977da4b81ef80bc4f12d8587bf793f610ff21" // polygonAmoy
-        case 84532: return getAddress("0x2ef0b5716da3f9faa724d02937b93395e8255604") // baseSepolia
-        case 97: return getAddress("0xe21a4adcaffdce1dfe914ed9a23e716d43e498cc") // bscTestnet
+        case 80002: return "0x003E2F04d655076ADAA0eDa95cb5D77d1FD43146" // polygonAmoy
+        case 84532: return getAddress("0xccfd08acD63fB4358F77DC88068EAf523ae0A090") // baseSepolia
+        case 97: return getAddress("0x9e79EFab101E9F8d2B0F5DdDA46Ae8CB6f1D3A45") // bscTestnet
         case 43114: return undefined // avalanche
         case 168587773: return undefined // blastSepolia
         case 1337: return getAddress("0xa51807d5a12e7e78148c66dc4851cd33eed1fdfd")
@@ -36,9 +36,9 @@ export const getGraphUrl = ( chainId: number) => {
         case 17000: return "https://api.studio.thegraph.com/query/82166/safulauncher/0.0.17" // holeskey
         case 421614: return undefined // arbitrumSepolia
         case 11155420: return undefined // optimismSepolia
-        case 80002: return "https://api.studio.thegraph.com/query/82166/safupolygontest/0.0.1" // polygonAmoy
-        case 84532: return "https://api.studio.thegraph.com/query/82166/safubasesepolia/0.0.3" // baseSepolia
-        case 97: return "https://api.studio.thegraph.com/query/82166/safubsctest/0.0.1" // bscTestnet
+        case 80002: return "https://api.studio.thegraph.com/query/82166/safupolygontest/0.0.17" // polygonAmoy
+        case 84532: return "https://api.studio.thegraph.com/query/82166/safubasesepolia/0.0.17" // baseSepolia
+        case 97: return "https://api.studio.thegraph.com/query/82166/safubsctest/0.0.17" // bscTestnet
         case 43114: return undefined // avalanche
         case 168587773: return undefined // blastSepolia
         case 1337: return "http://localhost:8000/subgraphs/name/SAFUlauncher"
