@@ -51,17 +51,17 @@ const Claim = ({
 		}
 	}, [claimables, token?.vestingPeriod]);
 
-	// Only after trading has started, Only if there is still something claimable i.e don't show if vestingdays === claimable[4]
-	// 1 - Cliff period message.
-	// 2 - After cliff period - Claim button with vested tokens.
-	// 3 - After cliff period & vesting period first day - Show message that vesting has started.
-	// 4 - After cliff period & no claimable tokens - Show message not tokens.
+	// Only after trading has started, Only if there is still something claimable
+	// 0 - Cliff period message.
+	// 1 - After cliff period - Claim button with vested tokens.
+	// 2 - After cliff period & vesting period first day - Show message that vesting has started.
+	// 3 - After cliff period & no claimable tokens - Show message not tokens.
 	useEffect(() => {
 		if (token) {
 			const start = Number(token?.lplockStart);
 			const vesting = Number(token?.vestingPeriod) * 86400;
 			const cliff = Number(token?.cliffPeriod) * 86400;
-			const now = Math.floor(Date.now() / 1000); // + 31 * 86400;
+			const now = Math.floor(Date.now() / 1000);
 
 			if (now < start + cliff) {
 				setStatus(0);

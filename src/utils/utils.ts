@@ -205,3 +205,26 @@ export const getEtherscan = ( chainId: number) =>{
         default: return "https://etherscan.io/token/";
     }
 }
+
+export const getSymbol = ( chainId: number) =>{
+    switch(chainId) {
+        case 1: undefined //mainnet
+        case 42161: undefined // arbitrum
+        case 10: undefined // optimism
+        case 137: undefined // polygon
+        case 8453: undefined // base
+        case 56: undefined // bsc
+        case 43113: undefined // avalancheFuji
+        case 81457: undefined // blast
+        case 17000: return "ETH" // holeskey
+        case 421614: return undefined // arbitrumSepolia
+        case 11155420: return undefined // optimismSepolia
+        case 80002: return "MATIC" // polygonAmoy
+        case 84532: return "ETH" // baseSepolia
+        case 97: return "BNB" // bscTestnet
+        case 43114: return "AVAX" // avalanche
+        case 168587773: return undefined // blastSepolia
+        case 1337: return "ETH"
+        default: return "ETH";
+    }
+}

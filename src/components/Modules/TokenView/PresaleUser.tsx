@@ -1,4 +1,4 @@
-import { useWriteContract, useWalletClient, useReadContract, useAccount } from "wagmi";
+import { useWriteContract, useWalletClient, useReadContract } from "wagmi";
 import { useState, useEffect, SetStateAction, Dispatch } from "react";
 
 import Loading from "@/components/elements/Loading";
@@ -6,7 +6,6 @@ import Modal from "@/components/elements/Modal";
 
 import { getAbr, getNumber } from "@/utils/math";
 import { presaleAbi } from "@/abi/presaleAbi";
-import { formatEther } from "viem";
 
 interface Presale {
 	softcap: bigint;
@@ -151,6 +150,7 @@ const PresaleUser = ({
 		},
 	});
 
+	// 0 - Presale fully claimed - Nothing to do
 	// 1 - Presale live but duration passed - end presale button.
 	// 2 - Presale successfull but not trading - waiting banner.
 	// 3 - Presale successfull but not trading passed duration - refund presale button.
@@ -165,7 +165,7 @@ const PresaleUser = ({
 			const finish = Number(presale?.finishTs);
 			const duration = Number(presale?.duration) * 86400;
 			const cliff = Number(presale?.cliffPeriod) * 86400;
-			const now = Math.floor(Date.now() / 1000); // + 80 * 86400;
+			const now = Math.floor(Date.now() / 1000);
 
 			switch (presale?.status) {
 				case BigInt(1):
@@ -177,7 +177,9 @@ const PresaleUser = ({
 					if (!isTrading) {
 						now < finish + duration ? setPresaleScene(2) : setPresaleScene(3);
 					} else {
-						if (now < finish + cliff) {
+						if (presale?.vestingPeriod <= claimedDays) {
+							setPresaleScene(0);
+						} else if (now < finish + cliff) {
 							setPresaleScene(4);
 						} else if (claimable > 0) {
 							setPresaleScene(5);
@@ -255,7 +257,7 @@ const PresaleUser = ({
 					)}
 					{presaleScene === 3 && (
 						<>
-							<p className="text-sm text-gray-500 mb-4">
+							<p className="text-md text-yellow-700 mb-4">
 								You can refund the presale tokens from the token contract by yourself. Get your refund from the presale
 								contract after this.
 							</p>

@@ -13,7 +13,7 @@ import Modal from "@/components/elements/Modal";
 import { createPair, getExchangeRate, getMinAmountOut, getReserves } from "@/utils/swapHelper";
 import { tokenAbi } from "@/abi/tokenAbi";
 import { routerAbi } from "@/abi/routerAbi";
-import { getBaseCoin } from "@/utils/utils";
+import { getBaseCoin, getSymbol } from "@/utils/utils";
 import SwapSettings from "./SwapSettings";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 
@@ -267,7 +267,7 @@ const Swap = ({
 							<span
 								className={"block sm:text-3xl leading-6 pt-1.5" + (errors.pay ? " text-red-500" : " text-gray-400")}
 							>
-								{tokenIn.address.toUpperCase() === WETH_ADDRESS.toUpperCase() ? "ETH" : symbol}
+								{tokenIn.address.toUpperCase() === WETH_ADDRESS.toUpperCase() ? getSymbol(chain) : symbol}
 							</span>
 						</div>
 					</div>
@@ -299,7 +299,7 @@ const Swap = ({
 								{worstPrice}
 							</span>
 							<span className="block sm:text-3xl leading-6 text-gray-400 pt-1.5">
-								{tokenIn.address.toUpperCase() === WETH_ADDRESS.toUpperCase() ? symbol : "ETH"}
+								{tokenIn.address.toUpperCase() === WETH_ADDRESS.toUpperCase() ? symbol : getSymbol(chain)}
 							</span>
 						</div>
 					</div>

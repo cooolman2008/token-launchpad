@@ -1,4 +1,4 @@
-import { useWriteContract, useWalletClient, useBalance, useAccount, useReadContract } from "wagmi";
+import { useWriteContract, useWalletClient, useBalance, useAccount, useReadContract, useChainId } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, SetStateAction, Dispatch, useEffect } from "react";
 import { formatEther, parseEther } from "viem";
@@ -9,6 +9,7 @@ import Modal from "@/components/elements/Modal";
 import { getNumber } from "@/utils/math";
 import { stakingAbi } from "@/abi/stakingAbi";
 import { tokenAbi } from "@/abi/tokenAbi";
+import { getSymbol } from "@/utils/utils";
 
 interface StakingForm {
 	amount: number;
@@ -42,6 +43,8 @@ const Staking = ({
 	const [error, setError] = useState("");
 	const [balance, setBalance] = useState("");
 	const [user, setUser] = useState<User>();
+	// Current chain & wallet address
+	const chain = useChainId();
 
 	const clear = () => {
 		setError("");
@@ -118,6 +121,21 @@ const Staking = ({
 			onSuccess(res) {
 				console.log(res);
 				setSuccess("Withdraw successfull!");
+				refetch();
+			},
+			onError(error) {
+				console.log(error);
+				setError("Something went wrong!");
+			},
+		},
+	});
+
+	// contract call to withdraw unstaked tokens.
+	const { isPending: claiming, writeContract: claim } = useWriteContract({
+		mutation: {
+			onSuccess(res) {
+				console.log(res);
+				setSuccess("Claim successfull!");
 				refetch();
 			},
 			onError(error) {
@@ -281,9 +299,24 @@ const Staking = ({
 					<div className="flex justify-between items-center">
 						<span className="text-base font-medium text-gray-400">
 							<b className="font-normal text-gray-500">Reward:</b> {user?.claimable ? getNumber(user?.claimable) : "0"}
+							{getSymbol(chain)}
 						</span>
 						<div className="flex justify-center flex-col mt-2">
-							<input className="safu-button-primary cursor-pointer" type="button" value="Claim" />
+							<input
+								className="safu-button-primary cursor-pointer"
+								type="button"
+								value="Claim"
+								onClick={() => {
+									if (stakingAddress) {
+										claim({
+											address: stakingAddress,
+											abi: stakingAbi,
+											functionName: "claimRewards",
+											account: walletClient?.account,
+										});
+									}
+								}}
+							/>
 						</div>
 					</div>
 				)}
