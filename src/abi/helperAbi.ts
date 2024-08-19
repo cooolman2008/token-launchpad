@@ -80,5 +80,23 @@ export const helperAbi = [
       ],
       "stateMutability":"payable",
       "type":"function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "times",
+          "type": "uint256"
+        }
+      ],
+      "name": "promoteTokenSafu",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     }
   ] as const;
