@@ -1,4 +1,4 @@
-import { useWriteContract, useWalletClient, useBalance, useAccount, useReadContract, useChainId } from "wagmi";
+import { useWriteContract, useWalletClient, useBalance, useReadContract, useChainId } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, SetStateAction, Dispatch, useEffect } from "react";
 import { formatEther, parseEther } from "viem";

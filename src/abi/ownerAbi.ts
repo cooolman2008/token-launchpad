@@ -76,6 +76,54 @@ export const ownerAbi = [
       "anonymous":false,
       "inputs":[
         {
+          "components":[
+            {
+              "internalType":"address",
+              "name":"facetAddress",
+              "type":"address"
+            },
+            {
+              "internalType":"enum IDiamondCut.FacetCutAction",
+              "name":"action",
+              "type":"uint8"
+            },
+            {
+              "internalType":"bytes4[]",
+              "name":"functionSelectors",
+              "type":"bytes4[]"
+            }
+          ],
+          "indexed":false,
+          "internalType":"struct IDiamondCut.FacetCut[]",
+          "name":"_diamondCut",
+          "type":"tuple[]"
+        },
+        {
+          "components":[
+            {
+              "internalType":"address",
+              "name":"owner",
+              "type":"address"
+            },
+            {
+              "internalType":"uint256",
+              "name":"withdrawTimeout",
+              "type":"uint256"
+            }
+          ],
+          "indexed":false,
+          "internalType":"struct IStaking.StakingParams",
+          "name":"params",
+          "type":"tuple"
+        }
+      ],
+      "name":"StakingArgs",
+      "type":"event"
+    },
+    {
+      "anonymous":false,
+      "inputs":[
+        {
           "indexed":false,
           "internalType":"address",
           "name":"stakingPool",
