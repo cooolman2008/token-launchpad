@@ -10,6 +10,7 @@ import { getAbr, getNumber } from "@/utils/math";
 import { presaleAbi } from "@/abi/presaleAbi";
 import { animate, AnimationControls } from "motion";
 import { format } from "path";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
 
 interface PresaleForm {
 	amount: number;
@@ -32,9 +33,10 @@ const Presale = ({
 }: {
 	symbol: string;
 	presaleAddress: `0x${string}`;
-	address: `0x${string}`;
+	address?: `0x${string}`;
 }) => {
 	const { data: walletClient } = useWalletClient();
+	const { open } = useWeb3Modal();
 
 	const [error, setError] = useState("");
 	const [presale, setPresale] = useState<Presale>();
@@ -64,10 +66,11 @@ const Presale = ({
 		address: presaleAddress,
 		abi: presaleAbi,
 		functionName: "getClaimableTokens",
-		args: [address],
+		args: [address ? address : "0x0000000000000000000"],
 	});
 
 	useEffect(() => {
+		console.log(claimables);
 		if (claimables && claimables?.length > 0) {
 			setBought(claimables[2]);
 		}
@@ -237,12 +240,18 @@ const Presale = ({
 					</div>
 					{maxBag > 0 && (
 						<div className="flex justify-between flex-wrap">
-							<div className="flex justify-center flex-col mt-2 mr-2 grow">
-								<input
-									className="safu-button-primary cursor-pointer"
-									type="submit"
-									value={price ? "Buy for " + price + " ETH" : "Buy"}
-								/>
+							<div className="flex justify-center flex-col mt-2 grow">
+								{address ? (
+									<input
+										className="safu-button-primary cursor-pointer"
+										type="submit"
+										value={price ? "Buy for " + price + " ETH" : "Buy"}
+									/>
+								) : (
+									<span className="safu-soft-button text-center" onClick={() => open()}>
+										Connect Wallet
+									</span>
+								)}
 							</div>
 						</div>
 					)}

@@ -302,7 +302,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 										setSuccess={setSuccess}
 										address={address ? address : address_0}
 									/>
-									{presale === 1 && token?.presale && address && (
+									{presale === 1 && token?.presale && (
 										<Presale
 											presaleAddress={getAddress(token?.presale)}
 											address={address}
