@@ -2,7 +2,7 @@ import { getAddress } from "viem"
 
 export const getContractAddress = ( chainId: number | undefined) => {
     switch(chainId) {
-        case 1: undefined //mainnet
+        case 1: return "0xdCA7905C38F15d5E653f76e956109BF5A4F43FbB" //mainnet
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
@@ -25,7 +25,7 @@ export const getContractAddress = ( chainId: number | undefined) => {
 
 export const getGraphUrl = ( chainId: number) => {
     switch(chainId) {
-        case 1: undefined //mainnet
+        case 1: return "https://api.studio.thegraph.com/query/82166/safulaunchereth/0.0.1" //mainnet
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
@@ -48,7 +48,16 @@ export const getGraphUrl = ( chainId: number) => {
 
 export const getRouters = ( chainId: number) => {
     switch(chainId) {
-        case 1: [] //mainnet
+        case 1: return [{
+            value: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+            label: "Uniswap V2 Router"
+        },{
+            value: "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+            label: "Sushiswap Router"
+        },{
+            value: "0xEfF92A263d31888d860bD50809A8D171709b7b1c",
+            label: "Pancakeswap Router"
+        }] //mainnet
         case 42161: [] // arbitrum
         case 10: [] // optimism
         case 137: [] // polygon
@@ -125,7 +134,7 @@ export const getRouters = ( chainId: number) => {
 
 export const getRouterAddress = ( chainId: number) => {
     switch(chainId) {
-        case 1: undefined //mainnet
+        case 1: return "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D" //mainnet
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
@@ -148,7 +157,7 @@ export const getRouterAddress = ( chainId: number) => {
 
 export const getBaseCoin = ( chainId: number) => {
     switch(chainId) {
-        case 1: undefined //mainnet
+        case 1: return "0x4200000000000000000000000000000000000006" //mainnet
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
@@ -171,7 +180,7 @@ export const getBaseCoin = ( chainId: number) => {
 
 export const getUSDC = ( chainId: number) => {
     switch(chainId) {
-        case 1: undefined //mainnet
+        case 1: return "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913" //mainnet
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
@@ -194,7 +203,7 @@ export const getUSDC = ( chainId: number) => {
 
 export const getEtherscan = ( chainId: number) =>{
     switch(chainId) {
-        case 1: undefined //mainnet
+        case 1: return "https://etherscan.io/token/" //mainnet
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
@@ -217,7 +226,7 @@ export const getEtherscan = ( chainId: number) =>{
 
 export const getSymbol = ( chainId: number) =>{
     switch(chainId) {
-        case 1: undefined //mainnet
+        case 1: return "ETH" //mainnet
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
