@@ -337,7 +337,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 							<div className="min-h-[90vh] flex flex-col justify-center text-center">
 								<h2 className="max-md:text-sm text-2xl text-red-500">Sorry, there was no data on this address!</h2>
 								<p className="max-md:text-xs text-xl text-gray-400">
-									Try refreshing the page or searching the address of the contract in the above search bar
+									Check if you are on the right network or try refreshing the page.
 								</p>
 							</div>
 						)
