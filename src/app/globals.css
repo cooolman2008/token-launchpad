@@ -196,3 +196,6 @@ input:checked+.slider:before {
   display: none;
 }
 
+.disabled-button {
+  @apply text-gray-400;
+}

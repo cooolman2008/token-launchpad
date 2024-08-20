@@ -216,7 +216,9 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 										isPresale={presale === 1}
 										chain={chainId}
 									/>
-									{isTeam && address && <Claim contractAddress={params?.slug} address={address} token={token} />}
+									{isTeam && address && isTrading && (
+										<Claim contractAddress={params?.slug} address={address} token={token} />
+									)}
 									{isOwner && !isTrading && presale === 0 && (
 										<Team
 											contractAddress={params?.slug}

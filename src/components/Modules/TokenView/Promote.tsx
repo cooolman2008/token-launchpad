@@ -109,14 +109,14 @@ const Promote = ({
 			// 	functionName: "approve",
 			// 	args: [safuAddress, launcher.promoCostSafu * BigInt(formData.times)],
 			// });
-			promote({
-				address: safuAddress,
-				abi: helperAbi,
-				functionName: "promoteToken",
-				account: walletClient?.account,
-				args: [contractAddress, formData.times],
-				value: parseEther(promoEth.toString()) * BigInt(formData.times),
-			});
+			// promote({
+			// 	address: safuAddress,
+			// 	abi: helperAbi,
+			// 	functionName: "promoteToken",
+			// 	account: walletClient?.account,
+			// 	args: [contractAddress, formData.times],
+			// 	value: parseEther(promoEth.toString()) * BigInt(formData.times),
+			// });
 		}
 
 		// set({
@@ -213,10 +213,11 @@ const Promote = ({
 								margin="mb-4 md:mb-0"
 							/>
 							<div className="w-full md:w-auto flex justify-center flex-col">
+								{/* <button className="safu-button-secondary disabled-button">Promote for {price} ETH</button> */}
 								<input
 									type="submit"
 									value={"Promote for " + price + " ETH"}
-									className="safu-button-secondary cursor-pointer"
+									className="safu-button-secondary cursor-pointer disabled-button"
 								/>
 							</div>
 						</div>
