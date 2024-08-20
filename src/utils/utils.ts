@@ -6,7 +6,7 @@ export const getContractAddress = ( chainId: number | undefined) => {
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
-        case 8453: return "" // base
+        case 8453: undefined // base
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
@@ -29,7 +29,7 @@ export const getGraphUrl = ( chainId: number) => {
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
-        case 8453: return "" // base
+        case 8453: undefined // base
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
