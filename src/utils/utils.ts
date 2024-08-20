@@ -157,7 +157,7 @@ export const getRouterAddress = ( chainId: number) => {
 
 export const getBaseCoin = ( chainId: number) => {
     switch(chainId) {
-        case 1: return "0x4200000000000000000000000000000000000006" //mainnet
+        case 1: return "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" //mainnet
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
@@ -180,7 +180,7 @@ export const getBaseCoin = ( chainId: number) => {
 
 export const getUSDC = ( chainId: number) => {
     switch(chainId) {
-        case 1: return "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913" //mainnet
+        case 1: return "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" //mainnet
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
