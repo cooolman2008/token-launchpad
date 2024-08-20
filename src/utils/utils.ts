@@ -6,7 +6,7 @@ export const getContractAddress = ( chainId: number | undefined) => {
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
-        case 8453: return "0xc3F54e95F13F7D32da5523aFFA9C828E6e28e052" // base
+        case 8453: return "" // base
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
@@ -29,7 +29,7 @@ export const getGraphUrl = ( chainId: number) => {
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
-        case 8453: return "https://api.studio.thegraph.com/query/82166/safubasetest/0.0.27" // base
+        case 8453: return "" // base
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
