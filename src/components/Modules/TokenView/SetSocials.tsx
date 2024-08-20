@@ -90,7 +90,7 @@ const SetSocials = memo(
 								<input
 									type="text"
 									id="twitter"
-									placeholder="x.com/SAFUlauncher"
+									placeholder="https://x.com/SAFUlauncher"
 									{...register("twitter", {
 										required: true,
 										pattern: /^[A-Za-z0-9./+:]+$/i,
@@ -122,7 +122,7 @@ const SetSocials = memo(
 										pattern: /^[A-Za-z0-9./+:]+$/i,
 									})}
 									defaultValue={website}
-									placeholder="safulauncher.com"
+									placeholder="https://safulauncher.com"
 									className="block w-full rounded-xl pe-3 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-lg"
 								/>
 								<span className="block sm:text-4xl leading-6 text-gray-400 pt-1.5">
@@ -144,7 +144,7 @@ const SetSocials = memo(
 								<input
 									type="text"
 									id="telegram"
-									placeholder="t.me/SAFULauncherPortal"
+									placeholder="https://t.me/SAFULauncherPortal"
 									{...register("telegram", {
 										required: true,
 										pattern: /^[A-Za-z0-9./+:]+$/i,
