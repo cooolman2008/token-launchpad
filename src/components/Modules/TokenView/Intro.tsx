@@ -69,9 +69,9 @@ const Intro = ({
 					)}
 				</div>
 				<div className="w-full xl:w-auto flex items-center">
-					{!isOwner && token?.website && <Website url="token?.website" />}
-					{!isOwner && token?.telegram && <Telegram url="token?.telegram" />}
-					{!isOwner && token?.twitter && <XBadge url="token?.twitter" />}
+					{!isOwner && token?.website && <Website url={token?.website} />}
+					{!isOwner && token?.telegram && <Telegram url={token?.telegram} />}
+					{!isOwner && token?.twitter && <XBadge url={token?.twitter} />}
 					<EtherscanBadge url={getEtherscan(chain) + address} />
 				</div>
 			</div>
