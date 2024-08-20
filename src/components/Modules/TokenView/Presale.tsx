@@ -241,7 +241,7 @@ const Presale = ({
 								<input
 									className="safu-button-primary cursor-pointer"
 									type="submit"
-									value={price ? "Buy for " + price : "Buy"}
+									value={price ? "Buy for " + price + " ETH" : "Buy"}
 								/>
 							</div>
 						</div>

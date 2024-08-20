@@ -41,9 +41,9 @@ const Table = ({ tokens, type, loading }: { tokens: Tokens[]; type: string; load
 								{(type === "Explore" || type === "Launches") && (
 									<>
 										<td className="px-4 py-3">${token?.price ? token?.price : 0}</td>
-										<td className="px-4 py-3 text-green-500 font-medium">
+										<td className="px-4 py-3 text-gray-400 font-medium text-2xl">
 											<div className="flex items-center">
-												<svg
+												{/* <svg
 													xmlns="http://www.w3.org/2000/svg"
 													width="10px"
 													height="10px"
@@ -52,12 +52,13 @@ const Table = ({ tokens, type, loading }: { tokens: Tokens[]; type: string; load
 												>
 													<path d="M3 19h18a1.002 1.002 0 0 0 .823-1.569l-9-13c-.373-.539-1.271-.539-1.645 0l-9 13A.999.999 0 0 0 3 19z" />
 												</svg>
-												1.2%
+												1.2% */}
+												-
 											</div>
 										</td>
-										<td className="px-4 py-3 text-red-500 font-medium">
+										<td className="px-4 py-3 text-gray-400 font-medium text-2xl">
 											<div className="flex items-center">
-												<svg
+												{/* <svg
 													xmlns="http://www.w3.org/2000/svg"
 													width="10px"
 													height="10px"
@@ -66,7 +67,8 @@ const Table = ({ tokens, type, loading }: { tokens: Tokens[]; type: string; load
 												>
 													<path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z" />
 												</svg>
-												0.3%
+												0.3% */}
+												-
 											</div>
 										</td>
 										<td className="px-4 py-3">

@@ -6,7 +6,7 @@ export const getContractAddress = ( chainId: number | undefined) => {
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
-        case 8453: undefined // base
+        case 8453: "0xc3F54e95F13F7D32da5523aFFA9C828E6e28e052" // base
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
@@ -18,7 +18,7 @@ export const getContractAddress = ( chainId: number | undefined) => {
         case 97: return getAddress("0x9e79EFab101E9F8d2B0F5DdDA46Ae8CB6f1D3A45") // bscTestnet
         case 43114: return undefined // avalanche
         case 168587773: return undefined // blastSepolia
-        case 1337: return getAddress("0xa51807d5a12e7e78148c66dc4851cd33eed1fdfd")
+        case 1337: return getAddress("0x71d2ebf08bf4fcb82db5dde46677263f4c534ef3")
         default: return undefined;
     }
 }
@@ -29,7 +29,7 @@ export const getGraphUrl = ( chainId: number) => {
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
-        case 8453: undefined // base
+        case 8453: "https://api.studio.thegraph.com/query/82166/safubasetest/0.0.18" // base
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
@@ -52,7 +52,16 @@ export const getRouters = ( chainId: number) => {
         case 42161: [] // arbitrum
         case 10: [] // optimism
         case 137: [] // polygon
-        case 8453: [] // base
+        case 8453: return [{
+            value: "0x4752ba5dbc23f44d87826276bf6fd6b1c372ad24",
+            label: "Uniswap V2 Router"
+        },{
+            value: "0x6BDED42c6DA8FBf0d2bA55B2fa120C5e0c8D7891",
+            label: "Sushiswap Router"
+        },{
+            value: "0x8cFe327CEc66d1C090Dd72bd0FF11d690C33a2Eb",
+            label: "Pancakeswap Router"
+        }] // base
         case 56: [] // bsc
         case 43113: [] // avalancheFuji
         case 81457: [] // blast
@@ -120,7 +129,7 @@ export const getRouterAddress = ( chainId: number) => {
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
-        case 8453: undefined // base
+        case 8453: return getAddress("0x4752ba5dbc23f44d87826276bf6fd6b1c372ad24") // base
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
@@ -143,7 +152,7 @@ export const getBaseCoin = ( chainId: number) => {
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
-        case 8453: undefined // base
+        case 8453: "0x4200000000000000000000000000000000000006" // base
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
@@ -166,7 +175,7 @@ export const getUSDC = ( chainId: number) => {
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
-        case 8453: undefined // base
+        case 8453: "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913" // base
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
@@ -189,7 +198,7 @@ export const getEtherscan = ( chainId: number) =>{
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
-        case 8453: undefined // base
+        case 8453: return "https://basescan.org/token/" // base
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
@@ -212,7 +221,7 @@ export const getSymbol = ( chainId: number) =>{
         case 42161: undefined // arbitrum
         case 10: undefined // optimism
         case 137: undefined // polygon
-        case 8453: undefined // base
+        case 8453: return "ETH" // base
         case 56: undefined // bsc
         case 43113: undefined // avalancheFuji
         case 81457: undefined // blast
