@@ -30,6 +30,15 @@ import Loading from "@/components/elements/Loading";
 import { ownerAbi } from "@/abi/ownerAbi";
 import { helperAbi } from "@/abi/helperAbi";
 
+export interface LauncherData {
+	ethCost: bigint;
+	safuCost: bigint;
+	promoCostEth: bigint;
+	promoCostSafu: bigint;
+	minLiq: bigint;
+	bridge: `0x${string}`;
+}
+
 function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	const address_0 = "0x0000000000000000000000000000000000000000";
 
@@ -54,7 +63,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 	const [lp, setLp] = useState<LPDetails>();
 	const [success, setSuccess] = useState("");
 	const [loading, setLoading] = useState(false);
-	const [promoCost, setPromoCost] = useState(0);
+	const [launcher, setLauncher] = useState<LauncherData>();
 
 	const clear = () => {
 		setSuccess("");
@@ -110,7 +119,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 
 	useEffect(() => {
 		if (launcherData) {
-			setPromoCost(Number(formatEther(launcherData.promoCostEth)));
+			setLauncher(launcherData);
 		}
 	}, [launcherData]);
 
@@ -270,8 +279,13 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 													address={address}
 												/>
 											)}
-											{CONTRACT_ADDRESS && (
-												<Promote contractAddress={params?.slug} safuAddress={CONTRACT_ADDRESS} promoCost={promoCost} />
+											{CONTRACT_ADDRESS && launcher && (
+												<Promote
+													contractAddress={params?.slug}
+													safuAddress={CONTRACT_ADDRESS}
+													address={address}
+													launcher={launcher}
+												/>
 											)}
 										</>
 									)}
@@ -302,14 +316,14 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 											setSuccess={setSuccess}
 										/>
 									)}
-									{isOwner && walletClient && (
+									{isOwner && walletClient && launcher && (
 										<SetSocials
 											contractAddress={params?.slug}
 											telegram={token?.telegram ? token?.telegram : ""}
 											twitter={token?.twitter ? token?.twitter : ""}
 											website={token?.website ? token?.website : ""}
 											setSuccess={setSuccess}
-											promoCost={promoCost}
+											promoCost={Number(formatEther(launcher?.promoCostEth))}
 											isFree={token?.isFree}
 										/>
 									)}

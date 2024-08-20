@@ -1,4 +1,4 @@
-import { useWriteContract, useWalletClient, useBalance, useChainId } from "wagmi";
+import { useWriteContract, useWalletClient, useBalance, useChainId, useReadContract } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, useEffect, SetStateAction, Dispatch } from "react";
 import { formatEther, getAddress, parseEther } from "viem";
@@ -8,8 +8,9 @@ import TextField from "@/components/elements/TextField";
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
 
-import { getRouters } from "@/utils/utils";
+import { getContractAddress, getRouters } from "@/utils/utils";
 import { tokenAbi } from "@/abi/tokenAbi";
+import { helperAbi } from "@/abi/helperAbi";
 
 interface TradingForm {
 	liq: number;
@@ -29,10 +30,12 @@ const StartTrading = ({
 	const { data: walletClient } = useWalletClient();
 	const [showLock, setShowLock] = useState(true);
 	const [balance, setBalance] = useState(BigInt(0));
+	const [minLiq, setMinLiq] = useState(0);
 	const [error, setError] = useState("");
 
 	const chainId = useChainId();
 	const routers = getRouters(chainId);
+	const CONTRACT_ADDRESS = getContractAddress(chainId);
 
 	const [router, setRouter] = useState(routers[0].value);
 
@@ -45,6 +48,19 @@ const StartTrading = ({
 			setBalance(balanceData.value);
 		}
 	}, [balanceData]);
+
+	// get min liquidity from SAFU launcher.
+	const { data: launcherData } = useReadContract({
+		address: CONTRACT_ADDRESS,
+		abi: helperAbi,
+		functionName: "getLauncherDetails",
+	});
+
+	useEffect(() => {
+		if (launcherData) {
+			setMinLiq(Number(formatEther(launcherData.minLiq)));
+		}
+	}, [launcherData]);
 
 	const clear = () => {
 		setError("");
@@ -73,7 +89,6 @@ const StartTrading = ({
 		formState: { errors },
 	} = useForm<TradingForm>();
 	const onSubmit: SubmitHandler<TradingForm> = (formData) => {
-		console.log(BigInt(formData.lockPeriod));
 		const routerAddr = getAddress(router);
 		write({
 			address: contractAddress,
@@ -108,17 +123,18 @@ const StartTrading = ({
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<div className="w-full flex justify-between flex-wrap items-center">
 							<TextField
-								label="Liquidity in ETH"
+								label="Liquidity(ETH)"
 								id="liq"
 								defaultValue="0.1"
 								placeholder="0"
 								{...register("liq", {
 									required: { value: true, message: "Liquidity can't be empty" },
 									pattern: { value: /^[0-9.]+$/i, message: "Liquidity should be a number" },
-									validate: (value) => value + Number(balance) > 0.05 || "Total Liquidity should be minimum 0.05",
+									validate: (value) =>
+										value + Number(balance) >= minLiq || "Total Liquidity should be minimum " + minLiq,
 								})}
 								error={errors.liq}
-								width="w-20"
+								width="w-24"
 								labelWidth="grow lg:grow-0"
 								containerWidth="w-full md:w-auto"
 								margin="mb-4"

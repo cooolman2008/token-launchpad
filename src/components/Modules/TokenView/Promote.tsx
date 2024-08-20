@@ -1,12 +1,15 @@
-import { useWriteContract, useWalletClient } from "wagmi";
+import { useWriteContract, useWalletClient, useReadContract } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { parseEther } from "viem";
+import { formatEther, parseEther } from "viem";
 import { useEffect, useState } from "react";
 
 import TextField from "@/components/elements/TextField";
 import InformationTip from "@/components/elements/InformationTip";
 import { helperAbi } from "@/abi/helperAbi";
 import Modal from "@/components/elements/Modal";
+import { tokenAbi } from "@/abi/tokenAbi";
+import { LauncherData } from "@/components/Pages/TokenView";
+import Loading from "@/components/elements/Loading";
 
 interface PromoteForm {
 	cost: number;
@@ -16,23 +19,27 @@ interface PromoteForm {
 const Promote = ({
 	contractAddress,
 	safuAddress,
-	promoCost,
+	address,
+	launcher,
 }: {
 	contractAddress: `0x${string}`;
 	safuAddress: `0x${string}`;
-	promoCost: number;
+	address: `0x${string}`;
+	launcher: LauncherData;
 }) => {
 	const { data: walletClient } = useWalletClient();
 	const [price, setPrice] = useState(0);
 	const [success, setSuccess] = useState("");
 	const [error, setError] = useState("");
+	const [promoEth, setPromoEth] = useState(0);
+	const [allowance, setAllowance] = useState(BigInt("0"));
 
 	const clear = () => {
 		setError("");
 	};
 
 	// contract call to promote the token.
-	const { writeContract: promote } = useWriteContract({
+	const { isPending: promoting, writeContract: promote } = useWriteContract({
 		mutation: {
 			onSuccess(res) {
 				console.log(res);
@@ -45,6 +52,47 @@ const Promote = ({
 		},
 	});
 
+	// get the allowance of the user
+	// const { data: allowanceData, refetch: check } = useReadContract({
+	// 	address: launcher.bridge,
+	// 	abi: tokenAbi,
+	// 	functionName: "allowance",
+	// 	args: [address, safuAddress],
+	// });
+
+	// useEffect(() => {
+	// 	console.log(allowanceData);
+	// 	if (allowanceData) {
+	// 		setAllowance(allowanceData);
+	// 	}
+	// }, [allowanceData]);
+
+	// const { isPending: approving, writeContractAsync: approve } = useWriteContract({
+	// 	mutation: {
+	// 		onSuccess(res) {
+	// 			console.log(res);
+	// 		},
+	// 		onError(error) {
+	// 			setError("Something went wrong!");
+	// 			console.log(error);
+	// 		},
+	// 	},
+	// });
+
+	// contract call to promote the token.
+	// const { writeContract: set } = useWriteContract({
+	// 	mutation: {
+	// 		onSuccess(res) {
+	// 			console.log(res);
+	// 			setSuccess("Hurray! Your bridge is set!");
+	// 		},
+	// 		onError(error) {
+	// 			console.log(error);
+	// 			setError("Something went wrong!");
+	// 		},
+	// 	},
+	// });
+
 	// handle form & launch promote token utility with number of times to promote
 	const {
 		register,
@@ -54,26 +102,72 @@ const Promote = ({
 		formState: { errors },
 	} = useForm<PromoteForm>();
 	const onSubmit: SubmitHandler<PromoteForm> = (formData) => {
-		if (promoCost && safuAddress) {
+		if (promoEth && safuAddress) {
+			// approve({
+			// 	address: launcher.bridge,
+			// 	abi: tokenAbi,
+			// 	functionName: "approve",
+			// 	args: [safuAddress, launcher.promoCostSafu * BigInt(formData.times)],
+			// });
 			promote({
 				address: safuAddress,
 				abi: helperAbi,
 				functionName: "promoteToken",
 				account: walletClient?.account,
 				args: [contractAddress, formData.times],
-				value: parseEther(promoCost.toString()) * BigInt(formData.times),
+				value: parseEther(promoEth.toString()) * BigInt(formData.times),
 			});
 		}
+
+		// set({
+		// 	address: safuAddress,
+		// 	abi: helperAbi,
+		// 	functionName: "setBridge",
+		// 	account: walletClient?.account,
+		// 	args: ["0x12f33700ebedf1f05d2cb12781b915a684dbbb1f"],
+		// });
+		// if (promoEth && safuAddress) {
+		// 	if (allowance >= launcher.promoCostSafu * BigInt(formData.times)) {
+		// 		promote({
+		// 			address: safuAddress,
+		// 			abi: helperAbi,
+		// 			functionName: "promoteTokenBridge",
+		// 			account: walletClient?.account,
+		// 			args: [contractAddress, formData.times],
+		// 			// value: parseEther(promoCost.toString()) * BigInt(formData.times),
+		// 		});
+		// 	} else {
+		// 		console.log(launcher.promoCostSafu * BigInt(formData.times));
+		// 		console.log("approve");
+		// 		approve({
+		// 			address: launcher.bridge,
+		// 			abi: tokenAbi,
+		// 			functionName: "approve",
+		// 			args: [safuAddress, launcher.promoCostSafu * BigInt(formData.times)],
+		// 		}).then(() => {
+		// 			promote({
+		// 				address: safuAddress,
+		// 				abi: helperAbi,
+		// 				functionName: "promoteTokenBridge",
+		// 				account: walletClient?.account,
+		// 				args: [contractAddress, formData.times],
+		// 				// value: parseEther(promoCost.toString()) * BigInt(formData.times),
+		// 			});
+		// 		});
+		// 	}
+		// }
 	};
 
 	useEffect(() => {
-		if (promoCost) {
-			setValue("cost", promoCost);
+		if (launcher.promoCostEth) {
+			setValue("cost", Number(formatEther(launcher.promoCostEth)));
+			setPromoEth(Number(formatEther(launcher.promoCostEth)));
 		}
-	}, [promoCost, setValue]);
+	}, [launcher.promoCostEth, setValue]);
 
 	return (
 		<>
+			{promoting && <Loading msg="Promoting your token..." />}
 			{success && <Modal msg={success} />}
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
@@ -110,7 +204,7 @@ const Promote = ({
 									min: { value: 1, message: "Count shoud be minimum 1 time" },
 								})}
 								onKeyUp={() => {
-									setPrice(Number((Number(getValues("times")) * promoCost).toFixed(4)));
+									setPrice(Number((Number(getValues("times")) * promoEth).toFixed(4)));
 								}}
 								error={errors.times}
 								width="w-20"

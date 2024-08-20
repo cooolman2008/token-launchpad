@@ -17,7 +17,7 @@ const Premium = ({
 }: {
 	register: UseFormRegister<LaunchForm>;
 	errors: FieldErrors<LaunchForm>;
-	setPaid: Dispatch<SetStateAction<boolean>>;
+	setPaid: Dispatch<SetStateAction<string>>;
 }) => {
 	const [premium, setPremium] = useState(false);
 	const payOptions = [
@@ -53,6 +53,11 @@ const Premium = ({
 					id="premium_arrow"
 					onClick={() => {
 						setPremium(!premium);
+						// if (premium) {
+						// 	setPaid("");
+						// } else {
+						// 	setPaid("ETH");
+						// }
 					}}
 					checked={premium}
 				/>
@@ -74,6 +79,9 @@ const Premium = ({
 							control: (state) => "bg-neutral-900 p-2 rounded-xl border-l border-gray-600 2xl:text-sm",
 							menuList: (state) => "bg-neutral-900 mt-1 rounded-xl 2xl:text-sm",
 							option: (state) => " flex flex-col justify-center px-4 py-2 cursor-pointer",
+						}}
+						onChange={(value) => {
+							// setPaid("SAFU");
 						}}
 						options={payOptions}
 					/>

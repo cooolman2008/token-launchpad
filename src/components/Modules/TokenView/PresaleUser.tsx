@@ -203,7 +203,7 @@ const PresaleUser = ({
 			{finishing && <Loading msg="Ending presale..." />}
 			{getting && <Loading msg="Initiating presale token refund..." />}
 			{refunding && <Loading msg="Initiating presale liquidity refund..." />}
-			{claiming && <Loading msg="Initiating presale liquidity refund..." />}
+			{claiming && <Loading msg="Claiming vested tokens..." />}
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
 			)}

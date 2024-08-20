@@ -2,9 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getAddress } from "viem";
+import { formatEther, getAddress } from "viem";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { useAccount, useWriteContract, useWalletClient, useWaitForTransactionReceipt, useChainId } from "wagmi";
+import {
+	useAccount,
+	useWriteContract,
+	useWalletClient,
+	useWaitForTransactionReceipt,
+	useChainId,
+	useReadContract,
+} from "wagmi";
 import Select from "react-select";
 import { useForm, SubmitHandler } from "react-hook-form";
 
@@ -22,6 +29,7 @@ import templateOptions from "../../static/templates.json";
 
 import { managerAbi } from "@/abi/managerAbi";
 import { AnimationOptionsWithOverrides } from "motion";
+import { helperAbi } from "@/abi/helperAbi";
 
 export const arrowOptions: AnimationOptionsWithOverrides = {
 	easing: "ease-in-out",
@@ -40,15 +48,33 @@ function Launch() {
 	const CONTRACT_ADDRESS = getContractAddress(chainId);
 
 	const [isClient, setIsClient] = useState(false);
-	const [paid, setPaid] = useState(false);
+	const [paid, setPaid] = useState("");
 	const [initTaxType, setInitTaxType] = useState(1);
 	const [template, setTemplate] = useState(templateOptions.templates[0]);
+	const [processing, setProcessing] = useState(false);
 	const [setting, setSetting] = useState(false);
 	const [error, setError] = useState("");
+	const [launchCost, setLaunchCost] = useState(BigInt(0));
 
 	const clear = () => {
 		setError("");
 	};
+
+	// get Promo costs from SAFU launcher.
+	const { data: launcherData } = useReadContract({
+		address: CONTRACT_ADDRESS,
+		abi: helperAbi,
+		functionName: "getLauncherDetails",
+	});
+
+	useEffect(() => {
+		// if (launcherData?.safuCost) {
+		// 	console.log(formatEther(launcherData?.safuCost));
+		// }
+		if (launcherData) {
+			setLaunchCost(launcherData.ethCost);
+		}
+	}, [launcherData]);
 
 	// contract call for token launch.
 	const {
@@ -58,9 +84,11 @@ function Launch() {
 	} = useWriteContract({
 		mutation: {
 			onSuccess(res) {
+				setProcessing(false);
 				console.log(res);
 			},
 			onError(error) {
+				setProcessing(false);
 				setError("Launch failed with an unknown reason!");
 				console.log(error);
 			},
@@ -84,7 +112,7 @@ function Launch() {
 				router.push("/" + transaction?.logs[0]?.address);
 			}, 1000);
 		}
-	}, [transaction, router]);
+	}, [transaction, router, setSetting]);
 
 	// handle form & fire launch token with the form details.
 	const {
@@ -96,63 +124,140 @@ function Launch() {
 		formState: { errors },
 	} = useForm<LaunchForm>();
 	const onSubmit: SubmitHandler<LaunchForm> = (formData) => {
+		setProcessing(true);
 		console.log(CONTRACT_ADDRESS);
 		if (address && CONTRACT_ADDRESS && ROUTER_ADDRESS) {
-			console.log({
-				owner: address,
-				taxWallet: getAddress(formData.taxWallet),
-				stakingFacet: CONTRACT_ADDRESS,
-				v2router: ROUTER_ADDRESS,
-				isFreeTier: true,
-				minLiq: BigInt(0),
-				supply: BigInt(formData.supply),
-				initTaxType: BigInt(initTaxType),
-				initInterval: BigInt(formData.initInterval ? formData.initInterval : template.initInterval),
-				countInterval: BigInt(formData.countInterval ? formData.countInterval : template.initInterval),
-				maxBuyTax: BigInt(formData.maxBuyTax ? formData.maxBuyTax : template.maxBuyTax),
-				minBuyTax: BigInt(formData.minBuyTax ? formData.minBuyTax : template.minBuyTax),
-				maxSellTax: BigInt(formData.maxSellTax ? formData.maxSellTax : template.maxSellTax),
-				minSellTax: BigInt(formData.minSellTax ? formData.minSellTax : template.minSellTax),
-				lpTax: BigInt(formData.lpTax ? formData.lpTax : template.lpTax),
-				maxWallet: BigInt(formData.maxWallet ? formData.maxWallet : template.maxWallet),
-				maxTx: BigInt(formData.maxTx ? formData.maxTx : template.maxTx),
-				preventSwap: BigInt(formData.preventSwap ? formData.preventSwap : template.preventSwap),
-				maxSwap: BigInt(formData.maxSwap ? formData.maxSwap : template.maxSwap),
-				taxSwapThreshold: BigInt(formData.taxSwapThreshold ? formData.taxSwapThreshold : template.taxSwapThreshold),
-				name: formData.name,
-				symbol: formData.symbol,
-			});
-			launchFree({
-				address: CONTRACT_ADDRESS,
-				abi: managerAbi,
-				functionName: "launchTokenFree",
-				args: [
-					{
-						owner: address,
-						taxWallet: getAddress(formData.taxWallet),
-						stakingFacet: CONTRACT_ADDRESS,
-						v2router: ROUTER_ADDRESS,
-						isFreeTier: true,
-						minLiq: BigInt(0),
-						supply: BigInt(formData.supply),
-						initTaxType: BigInt(0),
-						initInterval: BigInt(formData.initInterval ? formData.initInterval : template.initInterval),
-						countInterval: BigInt(formData.countInterval ? formData.countInterval : template.initInterval),
-						maxBuyTax: BigInt(formData.maxBuyTax ? formData.maxBuyTax : template.maxBuyTax),
-						minBuyTax: BigInt(formData.minBuyTax ? formData.minBuyTax : template.minBuyTax),
-						maxSellTax: BigInt(formData.maxSellTax ? formData.maxSellTax : template.maxSellTax),
-						minSellTax: BigInt(formData.minSellTax ? formData.minSellTax : template.minSellTax),
-						lpTax: BigInt(formData.lpTax ? formData.lpTax : template.lpTax),
-						maxWallet: BigInt(formData.maxWallet ? formData.maxWallet : template.maxWallet),
-						maxTx: BigInt(formData.maxTx ? formData.maxTx : template.maxTx),
-						preventSwap: BigInt(formData.preventSwap ? formData.preventSwap : template.preventSwap),
-						maxSwap: BigInt(formData.maxSwap ? formData.maxSwap : template.maxSwap),
-						taxSwapThreshold: BigInt(formData.taxSwapThreshold ? formData.taxSwapThreshold : template.taxSwapThreshold),
-						name: formData.name,
-						symbol: formData.symbol,
-					},
-				],
-			});
+			if (paid === "ETH") {
+				launchFree({
+					address: CONTRACT_ADDRESS,
+					abi: managerAbi,
+					functionName: "launchTokenEth",
+					args: [
+						{
+							owner: address,
+							taxWallet: getAddress(formData.taxWallet),
+							stakingFacet: CONTRACT_ADDRESS,
+							v2router: ROUTER_ADDRESS,
+							isFreeTier: false,
+							minLiq: BigInt(0),
+							supply: BigInt(formData.supply),
+							initTaxType: BigInt(0),
+							initInterval: BigInt(formData.initInterval ? formData.initInterval : template.initInterval),
+							countInterval: BigInt(formData.countInterval ? formData.countInterval : template.initInterval),
+							maxBuyTax: BigInt(formData.maxBuyTax ? formData.maxBuyTax : template.maxBuyTax),
+							minBuyTax: BigInt(formData.minBuyTax ? formData.minBuyTax : template.minBuyTax),
+							maxSellTax: BigInt(formData.maxSellTax ? formData.maxSellTax : template.maxSellTax),
+							minSellTax: BigInt(formData.minSellTax ? formData.minSellTax : template.minSellTax),
+							lpTax: BigInt(formData.lpTax ? formData.lpTax : template.lpTax),
+							maxWallet: BigInt(formData.maxWallet ? formData.maxWallet : template.maxWallet),
+							maxTx: BigInt(formData.maxTx ? formData.maxTx : template.maxTx),
+							preventSwap: BigInt(formData.preventSwap ? formData.preventSwap : template.preventSwap),
+							maxSwap: BigInt(formData.maxSwap ? formData.maxSwap : template.maxSwap),
+							taxSwapThreshold: BigInt(
+								formData.taxSwapThreshold ? formData.taxSwapThreshold : template.taxSwapThreshold
+							),
+							name: formData.name,
+							symbol: formData.symbol,
+						},
+					],
+					value: launchCost,
+				});
+			} else if (paid === "SAFU") {
+				launchFree({
+					address: CONTRACT_ADDRESS,
+					abi: managerAbi,
+					functionName: "launchTokenBridge",
+					args: [
+						{
+							owner: address,
+							taxWallet: getAddress(formData.taxWallet),
+							stakingFacet: CONTRACT_ADDRESS,
+							v2router: ROUTER_ADDRESS,
+							isFreeTier: false,
+							minLiq: BigInt(0),
+							supply: BigInt(formData.supply),
+							initTaxType: BigInt(0),
+							initInterval: BigInt(formData.initInterval ? formData.initInterval : template.initInterval),
+							countInterval: BigInt(formData.countInterval ? formData.countInterval : template.initInterval),
+							maxBuyTax: BigInt(formData.maxBuyTax ? formData.maxBuyTax : template.maxBuyTax),
+							minBuyTax: BigInt(formData.minBuyTax ? formData.minBuyTax : template.minBuyTax),
+							maxSellTax: BigInt(formData.maxSellTax ? formData.maxSellTax : template.maxSellTax),
+							minSellTax: BigInt(formData.minSellTax ? formData.minSellTax : template.minSellTax),
+							lpTax: BigInt(formData.lpTax ? formData.lpTax : template.lpTax),
+							maxWallet: BigInt(formData.maxWallet ? formData.maxWallet : template.maxWallet),
+							maxTx: BigInt(formData.maxTx ? formData.maxTx : template.maxTx),
+							preventSwap: BigInt(formData.preventSwap ? formData.preventSwap : template.preventSwap),
+							maxSwap: BigInt(formData.maxSwap ? formData.maxSwap : template.maxSwap),
+							taxSwapThreshold: BigInt(
+								formData.taxSwapThreshold ? formData.taxSwapThreshold : template.taxSwapThreshold
+							),
+							name: formData.name,
+							symbol: formData.symbol,
+						},
+					],
+				});
+			} else {
+				console.log({
+					type: "free",
+					owner: address,
+					taxWallet: getAddress(formData.taxWallet),
+					stakingFacet: CONTRACT_ADDRESS,
+					v2router: ROUTER_ADDRESS,
+					isFreeTier: true,
+					minLiq: BigInt(0),
+					supply: BigInt(formData.supply),
+					initTaxType: BigInt(initTaxType),
+					initInterval: BigInt(formData.initInterval ? formData.initInterval : template.initInterval),
+					countInterval: BigInt(formData.countInterval ? formData.countInterval : template.initInterval),
+					maxBuyTax: BigInt(formData.maxBuyTax ? formData.maxBuyTax : template.maxBuyTax),
+					minBuyTax: BigInt(formData.minBuyTax ? formData.minBuyTax : template.minBuyTax),
+					maxSellTax: BigInt(formData.maxSellTax ? formData.maxSellTax : template.maxSellTax),
+					minSellTax: BigInt(formData.minSellTax ? formData.minSellTax : template.minSellTax),
+					lpTax: BigInt(formData.lpTax ? formData.lpTax : template.lpTax),
+					maxWallet: BigInt(formData.maxWallet ? formData.maxWallet : template.maxWallet),
+					maxTx: BigInt(formData.maxTx ? formData.maxTx : template.maxTx),
+					preventSwap: BigInt(formData.preventSwap ? formData.preventSwap : template.preventSwap),
+					maxSwap: BigInt(formData.maxSwap ? formData.maxSwap : template.maxSwap),
+					taxSwapThreshold: BigInt(formData.taxSwapThreshold ? formData.taxSwapThreshold : template.taxSwapThreshold),
+					name: formData.name,
+					symbol: formData.symbol,
+				});
+				launchFree({
+					address: CONTRACT_ADDRESS,
+					abi: managerAbi,
+					functionName: "launchTokenFree",
+					args: [
+						{
+							owner: address,
+							taxWallet: getAddress(formData.taxWallet),
+							stakingFacet: CONTRACT_ADDRESS,
+							v2router: ROUTER_ADDRESS,
+							isFreeTier: true,
+							minLiq: BigInt(0),
+							supply: BigInt(formData.supply),
+							initTaxType: BigInt(0),
+							initInterval: BigInt(formData.initInterval ? formData.initInterval : template.initInterval),
+							countInterval: BigInt(formData.countInterval ? formData.countInterval : template.initInterval),
+							maxBuyTax: BigInt(formData.maxBuyTax ? formData.maxBuyTax : template.maxBuyTax),
+							minBuyTax: BigInt(formData.minBuyTax ? formData.minBuyTax : template.minBuyTax),
+							maxSellTax: BigInt(formData.maxSellTax ? formData.maxSellTax : template.maxSellTax),
+							minSellTax: BigInt(formData.minSellTax ? formData.minSellTax : template.minSellTax),
+							lpTax: BigInt(formData.lpTax ? formData.lpTax : template.lpTax),
+							maxWallet: BigInt(formData.maxWallet ? formData.maxWallet : template.maxWallet),
+							maxTx: BigInt(formData.maxTx ? formData.maxTx : template.maxTx),
+							preventSwap: BigInt(formData.preventSwap ? formData.preventSwap : template.preventSwap),
+							maxSwap: BigInt(formData.maxSwap ? formData.maxSwap : template.maxSwap),
+							taxSwapThreshold: BigInt(
+								formData.taxSwapThreshold ? formData.taxSwapThreshold : template.taxSwapThreshold
+							),
+							name: formData.name,
+							symbol: formData.symbol,
+						},
+					],
+				});
+			}
+		} else {
+			setProcessing(false);
 		}
 	};
 
@@ -165,7 +270,7 @@ function Launch() {
 		<>
 			{isClient && (
 				<>
-					{(isPending || retrieval) && <Loading msg="Launching..." />}
+					{(isPending || retrieval || processing) && <Loading msg="Launching..." />}
 					{setting && <Loading msg="We're building a dashboard for your token..." />}
 					{error && (
 						<Modal

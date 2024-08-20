@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getNumber } from "@/utils/math";
 import { Token } from "@/api/getToken";
 import Modal from "@/components/elements/Modal";
+import Loading from "@/components/elements/Loading";
 
 const Claim = ({
 	contractAddress,
@@ -38,7 +39,6 @@ const Claim = ({
 	});
 
 	useEffect(() => {
-		console.log("git" + claimables);
 		if (claimables && claimables?.length > 0) {
 			setClaimable(claimables[0]);
 			setClaimableDays(claimables[1] + claimables[3]);
@@ -93,6 +93,7 @@ const Claim = ({
 	});
 	return (
 		<>
+			{claiming && <Loading msg="Claiming vested tokens..." />}
 			{success && <Modal msg={success} />}
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />

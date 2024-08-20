@@ -72,10 +72,6 @@ export const getMinAmountOut = (
     );
     const trade = new Trade(route, tokenAmount, TradeType.EXACT_INPUT);
     const slippageTolerance = new Percent(slippage, "10000"); // 50 bips, or 0.50% - Slippage tolerance
-    console.log(
-      "worst execution price",
-      trade.worstExecutionPrice(slippageTolerance).toSignificant(18)
-    );
     const amountOut = trade.minimumAmountOut(slippageTolerance).toFixed(18); // needs to be converted to e.g. hex
     const minAmountOut = parseUnits(amountOut, 18);
 
