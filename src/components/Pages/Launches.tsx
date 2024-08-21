@@ -23,6 +23,7 @@ import {
 } from "@/api/getTokens";
 
 import { getOptions } from "@/config/ChartOptions";
+import PresaleBanner from "@/components/elements/PresaleBanner";
 
 function Launches() {
 	const address_0 = "0x0000000000000000000000000000000000000000";
@@ -195,6 +196,7 @@ function Launches() {
 					<Link href="/launch" className="safu-button-secondary" scroll={true}>
 						Launch a token
 					</Link>
+					<PresaleBanner />
 				</>
 			)}
 		</>

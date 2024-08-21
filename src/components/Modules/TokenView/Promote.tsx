@@ -172,7 +172,7 @@ const Promote = ({
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
 			)}
-			<div className="w-full py-8 border-b border-gray-700">
+			<div className="w-full py-8 border-b border-gray-700 max-md:hidden">
 				<div className="flex mb-1">
 					<h2 className="text-xl">Promote this token</h2>
 					<InformationTip msg="The token will be highlighted on our channels for the selected frequency" />

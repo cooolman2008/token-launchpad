@@ -225,7 +225,7 @@ const Staking = ({
 			{error && (
 				<Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} callback={clear} />
 			)}
-			<div className="stake-container mt-12">
+			<div className="stake-container mb-12">
 				<div className="flex justify-between mb-2 items-center relative">
 					<h2 className="text-2xl">Stake</h2>
 					<span className="text-sm font-medium text-gray-400">

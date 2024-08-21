@@ -241,7 +241,7 @@ const Swap = ({
 					callback={clear}
 				/>
 			)}
-			<div className="swap-container">
+			<div className={"swap-container mb-12" + (tradingEnabled ? "" : " max-md:hidden")}>
 				<div className="flex justify-between mb-2 items-center relative z-10">
 					<h2 className="text-2xl">Swap</h2>
 					<SwapSettings register={register} errors={errors} />

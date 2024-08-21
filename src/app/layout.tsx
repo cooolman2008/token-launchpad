@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body id="body" className={plus_Jakarta_Sans.className + " pb-4 overflow-x-hidden relative"}>
+			<body id="body" className={plus_Jakarta_Sans.className + " pb-4 overflow-x-hidden relative pb-40 md:pb-32"}>
 				<div className="absolute right-0 left-0 top-0 bottom-0 z-0 bg-[url('/noise.png')] opacity-[0.015]"></div>
 				<Web3ModalProvider>
 					<main className="mx-auto flex min-h-screen flex-col items-center z-10 relative">

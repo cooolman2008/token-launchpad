@@ -1,6 +1,6 @@
-import { useWalletClient, useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useWalletClient, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useState, SetStateAction, Dispatch, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { formatEther, parseEther } from "viem";
 
 import Loading from "@/components/elements/Loading";
@@ -9,7 +9,6 @@ import Modal from "@/components/elements/Modal";
 import { getAbr, getNumber } from "@/utils/math";
 import { presaleAbi } from "@/abi/presaleAbi";
 import { animate, AnimationControls } from "motion";
-import { format } from "path";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 
 interface PresaleForm {
@@ -166,7 +165,7 @@ const Presale = ({
 			{buying && <Loading msg="Getting presale tokens for you..." />}
 			{success && <Modal msg={success} />}
 			{error && <Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} />}
-			<div className="presale-container mt-12">
+			<div className="presale-container mb-12">
 				<div className="flex justify-between mb-2 items-center relative">
 					<h2 className="text-2xl">Presale</h2>
 					<span

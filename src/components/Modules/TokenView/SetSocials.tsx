@@ -79,7 +79,7 @@ const SetSocials = memo(
 						callback={clear}
 					/>
 				)}
-				<div className="socials-container mt-12">
+				<div className="socials-container mb-12">
 					<div className="flex mb-2">
 						<h2 className="text-2xl">Socials</h2>
 						<InformationTip msg="Set your socials & get a boost to your token" />

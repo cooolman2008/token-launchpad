@@ -17,12 +17,14 @@ const Intro = ({
 	token,
 	isOwner,
 	isPresale,
+	isTrading,
 	chain,
 }: {
 	address: `0x${string}`;
 	token: Token;
 	isOwner: boolean;
 	isPresale: boolean;
+	isTrading: boolean;
 	chain: number;
 }) => {
 	useEffect(() => {
@@ -75,7 +77,7 @@ const Intro = ({
 					<EtherscanBadge url={getEtherscan(chain) + address} />
 				</div>
 			</div>
-			<div className="w-full pb-8 border-b border-gray-700">
+			<div className={"w-full pb-8 border-b border-gray-700" + (isTrading ? "" : " max-md:hidden")}>
 				<h2 className="mb-1 text-xl">Statistics</h2>
 				<div className="flex flex-wrap">
 					<div className="w-1/2 flex flex-col md:flex-1">

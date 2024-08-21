@@ -214,6 +214,7 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 										token={token}
 										isOwner={isOwner}
 										isPresale={presale === 1}
+										isTrading={isTrading}
 										chain={chainId}
 									/>
 									{isTeam && address && isTrading && (
@@ -335,9 +336,13 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 					) : (
 						!loading && (
 							<div className="min-h-[90vh] flex flex-col justify-center text-center">
-								<h2 className="max-md:text-sm text-2xl text-red-500">Sorry, there was no data on this address!</h2>
+								<h2 className="max-md:text-sm text-2xl text-red-500">
+									{params.slug.toString() === "0xdca7905c38f15d5e653f76e956109bf5a4f43fbb"
+										? "$SAFU is only available on Ethereum mainnet!"
+										: "Sorry, there was no data on this address!"}
+								</h2>
 								<p className="max-md:text-xs text-xl text-gray-400">
-									Check if you are on the right network or try refreshing the page.
+									Check if you are on the right network and try refreshing the page.
 								</p>
 							</div>
 						)
