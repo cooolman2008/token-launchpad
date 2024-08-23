@@ -57,7 +57,7 @@ const metadata = {
 
 // Create wagmiConfig
 // const chains = [holesky, mainnet, arbitrum, sepolia, local] as const;
-const chains = [mainnet, base, holesky, bscTestnet, polygonAmoy] as const;
+const chains = [mainnet, holesky, baseSepolia, bscTestnet, polygonAmoy] as const;
 export const config = defaultWagmiConfig({
 	chains,
 	projectId,
