@@ -6,7 +6,7 @@ export const getContractAddress = ( chainId: number | undefined) => {
         case 42161: return undefined // arbitrum
         case 10: return undefined // optimism
         case 137: return undefined // polygon
-        case 8453: return undefined // base
+        case 8453: return "0x16Ef580a9cd6cf149E95dC5e2CCB641e2E11b39c" // base
         case 56: return undefined // bsc
         case 43113: return undefined // avalancheFuji
         case 81457: return undefined // blast
@@ -29,7 +29,7 @@ export const getGraphUrl = ( chainId: number) => {
         case 42161: return undefined // arbitrum
         case 10: return undefined // optimism
         case 137: return undefined // polygon
-        case 8453: return undefined // base
+        case 8453: return "https://gateway-arbitrum.network.thegraph.com/api/fb12cdbd9bb3db019954b86d90c276a3/subgraphs/id/7JDywCQFpuDAdEgWWLrFA61gEQYVGJ3ihLVooDrFP9eL" // base
         case 56: return undefined // bsc
         case 43113: return undefined // avalancheFuji
         case 81457: return undefined // blast
