@@ -25,7 +25,7 @@ export const getContractAddress = ( chainId: number | undefined) => {
 
 export const getGraphUrl = ( chainId: number) => {
     switch(chainId) {
-        case 1: return "https://api.studio.thegraph.com/query/82166/safulaunchereth/version/latest" //"https://gateway-arbitrum.network.thegraph.com/api/fb12cdbd9bb3db019954b86d90c276a3/subgraphs/id/64xsi3LbrmC8bJ3VaM6PBpL5em766BthJkdWTnAd6cMH" //mainnet
+        case 1: return "https://gateway-arbitrum.network.thegraph.com/api/fb12cdbd9bb3db019954b86d90c276a3/subgraphs/id/64xsi3LbrmC8bJ3VaM6PBpL5em766BthJkdWTnAd6cMH" //mainnet
         case 42161: return undefined // arbitrum
         case 10: return undefined // optimism
         case 137: return undefined // polygon
