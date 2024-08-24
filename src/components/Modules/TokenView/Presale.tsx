@@ -90,8 +90,8 @@ const Presale = ({
 		mutation: {
 			onSuccess(res) {
 				console.log(res);
-				setValue("amount", 0);
-				setValue("eth", 0);
+				resetField("amount");
+				resetField("eth");
 				setTrans(res);
 				setSuccess("Your presale tokens are on it's way!");
 				animation?.play();
@@ -154,6 +154,9 @@ const Presale = ({
 		register,
 		handleSubmit,
 		setValue,
+		clearErrors,
+		resetField,
+		trigger,
 		formState: { errors },
 	} = useForm<PresaleForm>();
 	const onSubmit: SubmitHandler<PresaleForm> = (formData) => {
@@ -197,7 +200,7 @@ const Presale = ({
 						{presale?.sold ? getAbr(getNumber(presale?.sold)) : "0"}
 					</span>
 				</div>
-				<form onSubmit={handleSubmit(onSubmit)} className="mb-4">
+				<form onSubmit={handleSubmit(onSubmit)} className="mb-4" autoComplete="off">
 					<div className="w-full p-4 rounded-xl border-2 border-transparent hover:border-neutral-800 bg-neutral-900">
 						<div className="border-b border-neutral-800">
 							<div className="flex justify-between mb-2">
@@ -261,13 +264,21 @@ const Presale = ({
 											message: "Please keep ETH below wallet limit",
 										},
 										onChange: (event) => {
-											const eth = parseEther(event.target.value.toString());
-											if (presale?.maxEth && presale?.hardcap)
-												setValue(
-													"amount",
-													Math.floor(Number(formatEther((eth * presale?.hardcap) / presale?.maxEth))),
-													{ shouldValidate: true }
-												);
+											if (!isNaN(event.target.value)) {
+												if (event.target.value > 0) {
+													const eth = parseEther(event.target.value.toString());
+													if (presale?.maxEth && presale?.hardcap)
+														setValue(
+															"amount",
+															Math.floor(Number(formatEther((eth * presale?.hardcap) / presale?.maxEth))),
+															{ shouldValidate: true }
+														);
+													trigger("eth");
+												} else {
+													clearErrors("eth");
+													resetField("amount");
+												}
+											}
 										},
 									})}
 									className="block w-full rounded-xl pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-3xl"
@@ -295,11 +306,19 @@ const Presale = ({
 											message: "Please keep amount below wallet limit",
 										},
 										onChange: (event) => {
-											const amount = parseEther(event.target.value.toString());
-											if (presale?.maxEth && presale?.hardcap)
-												setValue("eth", Number(formatEther((amount * presale?.maxEth) / presale?.hardcap)), {
-													shouldValidate: true,
-												});
+											if (!isNaN(event.target.value)) {
+												if (event.target.value > 0) {
+													const amount = parseEther(event.target.value.toString());
+													if (presale?.maxEth && presale?.hardcap)
+														setValue("eth", Number(formatEther((amount * presale?.maxEth) / presale?.hardcap)), {
+															shouldValidate: true,
+														});
+													trigger("amount");
+												} else {
+													clearErrors("amount");
+													resetField("eth");
+												}
+											}
 										},
 									})}
 									className="block w-full rounded-xl pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-3xl"
