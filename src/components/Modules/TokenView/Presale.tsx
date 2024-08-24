@@ -1,4 +1,11 @@
-import { useWalletClient, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import {
+	useWalletClient,
+	useReadContract,
+	useWriteContract,
+	useWaitForTransactionReceipt,
+	useChainId,
+	useEstimateGas,
+} from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, useEffect } from "react";
 import { formatEther, parseEther } from "viem";
@@ -10,9 +17,11 @@ import { getAbr, getNumber } from "@/utils/math";
 import { presaleAbi } from "@/abi/presaleAbi";
 import { animate, AnimationControls } from "motion";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
+import { getSymbol } from "@/utils/utils";
 
 interface PresaleForm {
 	amount: number;
+	eth: number;
 }
 
 interface Presale {
@@ -36,6 +45,7 @@ const Presale = ({
 }) => {
 	const { data: walletClient } = useWalletClient();
 	const { open } = useWeb3Modal();
+	const chain = useChainId();
 
 	const [error, setError] = useState("");
 	const [presale, setPresale] = useState<Presale>();
@@ -43,7 +53,7 @@ const Presale = ({
 	const [maxBag, setMaxBag] = useState(0);
 	const [success, setSuccess] = useState("");
 	const [price, setPrice] = useState("");
-	const [remaining, setRremaining] = useState(0);
+	const [remaining, setRemaining] = useState(0);
 	const [trans, setTrans] = useState<`0x${string}`>();
 	const [animation, setAnimation] = useState<AnimationControls>();
 
@@ -81,6 +91,7 @@ const Presale = ({
 			onSuccess(res) {
 				console.log(res);
 				setValue("amount", 0);
+				setValue("eth", 0);
 				setTrans(res);
 				setSuccess("Your presale tokens are on it's way!");
 				animation?.play();
@@ -128,7 +139,7 @@ const Presale = ({
 			setMaxBag(getNumber(presale.maxBag));
 			const remaining = presale.maxBag - bought;
 			const available = presale.hardcap - presale.sold;
-			remaining > available ? setRremaining(getNumber(available)) : setRremaining(getNumber(remaining));
+			remaining > available ? setRemaining(getNumber(available)) : setRemaining(getNumber(remaining));
 		}
 	}, [bought, presale]);
 
@@ -164,7 +175,13 @@ const Presale = ({
 		<>
 			{buying && <Loading msg="Getting presale tokens for you..." />}
 			{success && <Modal msg={success} />}
-			{error && <Modal msg={error} des="This might be a temporary issue, try again in sometime" error={true} />}
+			{error && (
+				<Modal
+					msg={error}
+					des="Check if you have adequete balance in the right network, else please try again!"
+					error={true}
+				/>
+			)}
 			<div className="presale-container mb-12">
 				<div className="flex justify-between mb-2 items-center relative">
 					<h2 className="text-2xl">Presale</h2>
@@ -182,70 +199,122 @@ const Presale = ({
 				</div>
 				<form onSubmit={handleSubmit(onSubmit)} className="mb-4">
 					<div className="w-full p-4 rounded-xl border-2 border-transparent hover:border-neutral-800 bg-neutral-900">
-						<div className="flex justify-between mb-2">
-							<span className="text-sm font-light text-gray-400">
-								Softcap: {presale?.softcap ? getAbr(getNumber(presale?.softcap)) : "0"}
-							</span>
-							<span className="text-sm font-normal text-gray-400">
-								Hardcap: {presale?.hardcap ? getAbr(getNumber(presale?.hardcap)) : "0"}
-							</span>
-						</div>
-						<div className="flex justify-between mb-2">
-							<div className="w-full h-4 relative rounded-xl bg-neutral-800  border-neutral-700/60">
-								<div
-									className={
-										"absolute top-0 left-0 right-0 bottom-0 rounded-l-xl text-sm text-black pl-2" +
-										(presale?.sold && presale?.softcap && presale?.sold > presale?.softcap
-											? " bg-green-600"
-											: " bg-amber-400")
-									}
-									style={
-										presale?.sold && presale?.sold > 0
-											? {
-													width: (Number(presale?.sold) * 100) / Number(presale?.hardcap) + "%",
-											  }
-											: { visibility: "hidden" }
-									}
-								></div>
+						<div className="border-b border-neutral-800">
+							<div className="flex justify-between mb-2">
+								<span className="text-sm font-light text-gray-400">
+									Softcap: {presale?.softcap ? getAbr(getNumber(presale?.softcap)) : "0"}
+								</span>
+								<span className="text-sm font-normal text-gray-400">
+									Hardcap: {presale?.hardcap ? getAbr(getNumber(presale?.hardcap)) : "0"}
+								</span>
+							</div>
+							<div className="flex justify-between mb-2">
+								<div className="w-full h-4 relative rounded-xl bg-neutral-800  border-neutral-700/60">
+									<div
+										className={
+											"absolute top-0 left-0 right-0 bottom-0 rounded-l-xl text-sm text-black pl-2" +
+											(presale?.sold && presale?.softcap && presale?.sold > presale?.softcap
+												? " bg-green-600"
+												: " bg-amber-400")
+										}
+										style={
+											presale?.sold && presale?.sold > 0
+												? {
+														width: (Number(presale?.sold) * 100) / Number(presale?.hardcap) + "%",
+												  }
+												: { visibility: "hidden" }
+										}
+									></div>
+								</div>
+							</div>
+							<div className="flex max-md:flex-col justify-between mb-4">
+								<span className={"text-sm font-normal text-gray-400"} id="bought">
+									<b className="text-sm font-normal text-gray-400">Wallet limit:</b>{" "}
+									{presale?.maxBag ? getAbr(getNumber(bought)) + " / " + getAbr(getNumber(presale?.maxBag)) : "0"}{" "}
+									{symbol.toUpperCase()}
+								</span>
 							</div>
 						</div>
-						<div className="flex justify-between mb-4">
-							<span className={"text-sm font-normal " + (errors.amount ? "text-red-600" : "text-gray-400")} id="bought">
-								<b className="text-sm font-normal text-gray-400">Wallet limit:</b>{" "}
-								{presale?.maxBag ? getAbr(getNumber(bought)) + " / " + getAbr(getNumber(presale?.maxBag)) : "0"}
-							</span>
-							<span className="text-sm font-normal text-gray-400">Remaining: {remaining ? remaining : "0"}</span>
+						<div className="w-full flex flex-col mb-2 mt-4">
+							<div className="block flex justify-between">
+								<span className="text-sm leading-6 text-gray-400">You pay</span>
+								<span className="text-sm leading-6 text-gray-400">
+									Max:{" "}
+									{presale?.maxEth && presale?.hardcap
+										? Number(formatEther((parseEther(remaining.toString()) * presale?.maxEth) / presale?.hardcap))
+										: 0}
+								</span>
+							</div>
+							<div className="flex">
+								<input
+									type="text"
+									id="eth"
+									placeholder="0"
+									{...register("eth", {
+										required: { value: true, message: "Eth can't be empty" },
+										pattern: { value: /^[0-9.]+$/i, message: "Eth should be a number" },
+										max: {
+											value:
+												presale?.maxEth && presale?.hardcap
+													? Number(formatEther((parseEther(remaining.toString()) * presale?.maxEth) / presale?.hardcap))
+													: 100,
+											message: "Please keep ETH below wallet limit",
+										},
+										onChange: (event) => {
+											const eth = parseEther(event.target.value.toString());
+											if (presale?.maxEth && presale?.hardcap)
+												setValue(
+													"amount",
+													Math.floor(Number(formatEther((eth * presale?.hardcap) / presale?.maxEth))),
+													{ shouldValidate: true }
+												);
+										},
+									})}
+									className="block w-full rounded-xl pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-3xl"
+								/>
+								<span className="block sm:text-3xl leading-6 text-gray-400 pt-1.5">{getSymbol(chain)}</span>
+							</div>
+							{errors.eth && <p className="w-full mb-2 text-pink-600 text-sm">{errors.eth.message}</p>}
 						</div>
-						<div className="w-full flex">
-							<input
-								type="text"
-								id="amount"
-								placeholder="0"
-								{...register("amount", {
-									required: true,
-									pattern: /^[0-9]+$/i,
-									min: 1,
-									max: maxBag,
-									onChange: (event) => {
-										const amount = parseEther(event.target.value.toString());
-										if (presale?.maxEth && presale?.hardcap)
-											setPrice(formatEther((amount * presale?.maxEth) / presale?.hardcap));
-									},
-								})}
-								className="block w-full rounded-xl pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-3xl"
-							/>
-							<span className="block sm:text-3xl leading-6 text-gray-400 pt-1.5">{symbol}</span>
+						<div className="w-full flex flex-col mt-4 mb-2">
+							<div className="block flex justify-between">
+								<span className="text-sm leading-6 text-gray-400">You get</span>
+								<span className="text-sm leading-6 text-gray-400">Max: {remaining ? remaining : "0"}</span>
+							</div>
+							<div className="flex">
+								<input
+									type="text"
+									id="amount"
+									placeholder="0"
+									{...register("amount", {
+										required: { value: true, message: "Amount can't be empty" },
+										pattern: { value: /^[0-9.]+$/i, message: "Amount should be a number" },
+										min: { value: 1, message: "Minimum 1 SAFU is needed" },
+										max: {
+											value: remaining,
+											message: "Please keep amount below wallet limit",
+										},
+										onChange: (event) => {
+											const amount = parseEther(event.target.value.toString());
+											if (presale?.maxEth && presale?.hardcap)
+												setValue("eth", Number(formatEther((amount * presale?.maxEth) / presale?.hardcap)), {
+													shouldValidate: true,
+												});
+										},
+									})}
+									className="block w-full rounded-xl pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-900 outline-0 sm:text-3xl"
+								/>
+								<span className="block sm:text-3xl leading-6 text-gray-400 pt-1.5">{symbol.toUpperCase()}</span>
+							</div>
+							{errors.amount && <p className="w-full mb-2 text-pink-600 text-sm">{errors.amount.message}</p>}
 						</div>
 					</div>
+
 					{maxBag > 0 && (
 						<div className="flex justify-between flex-wrap">
 							<div className="flex justify-center flex-col mt-2 grow">
 								{address ? (
-									<input
-										className="safu-button-primary cursor-pointer"
-										type="submit"
-										value={price ? "Buy for " + price + " ETH" : "Buy"}
-									/>
+									<input className="safu-button-primary cursor-pointer" type="submit" value="Buy" />
 								) : (
 									<span className="safu-soft-button text-center" onClick={() => open()}>
 										Connect Wallet
