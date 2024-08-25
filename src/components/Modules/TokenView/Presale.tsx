@@ -4,7 +4,8 @@ import {
 	useWriteContract,
 	useWaitForTransactionReceipt,
 	useChainId,
-	useEstimateGas,
+	useEstimateFeesPerGas,
+	usePublicClient,
 } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, useEffect } from "react";
@@ -21,7 +22,7 @@ import { getSymbol } from "@/utils/utils";
 
 interface PresaleForm {
 	amount: number;
-	eth: number;
+	eth: string;
 }
 
 interface Presale {
@@ -44,18 +45,21 @@ const Presale = ({
 	address?: `0x${string}`;
 }) => {
 	const { data: walletClient } = useWalletClient();
+	const publicClient = usePublicClient();
 	const { open } = useWeb3Modal();
 	const chain = useChainId();
 
-	const [error, setError] = useState("");
 	const [presale, setPresale] = useState<Presale>();
 	const [bought, setBought] = useState(BigInt(0));
 	const [maxBag, setMaxBag] = useState(0);
-	const [success, setSuccess] = useState("");
-	const [price, setPrice] = useState("");
+	const [price, setPrice] = useState(BigInt(0));
+	const [gasFee, setGasFee] = useState(BigInt(0));
 	const [remaining, setRemaining] = useState(0);
 	const [trans, setTrans] = useState<`0x${string}`>();
 	const [animation, setAnimation] = useState<AnimationControls>();
+
+	const [error, setError] = useState("");
+	const [success, setSuccess] = useState("");
 
 	// get presale details.
 	const { data: presaleData, refetch } = useReadContract({
@@ -69,6 +73,31 @@ const Presale = ({
 			setPresale(presaleData);
 		}
 	}, [presaleData]);
+
+	const { data: gas, refetch: reGas } = useEstimateFeesPerGas({
+		chainId: chain,
+	});
+
+	useEffect(() => {
+		if (publicClient && gas && getValues("amount") > 0 && price > BigInt(0))
+			publicClient
+				.estimateContractGas({
+					address: presaleAddress,
+					abi: presaleAbi,
+					functionName: "buyTokens",
+					args: [parseEther(getValues("amount").toString())],
+					account: walletClient?.account,
+					value: price,
+				})
+				.then((res) => {
+					if (gas) {
+						setGasFee(gas.maxFeePerGas * res);
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+	}, [price]);
 
 	// get user claimable token details.
 	const { data: claimables, refetch: getBought } = useReadContract({
@@ -92,6 +121,7 @@ const Presale = ({
 				console.log(res);
 				resetField("amount");
 				resetField("eth");
+				setPrice(BigInt(0));
 				setTrans(res);
 				setSuccess("Your presale tokens are on it's way!");
 				animation?.play();
@@ -156,6 +186,7 @@ const Presale = ({
 		setValue,
 		clearErrors,
 		resetField,
+		getValues,
 		trigger,
 		formState: { errors },
 	} = useForm<PresaleForm>();
@@ -183,6 +214,9 @@ const Presale = ({
 					msg={error}
 					des="Check if you have adequete balance in the right network, else please try again!"
 					error={true}
+					callback={() => {
+						setError("");
+					}}
 				/>
 			)}
 			<div className="presale-container mb-12">
@@ -244,7 +278,11 @@ const Presale = ({
 								<span className="text-sm leading-6 text-gray-400">
 									Max:{" "}
 									{presale?.maxEth && presale?.hardcap
-										? Number(formatEther((parseEther(remaining.toString()) * presale?.maxEth) / presale?.hardcap))
+										? parseFloat(
+												Number(
+													formatEther((parseEther(remaining.toString()) * presale?.maxEth) / presale?.hardcap)
+												).toFixed(10)
+										  )
 										: 0}
 								</span>
 							</div>
@@ -278,6 +316,7 @@ const Presale = ({
 													clearErrors("eth");
 													resetField("amount");
 												}
+												setPrice(parseEther(event.target.value));
 											}
 										},
 									})}
@@ -309,14 +348,18 @@ const Presale = ({
 											if (!isNaN(event.target.value)) {
 												if (event.target.value > 0) {
 													const amount = parseEther(event.target.value.toString());
-													if (presale?.maxEth && presale?.hardcap)
-														setValue("eth", Number(formatEther((amount * presale?.maxEth) / presale?.hardcap)), {
+													if (presale?.maxEth && presale?.hardcap) {
+														const eth = (amount * presale?.maxEth) / presale?.hardcap;
+														setPrice(eth);
+														setValue("eth", formatEther(eth), {
 															shouldValidate: true,
 														});
+													}
 													trigger("amount");
 												} else {
 													clearErrors("amount");
 													resetField("eth");
+													setPrice(BigInt(0));
 												}
 											}
 										},
@@ -328,6 +371,18 @@ const Presale = ({
 							{errors.amount && <p className="w-full mb-2 text-pink-600 text-sm">{errors.amount.message}</p>}
 						</div>
 					</div>
+					{gasFee > BigInt(0) && price > BigInt(0) && (
+						<div className="w-full flex flex-col">
+							<p className="text-sm leading-6 text-gray-500 py-2">
+								Estimated Gas: ~<b className="text-gray-400">{formatEther(gasFee)} </b>
+								{getSymbol(chain)}
+							</p>
+							<p className="text-sm leading-6 text-gray-500">
+								Total: ~<b className="text-gray-400">{formatEther(price + gasFee)} </b>
+								{getSymbol(chain)}
+							</p>
+						</div>
+					)}
 
 					{maxBag > 0 && (
 						<div className="flex justify-between flex-wrap">
