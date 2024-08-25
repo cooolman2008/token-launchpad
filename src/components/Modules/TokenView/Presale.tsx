@@ -192,7 +192,6 @@ const Presale = ({
 					abi: presaleAbi,
 					functionName: "buyTokens",
 					args: [parseEther(getValues("amount").toString())],
-					account: walletClient?.account,
 					value: price,
 				})
 				.then((res) => {
