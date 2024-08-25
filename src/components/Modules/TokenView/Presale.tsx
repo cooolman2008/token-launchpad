@@ -78,27 +78,6 @@ const Presale = ({
 		chainId: chain,
 	});
 
-	useEffect(() => {
-		if (publicClient && gas && getValues("amount") > 0 && price > BigInt(0))
-			publicClient
-				.estimateContractGas({
-					address: presaleAddress,
-					abi: presaleAbi,
-					functionName: "buyTokens",
-					args: [parseEther(getValues("amount").toString())],
-					account: walletClient?.account,
-					value: price,
-				})
-				.then((res) => {
-					if (gas) {
-						setGasFee(gas.maxFeePerGas * res);
-					}
-				})
-				.catch((error) => {
-					console.log(error);
-				});
-	}, [price]);
-
 	// get user claimable token details.
 	const { data: claimables, refetch: getBought } = useReadContract({
 		address: presaleAddress,
@@ -204,6 +183,27 @@ const Presale = ({
 			});
 		}
 	};
+
+	useEffect(() => {
+		if (publicClient && gas && getValues("amount") > 0 && price > BigInt(0))
+			publicClient
+				.estimateContractGas({
+					address: presaleAddress,
+					abi: presaleAbi,
+					functionName: "buyTokens",
+					args: [parseEther(getValues("amount").toString())],
+					account: walletClient?.account,
+					value: price,
+				})
+				.then((res) => {
+					if (gas) {
+						setGasFee(gas.maxFeePerGas * res);
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+	}, [gas, getValues, presaleAddress, price, publicClient, walletClient?.account]);
 
 	return (
 		<>
