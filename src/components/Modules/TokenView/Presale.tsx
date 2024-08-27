@@ -111,7 +111,7 @@ const Presale = ({
 				const address = walletClient?.account.address;
 				if (
 					address &&
-					contractAddress.toLowerCase() !== safuAddress.toLowerCase() &&
+					contractAddress.toLowerCase() === safuAddress.toLowerCase() &&
 					res &&
 					getValues("walletaddress") &&
 					referral
@@ -387,7 +387,7 @@ const Presale = ({
 							</div>
 							{errors.amount && <p className="w-full mb-2 text-pink-600 text-sm">{errors.amount.message}</p>}
 						</div>
-						{contractAddress.toLowerCase() !== safuAddress.toLowerCase() && (
+						{contractAddress.toLowerCase() === safuAddress.toLowerCase() && (
 							<div className="w-full flex flex-col pt-4 mt-4 mb-2 border-t border-neutral-800">
 								<div className="block flex">
 									<button
