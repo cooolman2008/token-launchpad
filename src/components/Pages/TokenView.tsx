@@ -303,11 +303,13 @@ function TokenView({ params }: { params: { slug: `0x${string}` } }) {
 										setSuccess={setSuccess}
 										address={address ? address : address_0}
 									/>
-									{presale === 1 && token?.presale && (
+									{presale === 1 && token?.presale && CONTRACT_ADDRESS && (
 										<Presale
 											presaleAddress={getAddress(token?.presale)}
 											address={address}
 											symbol={token?.symbol ? token?.symbol : ""}
+											safuAddress={CONTRACT_ADDRESS}
+											contractAddress={params?.slug}
 										/>
 									)}
 									{isStaking && lp?.stakingContract && lp.stakingContract !== address_0 && address && (

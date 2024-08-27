@@ -9,20 +9,23 @@ import {
 } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, useEffect } from "react";
-import { formatEther, parseEther } from "viem";
+import { formatEther, getAddress, parseEther } from "viem";
 
 import Loading from "@/components/elements/Loading";
 import Modal from "@/components/elements/Modal";
 
 import { getAbr, getNumber } from "@/utils/math";
 import { presaleAbi } from "@/abi/presaleAbi";
-import { animate, AnimationControls } from "motion";
+import { animate, AnimationControls, spring } from "motion";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { getSymbol } from "@/utils/utils";
+import { scrollTo } from "@/utils/uiUtils";
+import { registerReferral } from "@/utils/tokenHelper";
 
 interface PresaleForm {
 	amount: number;
 	eth: string;
+	walletaddress: string;
 }
 
 interface Presale {
@@ -39,10 +42,14 @@ const Presale = ({
 	symbol,
 	presaleAddress,
 	address,
+	safuAddress,
+	contractAddress,
 }: {
 	symbol: string;
 	presaleAddress: `0x${string}`;
 	address?: `0x${string}`;
+	safuAddress: `0x${string}`;
+	contractAddress: `0x${string}`;
 }) => {
 	const { data: walletClient } = useWalletClient();
 	const publicClient = usePublicClient();
@@ -51,6 +58,7 @@ const Presale = ({
 
 	const [presale, setPresale] = useState<Presale>();
 	const [bought, setBought] = useState(BigInt(0));
+	const [referral, setReferral] = useState(false);
 	const [maxBag, setMaxBag] = useState(0);
 	const [price, setPrice] = useState(BigInt(0));
 	const [gasFee, setGasFee] = useState(BigInt(0));
@@ -100,6 +108,16 @@ const Presale = ({
 				console.log(res);
 				resetField("amount");
 				resetField("eth");
+				const address = walletClient?.account.address;
+				if (
+					address &&
+					contractAddress.toLowerCase() !== safuAddress.toLowerCase() &&
+					res &&
+					getValues("walletaddress") &&
+					referral
+				) {
+					registerReferral(contractAddress, res, getAddress(getValues("walletaddress")), address, formatEther(price));
+				}
 				setPrice(BigInt(0));
 				setTrans(res);
 				setSuccess("Your presale tokens are on it's way!");
@@ -271,7 +289,7 @@ const Presale = ({
 								</span>
 							</div>
 						</div>
-						<div className="w-full flex flex-col mb-2 mt-4">
+						<div className="w-full flex flex-col my-4">
 							<div className="block flex justify-between">
 								<span className="text-sm leading-6 text-gray-400">You pay</span>
 								<span className="text-sm leading-6 text-gray-400">
@@ -325,7 +343,7 @@ const Presale = ({
 							</div>
 							{errors.eth && <p className="w-full mb-2 text-pink-600 text-sm">{errors.eth.message}</p>}
 						</div>
-						<div className="w-full flex flex-col mt-4 mb-2">
+						<div className="w-full flex flex-col">
 							<div className="block flex justify-between">
 								<span className="text-sm leading-6 text-gray-400">You get</span>
 								<span className="text-sm leading-6 text-gray-400">Max: {remaining ? remaining : "0"}</span>
@@ -369,15 +387,73 @@ const Presale = ({
 							</div>
 							{errors.amount && <p className="w-full mb-2 text-pink-600 text-sm">{errors.amount.message}</p>}
 						</div>
+						{contractAddress.toLowerCase() !== safuAddress.toLowerCase() && (
+							<div className="w-full flex flex-col pt-4 mt-4 mb-2 border-t border-neutral-800">
+								<div className="block flex">
+									<button
+										type="button"
+										className="group outline-0 mr-2"
+										onClick={() => {
+											if (referral) {
+												scrollTo("body");
+												animate("#referral", { maxHeight: 0, opacity: 0 }, { easing: "ease-in-out" });
+											} else {
+												scrollTo("referral");
+												animate(
+													"#referral",
+													{ maxHeight: "340px", opacity: 1 },
+													{ easing: spring({ stiffness: 300, damping: 16, mass: 0.4 }), delay: 0.1 }
+												);
+											}
+											setReferral(!referral);
+										}}
+									>
+										<div
+											className={
+												"rounded-md border-neutral-700 w-4 h-4 flex items-center justify-center group-focus:outline-blue-600 group-focus:outline group-focus:border-2" +
+												(referral ? " bg-blue-600" : " border-2 bg-neutral-800")
+											}
+										>
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												viewBox="0 0 16 16"
+												className={"fill-slate-200 " + (referral ? "" : "hidden")}
+											>
+												<path d="M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z" />
+											</svg>
+										</div>
+									</button>
+									<span className="text-sm leading-6 text-gray-400">I have a referral</span>
+								</div>
+								<div id="referral" className="flex flex-col max-h-0 overflow-hidden">
+									<span className="block sm:text-sm leading-6 text-gray-400 mt-4 mb-2">Wallet</span>
+									<input
+										type="text"
+										id="walletaddress"
+										placeholder="0xXXXXXXXXXXXXXXXXXXX"
+										{...register("walletaddress", {
+											required: { value: referral, message: "Referrer Wallet is needed" },
+											minLength: { value: 42, message: "Referrer Wallet not valid" },
+											pattern: { value: /^[A-Za-z0-9]+$/i, message: "Referrer Wallet not valid!" },
+										})}
+										className="block w-full rounded-xl px-2 pe-3 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:leading-6 bg-neutral-950 outline-0 sm:text-xl border-l border-gray-600"
+									/>
+									{errors.walletaddress && (
+										<p className="w-full mb-2 text-pink-600 text-sm">{errors.walletaddress.message}</p>
+									)}
+								</div>
+							</div>
+						)}
 					</div>
 					{gasFee > BigInt(0) && price > BigInt(0) && (
 						<div className="w-full flex flex-col">
 							<p className="text-sm leading-6 text-gray-500 py-2">
-								Estimated Gas: ~<b className="text-gray-400">{formatEther(gasFee)} </b>
+								Estimated Gas: ~<b className="text-gray-400">{Number(formatEther(gasFee)).toFixed(14)} </b>
 								{getSymbol(chain)}
 							</p>
 							<p className="text-sm leading-6 text-gray-500">
-								Total: ~<b className="text-gray-400">{formatEther(price + gasFee)} </b>
+								Total ( Pay + Gas ) : ~
+								<b className="text-gray-400">{Number(formatEther(price + gasFee)).toFixed(14)} </b>
 								{getSymbol(chain)}
 							</p>
 						</div>

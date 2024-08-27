@@ -10,6 +10,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 const plus_Jakarta_Sans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { migrate } from "@/api/manager";
 
 export const metadata: Metadata = {
 	title: "SAFU Launcher",
@@ -21,6 +22,7 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	// migrate();
 	return (
 		<html lang="en">
 			<body id="body" className={plus_Jakarta_Sans.className + " pb-4 overflow-x-hidden relative pb-40 md:pb-32"}>
