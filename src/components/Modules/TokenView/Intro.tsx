@@ -8,9 +8,10 @@ import Website from "@/components/images/Website";
 import XBadge from "@/components/images/XBadge";
 import { Token } from "@/api/getToken";
 import { getAbr } from "@/utils/math";
-import { getEtherscan } from "@/utils/utils";
+import { getContractAddress, getEtherscan } from "@/utils/utils";
 
 import coin from "../../../../public/coin.svg";
+import logo from "../../../../public/logo_bg.svg";
 
 const Intro = ({
 	address,
@@ -43,7 +44,13 @@ const Intro = ({
 			</span>
 			<div className="w-full flex flex-wrap mb-8 mt-2">
 				<div className="w-full xl:w-auto flex flex-1 mb-4 xl:mb-0 items-center">
-					<Image id="box" src={coin} style={{ width: "auto", height: "40px" }} alt="SAFU Launcher Logo" />
+					<Image
+						id="box"
+						src={address.toLowerCase() === getContractAddress(chain)?.toLowerCase() ? logo : coin}
+						style={{ width: "auto", height: "40px" }}
+						alt="SAFU Launcher Logo"
+						className="rounded-full border border-gray-500"
+					/>
 					<h2 className="text-xl lg:text-3xl mx-4">{token?.name}</h2>
 					<h2 className="text-xl lg:text-3xl mr-4 text-gray-400">{token?.symbol}</h2>
 					{isPresale && (
