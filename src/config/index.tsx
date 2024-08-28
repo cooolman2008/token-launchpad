@@ -22,7 +22,7 @@ import {
 import { defineChain } from "viem";
 
 // Get projectId from https://cloud.walletconnect.com
-export const projectId = "1b68748d8eb8fb69865da49234fd799d";
+export const projectId = "d9b10c5fc88455cf3f5e3449cb8b2cfb";
 
 if (!projectId) throw new Error("Project ID is not defined");
 
