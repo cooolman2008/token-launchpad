@@ -189,7 +189,7 @@ export const getRouters = (chainId: number) => {
 				},
 				{
 					value: "0xde472CFDC852c45FA8AC082A07662cA4846bD9A2",
-					label: "X7 Router",
+					label: "X7 Finance",
 				},
 			]; // baseSepolia
 		case 97:
