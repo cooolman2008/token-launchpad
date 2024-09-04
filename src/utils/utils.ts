@@ -188,7 +188,7 @@ export const getRouters = (chainId: number) => {
 					label: "Pancakeswap Router",
 				},
 				{
-					value: "0x216A1CB8644ea7Fac5B7f73989e45C745D131E9E",
+					value: "0xde472CFDC852c45FA8AC082A07662cA4846bD9A2",
 					label: "X7 Router",
 				},
 			]; // baseSepolia
