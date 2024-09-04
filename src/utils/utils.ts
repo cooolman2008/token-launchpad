@@ -27,7 +27,7 @@ export const getContractAddress = (chainId: number | undefined) => {
 		case 80002:
 			return getAddress("0x003E2F04d655076ADAA0eDa95cb5D77d1FD43146"); // polygonAmoy
 		case 84532:
-			return getAddress("0xccfd08acD63fB4358F77DC88068EAf523ae0A090"); // baseSepolia
+			return getAddress("0x216A1CB8644ea7Fac5B7f73989e45C745D131E9E"); // baseSepolia
 		case 97:
 			return getAddress("0x9e79EFab101E9F8d2B0F5DdDA46Ae8CB6f1D3A45"); // bscTestnet
 		case 43114:
@@ -68,7 +68,7 @@ export const getGraphUrl = (chainId: number) => {
 		case 80002:
 			return "https://api.studio.thegraph.com/query/82166/safupolygontest/0.0.17"; // polygonAmoy
 		case 84532:
-			return "https://api.studio.thegraph.com/query/82166/safubasesepolia/0.0.17"; // baseSepolia
+			return "https://api.studio.thegraph.com/query/82166/safubasesepolia/0.1.0"; // baseSepolia
 		case 97:
 			return "https://api.studio.thegraph.com/query/82166/safubsctest/0.0.17"; // bscTestnet
 		case 43114:
@@ -186,6 +186,10 @@ export const getRouters = (chainId: number) => {
 				{
 					value: "0x1689E7B1F10000AE47eBfE339a4f69dECd19F602",
 					label: "Pancakeswap Router",
+				},
+				{
+					value: "0x216A1CB8644ea7Fac5B7f73989e45C745D131E9E",
+					label: "X7 Router",
 				},
 			]; // baseSepolia
 		case 97:
