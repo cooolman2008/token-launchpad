@@ -1,6 +1,10 @@
 const Website = ({ url }: { url: string }) => {
 	return (
-		<a href={url} className="inline-flex items-center rounded-xl bg-gray-800 px-2 py-1 mr-4 hover:bg-gray-600">
+		<a
+			href={url}
+			className="inline-flex items-center rounded-xl bg-neutral-900 px-2 py-1 mr-4 hover:bg-neutral-800"
+			target="_blank"
+		>
 			<svg
 				width="18px"
 				height="18px"

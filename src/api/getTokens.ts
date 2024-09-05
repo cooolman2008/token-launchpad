@@ -8,6 +8,12 @@ interface Bundles {
   ethPrice: number;
 }
 
+export interface DayData {
+  totalLiquidityUSD: bigint;
+  dailyVolumeUSD: bigint;
+  date: number;
+}
+
 interface Pair {
   token0Price: number;
   token1Price: number;
@@ -25,15 +31,19 @@ export interface Tokens {
   tradeVolumeUSD: number;
   pairBase: Pair[];
   pairQuote: Pair[];
-  price: number;
+  price: string;
 }
 
 interface TokenArray {
-    tokens: Tokens[]
-    bundles: Bundles[]
+  tokens: Tokens[]
+  bundles: Bundles[]
 }
 
-export async function fetchMyTokens(owner: string, APIEndpoint: string) {
+interface DayDataArray {
+  safudayDatas: DayData[];
+}
+
+export async function fetchMyTokens(owner: string, APIEndpoint: string, signal:AbortSignal) {
   const query = `query MyQuery {
     tokens(first: 100, where: {owner: "${owner}"}) {
       id
@@ -41,7 +51,7 @@ export async function fetchMyTokens(owner: string, APIEndpoint: string) {
       symbol
       totalSupply
       totalTax
-      tradeVolume
+      tradeVolumeUSD
       pairBase {
         token0Price
         token1Price
@@ -68,7 +78,9 @@ export async function fetchMyTokens(owner: string, APIEndpoint: string) {
       }
   }`;
 
-  const client = new GraphQLClient(APIEndpoint);
+  const client = new GraphQLClient(APIEndpoint, {
+    signal: signal,
+  });
 
   const data: TokenArray  = await client.request(query);
 
@@ -98,7 +110,7 @@ export async function fetchMyTokens(owner: string, APIEndpoint: string) {
             FDV = token.pairQuote[0].token0Price * token.totalSupply;
           }
       }}
-      tokens[index].price = price * ethPrice;
+      tokens[index].price = Number(price * ethPrice).toFixed(10);
       tokens[index].FDV = FDV * ethPrice
     });
   }
@@ -106,25 +118,27 @@ export async function fetchMyTokens(owner: string, APIEndpoint: string) {
   return data?.tokens;
 }
 
-export async function fetchStealthTokens(APIEndpoint: string) {
+export async function fetchStealthTokens(APIEndpoint: string, usdc: string, base: string, signal:AbortSignal) {
     const query = `query MyQuery {
-      tokens(first: 100, where: {pair: "0x0000000000000000000000000000000000000000"}) {
+      tokens(first: 100, where: {pair: "0x0000000000000000000000000000000000000000", id_not_in: ["${usdc.toLowerCase()}", "${base.toLowerCase()}"] }) {
         id
         name
         symbol
         totalSupply
         totalTax
-        tradeVolume
+        tradeVolumeUSD
       }
     }`;
   
-    const client = new GraphQLClient(APIEndpoint);
+    const client = new GraphQLClient(APIEndpoint, {
+      signal: signal,
+    });
   
     const data: TokenArray  = await client.request(query);
     return data?.tokens;
   }
 
-  export async function fetchPresalesTokens(APIEndpoint: string) {
+  export async function fetchPresalesTokens(APIEndpoint: string, signal:AbortSignal) {
       const query = `query MyQuery {
         tokens(first: 100, where: {presaleStatus: "1"}) {
           id
@@ -132,25 +146,27 @@ export async function fetchStealthTokens(APIEndpoint: string) {
           symbol
           totalSupply
           totalTax
-          tradeVolume
+          tradeVolumeUSD
         }
       }`;
     
-      const client = new GraphQLClient(APIEndpoint);
+      const client = new GraphQLClient(APIEndpoint, {
+        signal: signal,
+      });
     
       const data: TokenArray  = await client.request(query);
       return data?.tokens;
     }
 
-export async function fetchTokens(id: string, APIEndpoint: string) {
+export async function fetchTokens(id: string, APIEndpoint: string, signal:AbortSignal) {
     let query = `query safuQuery {
-        tokens(first: 1, where: {id: "${id}"}) {
+        tokens(first: 1, where: {id: "${id.toLowerCase()}"}) {
         id
         name
         symbol
         totalSupply
         totalTax
-        tradeVolume
+        tradeVolumeUSD
         pairBase {
           token0Price
           token1Price
@@ -177,17 +193,19 @@ export async function fetchTokens(id: string, APIEndpoint: string) {
       }
     }`;
 
-    const client = new GraphQLClient(APIEndpoint);
+    const client = new GraphQLClient(APIEndpoint, {
+      signal: signal,
+    });
 
     let data: TokenArray  = await client.request(query);
     query = `query MyQuery {
-        tokens(first: 100, where: {pair_not: "0x0000000000000000000000000000000000000000", id_not: "${id}"}) {
+        tokens(first: 100, where: {pair_not: "0x0000000000000000000000000000000000000000", id_not: "${id.toLowerCase()}"}) {
         id
         name
         symbol
         totalSupply
         totalTax
-        tradeVolume
+        tradeVolumeUSD
         pairBase {
           token0Price
           token1Price
@@ -217,33 +235,50 @@ export async function fetchTokens(id: string, APIEndpoint: string) {
     if (data?.tokens.length > 0) {
       let ethPrice = 0;
       if (data?.bundles.length > 0) {
-        ethPrice = Number(data?.bundles[0].ethPrice);
+        ethPrice = data?.bundles[0].ethPrice;
       }
       data?.tokens.forEach((token, index, tokens) => {
         let price = 0;
         let FDV = 0;
         if (token.pairBase.length >0) {
           if (token.pairBase[0].token0.id === token.id) {
-            price = Number(token.pairBase[0].token1Price);
+            price = token.pairBase[0].token1Price;
             FDV = token.pairBase[0].token1Price * token.totalSupply;
           } else {
-            price = Number(token.pairBase[0].token0Price);
+            price = token.pairBase[0].token0Price;
             FDV = token.pairBase[0].token0Price * token.totalSupply;
           }
         } else {
         if (token.pairQuote.length >0) {
           if (token.pairQuote[0].token0.id === token.id) {
-            price = Number(token.pairQuote[0].token1Price);
+            price = token.pairQuote[0].token1Price;
             FDV = token.pairQuote[0].token1Price * token.totalSupply;
           } else {
-            price = Number(token.pairQuote[0].token0Price);
+            price = token.pairQuote[0].token0Price;
             FDV = token.pairQuote[0].token0Price * token.totalSupply;
           }
         }}
-        tokens[index].price = price * ethPrice;
+        tokens[index].price = price !== 0 ? Number(price * ethPrice).toFixed(10) : "0";
         tokens[index].FDV = FDV * ethPrice;
       });
     }
 
     return data?.tokens;
+}
+
+export async function fetchChartData(APIEndpoint: string, signal:AbortSignal) {
+  const query = `query MyQuery {
+    safudayDatas {
+      totalLiquidityUSD
+      dailyVolumeUSD
+      date
+    }
+  }`;
+
+  const client = new GraphQLClient(APIEndpoint, {
+    signal: signal,
+  });
+
+  const data: DayDataArray  = await client.request(query);
+  return data?.safudayDatas;
 }
